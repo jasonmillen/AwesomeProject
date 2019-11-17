@@ -7,14 +7,18 @@ import {
  } from 'react-native';
 
  import { AuthSession } from 'expo';
+ console.log("REDIRECT URL ############################");
  console.log(AuthSession.getRedirectUrl());
 
 import Search from './src/Components/Search';
 import Listing from './src/Components/Listing';
+import LoginButton from './src/Components/LoginButton';
+
 //import searchMock from './src/api/spotify/searchMock';
 
 import token from './src/api/spotify/token';
 import search from './src/api/spotify/search';
+import { getTokens, refreshTokens } from './src/api/spotify/tokens';
 
 const PAGE = 20;
 
@@ -30,7 +34,12 @@ export default class App extends React.Component {
       isFetching: false,
       isEmpty: false,
       token: null,
-      isTokenFetching: false
+      isTokenFetching: false,
+      spotify: {
+        accessToken: null,
+        refreshToken: null,
+        expirationTime: null
+      }
     };
   }
 
@@ -97,11 +106,24 @@ export default class App extends React.Component {
     await this.loadNextPage();
   }
 
+  async handleLogin() {
+    console.log("user logged in");
+
+    console.log("before");
+    const data = await getTokens();
+    console.log("data");
+    console.log(data);
+  
+  }
+
   render() {
     const { songs, query, isFetching } = this.state;
 
     return (
       <View style={styles.container}>
+        <LoginButton
+          onPress={() => this.handleLogin()}
+         />
         <Text>Open up App.js to start working on your app!</Text>
         <Search 
           onChange={text => this.handleSearchChange(text)}
