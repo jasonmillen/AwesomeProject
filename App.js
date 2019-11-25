@@ -3,10 +3,18 @@ import {
   StyleSheet, 
   Text, 
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
  } from 'react-native';
+import { AuthSession } from 'expo';
+import SpotifyWebApi from 'spotify-web-api-js';
 
- import { AuthSession } from 'expo';
+import {
+  saveUserData,
+  getUserData
+ } from './src/api/spotify/user';
+
+
  console.log("REDIRECT URL ############################");
  console.log(AuthSession.getRedirectUrl());
 
@@ -113,7 +121,15 @@ export default class App extends React.Component {
     const data = await getTokens();
     console.log("data");
     console.log(data);
-  
+
+    const spotify = new SpotifyWebApi();
+    spotify.setAccessToken(data.accessToken);
+
+    const userData = await spotify.getMe();
+    console.log(userData);  
+
+    await saveUserData(data.accessToken, data.expirationTime, data.refreshToken);
+    await getUserData();
   }
 
   render() {

@@ -69,7 +69,7 @@ export const refreshTokens = async (refreshToken) => {
     });
     const responseJson = await response.json();
     if (responseJson.error) {
-      await getTokens();
+      tokenData = await getTokens();
     } 
     else {
       const {
@@ -92,4 +92,6 @@ export const refreshTokens = async (refreshToken) => {
   catch (err) {
     console.error(err)
   }
+
+  return tokenData;
 };
