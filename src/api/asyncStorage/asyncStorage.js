@@ -30,3 +30,13 @@ export const getUserData = async () => {
   }
 };
 
+export const setLoggedInUser = async () => {
+  try {
+    await AsyncStorage.setItem('userID', userID);
+  }
+  catch (error) {
+    console.error("Error setting user", error);
+  }
+}
+
+

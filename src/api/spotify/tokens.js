@@ -3,7 +3,7 @@ import { encode as btoa } from 'base-64';
 import { getAuthorizationCode } from './auth';
 import getSpotifyCredentials from './credentials';
 
-export const getTokens = async () => {
+/*export const getTokens = async () => {
   let tokenData;
   try {
     const authorizationCode = await getAuthorizationCode();
@@ -94,4 +94,4 @@ export const refreshTokens = async (refreshToken) => {
   }
 
   return tokenData;
-};
+};*/

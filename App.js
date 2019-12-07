@@ -5,18 +5,28 @@ import {
   View,
   ActivityIndicator,
   AsyncStorage
- } from 'react-native';
+} from 'react-native';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
 import { AuthSession } from 'expo';
 import SpotifyWebApi from 'spotify-web-api-js';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import {
   saveUserData,
   getUserData
- } from './src/api/spotify/user';
+} from './src/api/asyncStorage/asyncStorage';
+
+import reducer from './src/reducers/index';
+
+// views
+import Login from './src/Views/Login';
+import Home from './src/Views/Home';
 
 
- console.log("REDIRECT URL ############################");
- console.log(AuthSession.getRedirectUrl());
+console.log("REDIRECT URL ############################");
+console.log(AuthSession.getRedirectUrl());
 
 import Search from './src/Components/Search';
 import Listing from './src/Components/Listing';
@@ -26,11 +36,35 @@ import LoginButton from './src/Components/LoginButton';
 
 import token from './src/api/spotify/token';
 import search from './src/api/spotify/search';
-import { getTokens, refreshTokens } from './src/api/spotify/tokens';
+//import { getTokens, refreshTokens } from './src/api/spotify/tokens';
+import { getAuthorizationCode } from './src/api/spotify/auth';
 
 const PAGE = 20;
 
+const store = createStore(reducer);
+
+/*const RootStack = createStackNavigator(
+  {
+    Login: Login,
+    Home: Home
+  },
+  {
+    initialRouteName: 'Login'
+  }
+);
+
+const AppContainer = createAppContainer(RootStack);*/
+
+
 export default class App extends React.Component {
+
+  // render() {
+  //   return (
+  //     <Provider store={store}>
+  //       <AppContainer />
+  //     </Provider>
+  //   )
+  // }
 
   constructor() {
     super();
@@ -115,44 +149,66 @@ export default class App extends React.Component {
   }
 
   async handleLogin() {
-    console.log("user logged in");
 
-    console.log("before");
-    const data = await getTokens();
-    console.log("data");
-    console.log(data);
+    const authCode = await getAuthorizationCode();
+    console.log('authCode', authCode);
 
-    const spotify = new SpotifyWebApi();
+    const response = await fetch('http://192.168.1.7:3000/api/getSpotifyToken', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        authCode: authCode.params.code
+      }),
+    });
+
+    const tokenData = await response.json()
+    console.log('tokenData', tokenData);
+    
+    await saveUserData(
+      tokenData.accessToken, 
+      tokenData.expirationTime,
+      tokenData.refreshToken);
+    
+    
+
+
+
+
+    /*const spotify = new SpotifyWebApi();
     spotify.setAccessToken(data.accessToken);
 
     const userData = await spotify.getMe();
     console.log(userData);  
 
     await saveUserData(data.accessToken, data.expirationTime, data.refreshToken);
-    await getUserData();
+    await getUserData();*/
   }
 
   render() {
     const { songs, query, isFetching } = this.state;
 
     return (
-      <View style={styles.container}>
-        <LoginButton
-          onPress={() => this.handleLogin()}
-         />
-        <Text>Open up App.js to start working on your app!</Text>
-        <Search 
-          onChange={text => this.handleSearchChange(text)}
-          text={query}
-        />
-        {
-          (isFetching && songs.length === 0)
-          ? <ActivityIndicator />
-          : <Listing
-            items={songs}
-            onEndReached={() => this.handleEndReached()} />
-        }
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          <LoginButton
+            onPress={() => this.handleLogin()}
+          />
+          <Search 
+            onChange={text => this.handleSearchChange(text)}
+            text={query}
+          />
+          {
+            (isFetching && songs.length === 0)
+            ? <ActivityIndicator />
+            : <Listing
+              items={songs}
+              onEndReached={() => this.handleEndReached()} />
+          }
+        </View>
+      </Provider>
     );
   }
 }
