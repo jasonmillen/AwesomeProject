@@ -30,7 +30,7 @@ export const getUserData = async () => {
   }
 };
 
-export const setLoggedInUser = async () => {
+export const setUserID = async (userID) => {
   try {
     await AsyncStorage.setItem('userID', userID);
   }
