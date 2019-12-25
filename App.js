@@ -22,8 +22,8 @@ import {
 import reducer from './src/reducers/index';
 
 // views
-import Login from './src/Views/Login';
-import Home from './src/Views/Home';
+import Login from './src/Views/Login/login';
+import Home from './src/Views/Home/home';
 
 import Search from './src/Components/Search';
 import Listing from './src/Components/Listing';

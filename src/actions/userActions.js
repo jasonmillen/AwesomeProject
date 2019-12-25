@@ -1,10 +1,14 @@
+import SpotifyWebApi from 'spotify-web-api-js';
+import {
+  IP
+} from '../../config';
 import { 
   setUserID,
   saveUserData,
   getUserData
 } from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
-import SpotifyWebApi from 'spotify-web-api-js';
+
 
 export const SET_LOGGED_IN_USER_REQUEST = 'SET_LOGGED_IN_USER_REQUEST';
 export const SET_LOGGED_IN_USER_SUCCESS = 'SET_LOGGED_IN_USER_SUCCESS';
@@ -15,7 +19,7 @@ export const setLoggedInUserRequest = (userID) => {
     payload: {
       userID
     }
-  }
+  };
 };
 
 
@@ -65,6 +69,7 @@ export const getLoggedInUser = () => {
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
+export const COMPLETE_LOGIN_PROCESS = 'COMPLETE_LOGIN_PROCESS';
 
 export const loginRequest = () => {
   return {
@@ -83,11 +88,17 @@ export const loginSuccess = (tokenData, userID) => {
   };
 }
 
+export const completeLoginProcess = () => {
+  return {
+    type: COMPLETE_LOGIN_PROCESS
+  }
+};
+
 export const login = () => {
   return async (dispatch) => {
     dispatch(loginRequest());
     const authCode = await getAuthorizationCode();
-    const response = await fetch('http://192.168.1.7:3000/api/getSpotifyToken', {
+    const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

@@ -2,14 +2,16 @@ import {
   GET_LOGGED_IN_USER_REQUEST,
   GET_LOGGED_IN_USER_SUCCESS,
   LOGIN_REQUEST,
-  LOGIN_SUCCESS
+  LOGIN_SUCCESS,
+  COMPLETE_LOGIN_PROCESS
 } from '../actions/userActions';
 
 const initialState = {
   accessToken: null,
   expirationTime: null,
   refreshToken: null,
-  userID: null
+  userID: null,
+  isProcessingLogin: false
 };
 
 export default userReducer = (state = initialState, action) => {
@@ -24,7 +26,10 @@ export default userReducer = (state = initialState, action) => {
     }
     case LOGIN_REQUEST: {
       console.log(LOGIN_REQUEST);
-      return state;
+      return {
+        ...state,
+        isProcessingLogin: true
+      };
     }
     case LOGIN_SUCCESS: {
       console.log(LOGIN_SUCCESS);
@@ -37,6 +42,13 @@ export default userReducer = (state = initialState, action) => {
         userID: action.payload.userID
       };
     }
+    case COMPLETE_LOGIN_PROCESS: {
+      console.log(COMPLETE_LOGIN_PROCESS);
+      return {
+        ...state,
+        isProcessingLogin: false
+      }
+    }
     default:
       return state;
   }
@@ -44,4 +56,8 @@ export default userReducer = (state = initialState, action) => {
 
 export const selectUserID = (state) => {
   return state.user.userID;
-}
+};
+
+export const selectIsProcessingLogin = (state) => {
+  return state.user.isProcessingLogin;
+};

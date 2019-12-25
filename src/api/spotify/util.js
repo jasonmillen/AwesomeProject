@@ -1,8 +1,8 @@
-import { refreshTokens } from './tokens';
+import SpotifyWebApi from 'spotify-web-api-js';
+const spotify = new SpotifyWebApi();
 
-export const validateSpotifyObj = (spotifyObj, expirationTime, refreshToken) => {
-  if (expirationTime < new Date().getTime()) {
-    const tokenData = await refreshTokens(refreshToken);
-  }
-  spotifyObj.setAccessToken(tokenData.accessToken);
+export const getContacts = async (userID, accessToken) => {
+  spotify.setAccessToken(accessToken);
+  //spotify.get
+
 };
