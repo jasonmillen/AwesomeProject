@@ -7,6 +7,10 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
+import {
+  StackActions,
+  NavigationActions
+} from 'react-navigation';
 
 import { 
   getLoggedInUser,
@@ -30,9 +34,10 @@ class Login extends React.Component {
 
     if (this.props.userID) {
       this.props.navigation.navigate('Home');
+      return;
     }
 
-    this.props.fetchUser();
+    this.props.getLoggedInUser();
   }
 
   async componentDidUpdate() {
@@ -42,13 +47,19 @@ class Login extends React.Component {
       this.props.navigation.navigate('Home');
       console.log('after navigation');
       this.props.completeLoginProcess();
+      this.props
+        .navigation
+        .dispatch(StackActions.reset({
+          index: 0,
+          actions: [NavigationActions.navigate({ routeName: 'Home' })]
+        }));
     }
   }
 
   handleLogin() {
-    this.props.navigation.navigate('Home');
+    //this.props.navigation.navigate('Home');
     // TEMP DISABLED FOR QUICKER TESTING
-    //this.props.login();
+    this.props.login();
   }
 
   render() {
@@ -74,7 +85,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchUser: () => {
+    getLoggedInUser: () => {
       dispatch(getLoggedInUser());
     },
     login: () => {

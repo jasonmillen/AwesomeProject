@@ -4,8 +4,9 @@ import {
 } from '../../config';
 import { 
   setUserID,
-  saveUserData,
-  getUserData
+  getUserID,
+  saveTokenData,
+  getTokenData
 } from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
 
@@ -63,7 +64,8 @@ export const getLoggedInUser = () => {
   return async (dispatch) => {
     dispatch(getLoggedInUserRequest());
     // TODO: add async storage call to actuallly get user
-    dispatch(getLoggedInUserSuccess(null));
+    const userID = await getUserID();
+    dispatch(getLoggedInUserSuccess(userID));
   }
 }
 
@@ -109,7 +111,7 @@ export const login = () => {
       }),
     });
     const tokenData = await response.json();
-    await saveUserData(
+    await saveTokenData(
       tokenData.accessToken, 
       tokenData.expirationTime, 
       tokenData.refreshToken);

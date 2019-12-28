@@ -1,6 +1,6 @@
 import { AsyncStorage } from 'react-native';
 
-export const saveUserData = async (accessToken, expirationTime, refreshToken) => {
+export const saveTokenData = async (accessToken, expirationTime, refreshToken) => {
   try {
     await AsyncStorage.multiSet([
       ['accessToken', accessToken],
@@ -14,7 +14,7 @@ export const saveUserData = async (accessToken, expirationTime, refreshToken) =>
   }
 };
 
-export const getUserData = async () => {
+export const getTokenData = async () => {
   const keys = ['accessToken', 'expirationTime', 'refreshToken'];
   try {
     const stores = await AsyncStorage.multiGet(keys);
@@ -35,7 +35,19 @@ export const setUserID = async (userID) => {
     await AsyncStorage.setItem('userID', userID);
   }
   catch (error) {
-    console.error("Error setting user", error);
+    console.error("Error setting userID", error);
+  }
+}
+
+export const getUserID = async () => {
+  try {
+    const userID = await AsyncStorage.getItem('userID');
+    return userID;
+
+  }
+  catch (error) {
+    console.error('Error getting userID', error);
+    return null;
   }
 }
 

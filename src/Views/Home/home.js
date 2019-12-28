@@ -7,7 +7,9 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import ViewProfileButton from '../../Components/ViewProfileButton';
 import StartChatButton from '../../Components/StartChatButton';
+import SearchSongButton from '../../Components/SearchSongButton';
 import { selectUserID } from '../../reducers/userReducer';
 
 class Home extends React.Component {
@@ -16,9 +18,21 @@ class Home extends React.Component {
     return {
       title: 'Chats',
       headerRight: () => (
-        <StartChatButton
-          style={styles.startChatButton}
-          onPress={navigation.getParam('handleStartChatButtonPress')}
+        <View style={styles.titleBarRightButtonView}>
+          <SearchSongButton
+            style={styles.searchSongButton}
+            onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
+          />
+          <StartChatButton
+            style={styles.startChatButton}
+            onPress={() => navigation.getParam('handleStartChatButtonPress')(navigation)}
+          />
+        </View>
+      ),
+      headerLeft: () => (
+        <ViewProfileButton
+          style={styles.viewProfileButton}
+          onPress={() => navigation.getParam('handleViewProfileButtonPress')(navigation)}
         />
       )
     }
@@ -26,12 +40,22 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.props.navigation.setParams({
-      handleStartChatButtonPress: this.handleStartChatButtonPress
+      handleViewProfileButtonPress: this.handleViewProfileButtonPress,
+      handleStartChatButtonPress: this.handleStartChatButtonPress,
+      handleSearchSongButtonPress: this.handleSearchSongButtonPress
     })
   }
 
-  handleStartChatButtonPress() {
-    alert('pressed');
+  handleViewProfileButtonPress(navigation) {
+    navigation.navigate('UserProfile');
+  }
+
+  handleSearchSongButtonPress(navigation) {
+    navigation.navigate('SearchSong');
+  }
+
+  handleStartChatButtonPress(navigation) {
+    navigation.navigate('SearchUser');
   }
 
   render() {
@@ -49,18 +73,12 @@ const mapStateToProps = (state) => {
   return {
     userID: selectUserID(state)
   };
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // fetchUser: () => {
-    //   dispatch(getLoggedInUser());
-    // },
-    // login: () => {
-    //   dispatch(login())
-    // }
   };
-}
+};
 
 const styles = StyleSheet.create({
   homePage: {
@@ -68,13 +86,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  titleBarRightButtonView: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  viewProfileButton: {
+    flex: 1,
+    marginLeft: 10,
+    marginRight: 10
+  },
   startChatButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: 20,
-    color: 'yellow',
-    paddingRight: 100,
-    paddingLeft: 50
+    flex: 1,
+    marginRight: 10,
+    marginLeft: 10
+  },
+  searchSongButton: {
+    flex: 1,
+    marginRight: 10,
+    marginLeft: 10
   }
 });
 

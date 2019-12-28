@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import userReducer from './userReducer';
-import tokenReducer from './tokenReducer';
+import searchReducer from './searchReducer';
 
 export default combineReducers({
   user: userReducer,
-  token: tokenReducer
+  search: searchReducer
 });

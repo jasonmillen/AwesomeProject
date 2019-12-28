@@ -12,7 +12,7 @@ export default (props) => {
       style={props.style}
       onPress={() => props.onPress()}
     >
-      <Ionicons name='md-search' size={30} />
+      <Ionicons name='md-person' size={30} />
       
     </TouchableOpacity>
   )
