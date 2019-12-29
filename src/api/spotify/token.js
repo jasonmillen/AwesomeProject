@@ -22,7 +22,7 @@ export default async () => {
 };
 
 export const refreshTokens = async (refreshToken) => {
-  const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
+  const response = await fetch(`http://${IP}:3000/api/refreshSpotifyToken`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

@@ -44,9 +44,9 @@ export const fetchSearchUser = (userID, tokenData) => {
   return async (dispatch) => {
     dispatch(searchUserRequest(userID));
 
-     if (verifyTokenData(tokenData)) {
-        dispatch (setUserTokensSuccess(tokenData));
-     }
+    if (await verifyTokenData(tokenData)) {
+      dispatch (setUserTokensSuccess(tokenData));
+    }
 
     try {
       const userData = await searchUser(userID, tokenData.accessToken);

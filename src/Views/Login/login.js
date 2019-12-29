@@ -13,7 +13,7 @@ import {
 } from 'react-navigation';
 
 import { 
-  getLoggedInUser,
+  //getLoggedInUser,
   login,
   completeLoginProcess
 } from '../../actions/userActions';
@@ -37,7 +37,7 @@ class Login extends React.Component {
       return;
     }
 
-    this.props.getLoggedInUser();
+    //this.props.getLoggedInUser();
   }
 
   async componentDidUpdate() {
@@ -85,9 +85,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getLoggedInUser: () => {
-      dispatch(getLoggedInUser());
-    },
+    // getLoggedInUser: () => {
+    //   dispatch(getLoggedInUser());
+    // },
     login: () => {
       dispatch(login());
     },

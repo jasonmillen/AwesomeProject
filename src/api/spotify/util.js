@@ -3,6 +3,8 @@ const spotify = new SpotifyWebApi();
 
 import { SPOTIFY_BASE_URL } from '../../../config';
 
+import token, { refreshTokens } from './token';
+
 export const searchUser = async (userID, accessToken) => {
   const uri = `${SPOTIFY_BASE_URL}/users/${userID}`;
   const res = await fetch(uri, {
@@ -13,6 +15,9 @@ export const searchUser = async (userID, accessToken) => {
   });
   const json = await res.json();
 
+  console.log('SEARCH USER ACCESS TOKEN', accessToken);
+  console.log('SEARCH USER RESPONSE', json);
+
   if (json.error && json.error.status === 404) {
     console.log('User not found');
     return null;
@@ -21,7 +26,6 @@ export const searchUser = async (userID, accessToken) => {
     console.log('User found: ', json.id);
     return json;
   }
-  
 };
 
 // returns true if token data was updated

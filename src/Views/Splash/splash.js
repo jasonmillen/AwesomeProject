@@ -71,7 +71,7 @@ class Splash extends React.Component {
   render() {
     return (
       <View style={styles.splashPage}>
-        <Text>Splash Screen</Text>
+        <Text style={styles.appTitle}>Song Share</Text>
       </View>
     )
   }
@@ -96,7 +96,12 @@ const styles = StyleSheet.create({
   splashPage: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: 'green'
+  },
+  appTitle: {
+    fontSize: 40,
+    color: 'white'
   }
 });
 

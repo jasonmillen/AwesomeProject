@@ -59,7 +59,7 @@ class SearchSong extends React.Component {
     this.setState({ isFetching: true });
 
     const tokenData = this.props.tokenData;
-    if (verifyTokenData(tokenData)) {
+    if (await verifyTokenData(tokenData)) {
       this.props.setUserTokensSuccess(tokenData);
     }
 

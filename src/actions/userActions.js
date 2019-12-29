@@ -6,7 +6,8 @@ import {
   setUserID,
   getUserID,
   saveTokenData,
-  getTokenData
+  getTokenData,
+  removeUserIDAndTokenData
 } from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
 
@@ -42,31 +43,47 @@ export const setLoggedInUser = (userID) => {
 };
 
 export const GET_LOGGED_IN_USER_REQUEST = 'GET_LOGGED_IN_USER_REQEUST';
+export const GET_LOGGED_IN_USER_ERROR = 'GET_LOGGED_IN_USER_ERROR';
 export const GET_LOGGED_IN_USER_SUCCESS = 'GET_LOGGED_IN_USER_SUCCESS';
 
 export const getLoggedInUserRequest = () => {
   return {
     type: GET_LOGGED_IN_USER_REQUEST,
     payload: {}
-  }
+  };
 };
 
-export const getLoggedInUserSuccess = (userID) => {
+export const getLoggedInUserError = () => {
+  return {
+    type: GET_LOGGED_IN_USER_ERROR,
+    payload: {}
+  };
+};
+
+export const getLoggedInUserSuccess = (userID, tokenData) => {
   return {
     type: GET_LOGGED_IN_USER_SUCCESS,
     payload: {
-      userID
+      userID,
+      tokenData
     }
-  }
+  };
 };
 
 export const getLoggedInUser = () => {
   return async (dispatch) => {
     dispatch(getLoggedInUserRequest());
-    // TODO: add async storage call to actuallly get user
-    const userID = await getUserID();
-    dispatch(getLoggedInUserSuccess(userID));
-  }
+    
+    try {
+      const userID = await getUserID();
+      const tokenData = await getTokenData();
+      dispatch(getLoggedInUserSuccess(userID, tokenData));
+    }
+    catch (error) {
+      console.log('Error getting logged in user');
+      dispatch (getLoggedInUserError());
+    }
+  };
 }
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
@@ -122,4 +139,43 @@ export const login = () => {
     await setUserID(userData.id);
     dispatch(loginSuccess(tokenData, userData.id));
   }
+}
+
+export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
+export const LOGOUT_ERROR = 'LOGOUT_ERROR';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+
+export const logoutRequest = () => {
+  return {
+    type: LOGOUT_REQUEST,
+    payload: {}
+  };
+};
+
+export const logoutError = () => {
+  return {
+    type: LOGOUT_ERROR,
+    payload: {}
+  };
+};
+
+export const logoutSuccess = () => {
+  return {
+    type: LOGOUT_SUCCESS,
+    payload: {}
+  };
+};
+
+export const fetchLogout = () => {
+  return async (dispatch) => {
+    dispatch (logoutRequest());
+
+    try {
+      await removeUserIDAndTokenData();
+      dispatch (logoutSuccess());
+    }
+    catch (error) {
+      dispatch (logoutError());
+    }
+  };
 }

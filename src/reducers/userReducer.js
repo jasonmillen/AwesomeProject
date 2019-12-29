@@ -1,9 +1,13 @@
 import {
   GET_LOGGED_IN_USER_REQUEST,
+  GET_LOGGED_IN_USER_ERROR,
   GET_LOGGED_IN_USER_SUCCESS,
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
-  COMPLETE_LOGIN_PROCESS
+  COMPLETE_LOGIN_PROCESS,
+  LOGOUT_REQUEST,
+  LOGOUT_ERROR,
+  LOGOUT_SUCCESS
 } from '../actions/userActions';
 
 import {
@@ -16,7 +20,9 @@ const initialState = {
   refreshToken: null,
   userID: null,
   getLoggedInUserSuccess: false,
-  isProcessingLogin: false
+  isProcessingLogin: false,
+  logoutError: false,
+  logoutSuccess: null
 };
 
 export default userReducer = (state = initialState, action) => {
@@ -28,11 +34,19 @@ export default userReducer = (state = initialState, action) => {
         getLoggedInUserSuccess: false,
       };
     }
+    case GET_LOGGED_IN_USER_ERROR: {
+      console.log(GET_LOGGED_IN_USER_ERROR);
+      return state;
+    }
     case GET_LOGGED_IN_USER_SUCCESS: {
-      console.log(GET_LOGGED_IN_USER_SUCCESS, action.payload.userID);
+      console.log(GET_LOGGED_IN_USER_SUCCESS, action.payload.userID, action.payload.tokenData);
+      const tokenData = action.payload.tokenData;
       return {
         ...state,
         userID: action.payload.userID,
+        accessToken: tokenData.accessToken,
+        expirationTime: tokenData.expirationTime,
+        refreshToken: tokenData.refreshToken,
         getLoggedInUserSuccess: true
       };
     }
@@ -40,6 +54,7 @@ export default userReducer = (state = initialState, action) => {
       console.log(LOGIN_REQUEST);
       return {
         ...state,
+        logoutSuccess: null,
         isProcessingLogin: true
       };
     }
@@ -62,13 +77,38 @@ export default userReducer = (state = initialState, action) => {
       }
     }
     case SET_USER_TOKEN_SUCCESS:
-        console.log('set user token reducer');
-        return {
-          ...state,
-          accessToken: action.payload.accessToken,
-          expirationTime: action.payload.expirationTime,
-          refreshToken: action.payload.refreshToken
-        };
+      console.log(SET_USER_TOKEN_SUCCESS);
+      return {
+        ...state,
+        accessToken: action.payload.accessToken,
+        expirationTime: action.payload.expirationTime,
+        refreshToken: action.payload.refreshToken
+      };
+    case LOGOUT_REQUEST:
+      console.log(LOGOUT_REQUEST);
+      return {
+        ...state,
+        logoutError: false
+      };
+    case LOGOUT_ERROR: 
+      console.log(LOGOUT_ERROR);
+      return {
+        ...state,
+        logoutError: true
+      };
+    case LOGOUT_SUCCESS: 
+      console.log(LOGOUT_SUCCESS);
+      return {
+        ...state,
+        accessToken: null,
+        expirationTime: null,
+        refreshToken: null,
+        userID: null,
+        getLoggedInUserSuccess: false,
+        isProcessingLogin: false,
+        logoutError: false,
+        logoutSuccess: true
+      };
     default:
       return state;
   }
@@ -94,3 +134,7 @@ export const selectTokenData = (state) => {
     refreshToken: userState.refreshToken
   };
 };
+
+export const selectLogoutSuccess = (state) => {
+  return state.user.logoutSuccess;
+}
