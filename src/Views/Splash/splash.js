@@ -5,10 +5,6 @@ import {
   StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
-import {
-  StackActions,
-  NavigationActions
-} from 'react-navigation';
 
 import { 
   getLoggedInUser
@@ -17,6 +13,7 @@ import {
   selectUserID,
   selectGetLoggedInUserSuccess
  } from '../../reducers/userReducer';
+ import { navigateAndResetStack } from '../../utility/navigation';
 
 class Splash extends React.Component {
 
@@ -49,23 +46,11 @@ class Splash extends React.Component {
   }
 
   navigateToHomeScreen() {
-    this.props.navigation.navigate('Home');
-    this.props
-      .navigation
-      .dispatch(StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Home' })]
-      }));
+    navigateAndResetStack(this.props.navigation, 'Home');
   }
 
   navigateToLoginScreen() {
-    this.props.navigation.navigate('Login');
-    this.props
-      .navigation
-      .dispatch(StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Login' })]
-      }));
+    navigateAndResetStack(this.props.navigation, 'Login');
   }
 
   render() {

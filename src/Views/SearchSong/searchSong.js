@@ -1,16 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import {
   View,
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
+import { Linking } from 'expo';
 
 import {
   setUserTokensSuccess
 } from '../../actions/tokenActions';
-
 import {
   verifyTokenData
 } from '../../api/spotify/util';
@@ -18,7 +17,6 @@ import {
 import Search from '../../Components/Search';
 import Listing from '../../Components/Listing';
 
-import token from '../../api/spotify/token';
 import search from '../../api/spotify/search';
 
 import {
@@ -99,6 +97,22 @@ class SearchSong extends React.Component {
     await this.loadNextPage();
   }
 
+  handleListItemPress (songID, songTitle) {
+    console.log('PRESSED: ', songID, songTitle);
+    try {
+      Linking.openURL(`spotify:track:${songID}`);
+    }
+    catch (error) {
+      console.log('Error: ', error);
+    }
+    // if (Linking.canOpenUrl(`spotify:track:${songID}`)) {
+    //   console.log('CAN OPEN');
+    // }
+    // else {
+    //   console.log('CANNOT OPEN');
+    // }
+  }
+
   render() {
     const { songs, query, isFetching } = this.state;
 
@@ -112,8 +126,10 @@ class SearchSong extends React.Component {
           (isFetching && songs.length === 0)
           ? <ActivityIndicator />
           : <Listing
-            items={songs}
-            onEndReached={() => this.handleEndReached()} />
+              items={songs}
+              onEndReached={() => this.handleEndReached()}
+              onItemPress={(id, title) => this.handleListItemPress(id, title)}
+            />
         }
       </View>
     );

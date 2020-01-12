@@ -3,13 +3,41 @@ import {
   View, 
   Image, 
   Text,
+  TouchableOpacity,
   StyleSheet
 } from 'react-native';
+
+export default({
+  item: {
+    id,
+    title,
+    artist,
+    album,
+    imageUri
+  },
+  onPress
+}) => (
+  <TouchableOpacity 
+    style={styles.container}
+    onPress={() => onPress(id, title)}
+  >
+    <Image source={{ uri: imageUri }} style={styles.image}/>
+    <View style={styles.songInfo}>
+      <Text>Title: {title}</Text>
+      <Text>Artist: {artist}</Text>
+      <Text>Album: {album}</Text>
+    </View>
+  </TouchableOpacity>
+);
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  songInfo: {
+    flexDirection: 'column',
+    //alignItems: 'center'
   },
   image: {
     width: 100,
@@ -18,15 +46,3 @@ const styles = StyleSheet.create({
   },
   title: {}
 });
-
-export default({
-  item: {
-    imageUri,
-    title
-  }
-}) => (
-  <View style={styles.container}>
-    <Image source={{ uri: imageUri }} style={styles.image}/>
-    <Text>{title}</Text>
-  </View>
-);

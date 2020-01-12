@@ -7,26 +7,21 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import {
-  StackActions,
-  NavigationActions
-} from 'react-navigation';
 
 import { 
-  //getLoggedInUser,
   login,
   completeLoginProcess
 } from '../../actions/userActions';
 import { 
   selectUserID,
   selectIsProcessingLogin
- } from '../../reducers/userReducer';
+} from '../../reducers/userReducer';
+import { navigateAndResetStack } from '../../utility/navigation';
 
 class Login extends React.Component {
 
   static navigationOptions = {
     header: null
-    //title: 'Login'
   };
 
   async componentDidMount() {
@@ -36,24 +31,19 @@ class Login extends React.Component {
       this.props.navigation.navigate('Home');
       return;
     }
-
-    //this.props.getLoggedInUser();
   }
 
   async componentDidUpdate() {
     console.log(this.props.userID);
 
     if (this.props.userID) {
-      this.props.navigation.navigate('Home');
-      console.log('after navigation');
+      this.navigateToHomeScreen();
       this.props.completeLoginProcess();
-      this.props
-        .navigation
-        .dispatch(StackActions.reset({
-          index: 0,
-          actions: [NavigationActions.navigate({ routeName: 'Home' })]
-        }));
     }
+  }
+
+  navigateToHomeScreen() {
+    navigateAndResetStack(this.props.navigation, 'Home');
   }
 
   handleLogin() {
@@ -85,9 +75,6 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // getLoggedInUser: () => {
-    //   dispatch(getLoggedInUser());
-    // },
     login: () => {
       dispatch(login());
     },

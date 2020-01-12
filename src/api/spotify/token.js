@@ -34,4 +34,4 @@ export const refreshTokens = async (refreshToken) => {
   });
   const tokenData = await response.json();
   return tokenData;
-}
+};

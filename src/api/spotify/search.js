@@ -29,6 +29,8 @@ export default async ({
   return items.map(item => ({
     id: item.id,
     title: item.name,
+    artist: item.artists.length > 0 && item.artists[0].name ? item.artists[0].name : '',
+    album: item.album.name || '',
     imageUri: item.album.images
       ? item.album.images[0].url
       : undefined

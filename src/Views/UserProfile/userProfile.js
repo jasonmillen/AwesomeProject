@@ -6,21 +6,16 @@ import {
   StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
-import {
-  StackActions,
-  NavigationActions
-} from 'react-navigation';
 
+import LogoutButton from '../../Components/LogoutButton';
 import {
   fetchLogout
 } from '../../actions/userActions';
-
 import { 
   selectUserID,
   selectLogoutSuccess
- } from '../../reducers/userReducer';
-
-import LogoutButton from '../../Components/LogoutButton';
+} from '../../reducers/userReducer';
+import { navigateAndResetStack } from '../../utility/navigation'; 
 
 class UserProfile extends React.Component {
 
@@ -32,18 +27,12 @@ class UserProfile extends React.Component {
 
   componentDidUpdate () {
     if (this.props.logoutSuccess) {
-      this.navigateToLoginScreenAfterLogout();
+      this.navigateToLoginScreen();
     }
   }
 
-  navigateToLoginScreenAfterLogout () {
-    this.props.navigation.navigate('Login');
-    this.props
-      .navigation
-      .dispatch(StackActions.reset({
-        index: 0,
-        actions: [NavigationActions.navigate({ routeName: 'Login' })]
-      }));
+  navigateToLoginScreen () {
+    navigateAndResetStack(this.props.navigation, 'Login');
   }
 
   handleLogoutButtonPress () {
