@@ -2,8 +2,36 @@ import {
   IP
 } from '../../../config';
 
+export const getSpotifyTokenData = async (authCode) => {
+  const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      authCode: authCode.params.code
+    }),
+  });
+  const tokenData = await response.json();
+  return tokenData;
+}
+
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
-  const response = await fetch(`http://${IP}:3000/api/getUserBySpotifyUserID`, {
+  const response = await fetch(`http://${IP}:3000/api/user/${spotifyUserID}/spotify`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
+  });
+  const user = await response.json();
+  console.log('got user', user);
+  return user;
+};
+
+export const addNewUser = async (spotifyUserID) => {
+  let response = await fetch(`http://${IP}:3000/api/user/create`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -11,9 +39,9 @@ export const getUserBySpotifyUserID = async (spotifyUserID) => {
     },
     body: JSON.stringify({
       spotifyUserID
-    }),
+    })
   });
-  const user = await response.json();
-  console.log('got user', user);
-  return user;
-};
+  response = await response.json();
+  console.log(response);
+  return response;
+}

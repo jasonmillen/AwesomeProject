@@ -10,6 +10,11 @@ import {
   removeUserIDAndTokenData
 } from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
+import {
+  getSpotifyTokenData,
+  getUserBySpotifyUserID,
+  addNewUser
+} from '../api/server/server';
 
 
 export const SET_LOGGED_IN_USER_REQUEST = 'SET_LOGGED_IN_USER_REQUEST';
@@ -117,17 +122,7 @@ export const login = () => {
   return async (dispatch) => {
     dispatch(loginRequest());
     const authCode = await getAuthorizationCode();
-    const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        authCode: authCode.params.code
-      }),
-    });
-    const tokenData = await response.json();
+    const tokenData = await getSpotifyTokenData(authCode);
     await saveTokenData(
       tokenData.accessToken, 
       tokenData.expirationTime, 
@@ -138,6 +133,13 @@ export const login = () => {
     const userData = await spotify.getMe();
     await setUserID(userData.id);
     dispatch(loginSuccess(tokenData, userData.id));
+
+    const user = await getUserBySpotifyUserID(userData.id);
+    console.log('got user:', user);
+    if (!user.id) {
+      await addNewUser(userData.id);
+    }
+
   }
 }
 
