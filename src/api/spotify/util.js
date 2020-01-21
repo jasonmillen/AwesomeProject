@@ -15,7 +15,6 @@ export const searchUser = async (userID, accessToken) => {
   });
   const json = await res.json();
 
-  console.log('SEARCH USER ACCESS TOKEN', accessToken);
   console.log('SEARCH USER RESPONSE', json);
 
   if (json.error && json.error.status === 404) {

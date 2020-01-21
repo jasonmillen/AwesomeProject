@@ -22,7 +22,7 @@ auth flow:
 
 
 
-db schema:
+db schema: (eventually we can use knex/objection.js for querybuilder/orm)
 
 users: id, spotify id
 

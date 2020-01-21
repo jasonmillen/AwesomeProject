@@ -1,8 +1,8 @@
 import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
+
 import {
-  Text,
-  TouchableOpacity,
-  StyleSheet
+  TouchableOpacity
 } from 'react-native';
 
 export default (props) => {
@@ -12,15 +12,8 @@ export default (props) => {
       style={props.style}
       onPress={() => props.onPress()}
     >
-      <Text style={styles.text}>Start Chat</Text>
+      <Ionicons name='md-search' size={30} />
       
     </TouchableOpacity>
   )
 };
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    color: 'blue'
-  }
-});

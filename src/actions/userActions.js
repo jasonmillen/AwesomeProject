@@ -139,7 +139,6 @@ export const login = () => {
     if (!user.id) {
       await addNewUser(userData.id);
     }
-
   }
 }
 

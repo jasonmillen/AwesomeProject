@@ -3,8 +3,7 @@ import {
 } from '../api/spotify/util';
 
 import {
-  searchUser,
-  getContacts
+  searchUser
 } from '../api/spotify/util';
 
 import {

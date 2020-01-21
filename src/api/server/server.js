@@ -44,4 +44,5 @@ export const addNewUser = async (spotifyUserID) => {
   response = await response.json();
   console.log(response);
   return response;
-}
+};
+

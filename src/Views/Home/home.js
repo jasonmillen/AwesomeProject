@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 
 import ViewProfileButton from '../../Components/ViewProfileButton';
-import StartChatButton from '../../Components/StartChatButton';
+import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
 import SearchSongButton from '../../Components/SearchSongButton';
 import { selectUserID } from '../../reducers/userReducer';
 
@@ -23,8 +23,8 @@ class Home extends React.Component {
             style={styles.searchSongButton}
             onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
           />
-          <StartChatButton
-            style={styles.startChatButton}
+          <SearchUserHeaderButton
+            style={styles.searchUserHeaderButton}
             onPress={() => navigation.getParam('handleStartChatButtonPress')(navigation)}
           />
         </View>
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10
   },
-  startChatButton: {
+  searchUserHeaderButton: {
     flex: 1,
     marginRight: 10,
     marginLeft: 10
