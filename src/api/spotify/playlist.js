@@ -1,5 +1,7 @@
-export const createPlaylist = async (spotifyUserID, accessToken) => {
-  const uri = `${SPOTIFY_BASE_URL}/users/${userID}/playlists`;
+import { SPOTIFY_BASE_URL } from '../../../config';
+
+export const createPlaylist = async (spotifyUserID, playlistName, accessToken) => {
+  const uri = `${SPOTIFY_BASE_URL}/users/${spotifyUserID}/playlists`;
   const res = await fetch(uri, {
     method: 'POST',
     headers: {
@@ -7,19 +9,12 @@ export const createPlaylist = async (spotifyUserID, accessToken) => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      
+      name: playlistName,
+      public: false,
+      collaborative: true
     })
   });
   const json = await res.json();
-
-  console.log('SEARCH USER RESPONSE', json);
-
-  if (json.error && json.error.status === 404) {
-    console.log('User not found');
-    return null;
-  }
-  else if (json.id && json.id.length > 0) {
-    console.log('User found: ', json.id);
-    return json;
-  }
+  console.log('CREATE PLAYLIST RESPONSE', json);
+  return json;
 };

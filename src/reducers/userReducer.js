@@ -19,11 +19,13 @@ const initialState = {
   expirationTime: null,
   refreshToken: null,
   userID: null,
+  spotifyUserID: null,
   getLoggedInUserSuccess: false,
   isProcessingLogin: false,
   logoutError: false,
   logoutSuccess: null
 };
+
 
 export default userReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -39,11 +41,12 @@ export default userReducer = (state = initialState, action) => {
       return state;
     }
     case GET_LOGGED_IN_USER_SUCCESS: {
-      console.log(GET_LOGGED_IN_USER_SUCCESS, action.payload.userID, action.payload.tokenData);
+      console.log(GET_LOGGED_IN_USER_SUCCESS, action.payload.spotifyUserID, action.payload.tokenData);
       const tokenData = action.payload.tokenData;
       return {
         ...state,
         userID: action.payload.userID,
+        spotifyUserID: action.payload.spotifyUserID,
         accessToken: tokenData.accessToken,
         expirationTime: tokenData.expirationTime,
         refreshToken: tokenData.refreshToken,
@@ -66,7 +69,8 @@ export default userReducer = (state = initialState, action) => {
         accessToken: tokenData.accessToken,
         expirationTime: tokenData.expirationTime,
         refreshToken: tokenData.refreshToken,
-        userID: action.payload.userID
+        userID: action.payload.userID,
+        spotifyUserID: action.payload.spotifyUserID
       };
     }
     case COMPLETE_LOGIN_PROCESS: {
@@ -104,6 +108,7 @@ export default userReducer = (state = initialState, action) => {
         expirationTime: null,
         refreshToken: null,
         userID: null,
+        spotifyUserID: null,
         getLoggedInUserSuccess: false,
         isProcessingLogin: false,
         logoutError: false,
@@ -117,6 +122,10 @@ export default userReducer = (state = initialState, action) => {
 export const selectUserID = (state) => {
   return state.user.userID;
 };
+
+export const selectSpotifyUserID = (state) => {
+  return state.user.spotifyUserID;
+}
 
 export const selectGetLoggedInUserSuccess = (state) => {
   return state.user.getLoggedInUserSuccess;

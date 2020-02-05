@@ -10,7 +10,7 @@ import { connect } from 'react-redux';
 import ViewProfileButton from '../../Components/ViewProfileButton';
 import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
 import SearchSongButton from '../../Components/SearchSongButton';
-import { selectUserID } from '../../reducers/userReducer';
+import { selectSpotifyUserID } from '../../reducers/userReducer';
 
 class Home extends React.Component {
 
@@ -62,7 +62,7 @@ class Home extends React.Component {
     return (
       <View style={styles.homePage}>
         <Text>Home Page</Text>
-        <Text>Logged in as {this.props.userID}</Text>
+        <Text>Logged in as {this.props.spotifyUserID}</Text>
       </View>
     );
   }
@@ -71,7 +71,7 @@ class Home extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    userID: selectUserID(state)
+    spotifyUserID: selectSpotifyUserID(state)
   };
 };
 

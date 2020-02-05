@@ -8,6 +8,7 @@ import {
   Image,
   StyleSheet
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 
 import StartChatButton from '../../Components/StartChatButton';
 import NamePlaylistModal from '../../Components/NamePlaylistModal';
@@ -15,8 +16,11 @@ import NamePlaylistModal from '../../Components/NamePlaylistModal';
 import {
   fetchSearchUser
 } from '../../actions/searchActions';
+import { fetchCreateGroup } from '../../actions/groupActions';
 
 import {
+  selectUserID,
+  selectSpotifyUserID,
   selectTokenData
 } from '../../reducers/userReducer';
 
@@ -56,7 +60,24 @@ class SearchUser extends React.Component {
 
   onNamePlaylistModalOK (playlistName) {
     console.log('playlist name:', playlistName);
+    if (playlistName.trim().length <= 0) {
+      console.log('cannot have empty playlist name');
+      Toast.showWithGravity('Please enter a playlist name', Toast.SHORT, Toast.CENTER);
+      return;
+    }
     this.setState({ namePlaylistModalView: false });
+    console.log(      
+      this.props.userID,
+      this.props.spotifyUserID,
+      [this.props.searchState.userSearchStringID],
+      playlistName,
+      this.props.tokenData);
+    this.props.createGroup(
+      this.props.userID,
+      this.props.spotifyUserID,
+      [this.props.searchState.userSearchStringID],
+      playlistName,
+      this.props.tokenData);
   }
 
   render () {
@@ -90,7 +111,7 @@ class SearchUser extends React.Component {
     else {
       searchFeedback = (<Text></Text>);
     }
-    
+
     return (
       <View style={styles.searchUserPage}>
         <TextInput 
@@ -119,14 +140,19 @@ class SearchUser extends React.Component {
 const mapStateToProps = (state) => {
   return {
     tokenData: selectTokenData(state),
-    searchState: selectUserSearchState(state)
+    searchState: selectUserSearchState(state),
+    userID: selectUserID(state),
+    spotifyUserID: selectSpotifyUserID(state)
   };
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchSearchUser: (userID, tokenData) => {
-      dispatch(fetchSearchUser(userID, tokenData));
+    fetchSearchUser: (spotifyUserID, tokenData) => {
+      dispatch(fetchSearchUser(spotifyUserID, tokenData));
+    },
+    createGroup: (creatorID, creatorSpotifyID, memberSpotifyIDs, playlistName, tokenData) => {
+      dispatch(fetchCreateGroup(creatorID, creatorSpotifyID, memberSpotifyIDs, playlistName, tokenData));
     }
   };
 };

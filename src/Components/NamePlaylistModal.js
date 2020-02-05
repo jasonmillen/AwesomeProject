@@ -16,6 +16,12 @@ export default class NamePlaylistModal extends Component {
     this.state = { playlistName: '' };
   }
 
+  componentDidUpdate (prevProps) {
+    if (this.props.visible && !prevProps.visible) {
+      this.setState({ playlistName: '' });
+    }
+  }
+
   render () {
     return (
       <Modal

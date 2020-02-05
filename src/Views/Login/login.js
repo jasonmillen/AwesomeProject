@@ -13,7 +13,7 @@ import {
   completeLoginProcess
 } from '../../actions/userActions';
 import { 
-  selectUserID,
+  selectSpotifyUserID,
   selectIsProcessingLogin
 } from '../../reducers/userReducer';
 import { navigateAndResetStack } from '../../utility/navigation';
@@ -25,18 +25,18 @@ class Login extends React.Component {
   };
 
   async componentDidMount() {
-    console.log(this.props.userID);
+    console.log(this.props.spotifyUserID);
 
-    if (this.props.userID) {
+    if (this.props.spotifyUserID) {
       this.props.navigation.navigate('Home');
       return;
     }
   }
 
   async componentDidUpdate() {
-    console.log(this.props.userID);
+    console.log(this.props.spotifyUserID);
 
-    if (this.props.userID) {
+    if (this.props.spotifyUserID) {
       this.navigateToHomeScreen();
       this.props.completeLoginProcess();
     }
@@ -55,7 +55,7 @@ class Login extends React.Component {
   render() {
     return (
       <View style={styles.loginPage}>
-        {!this.props.isProcessingLogin && //!this.props.userID &&
+        {!this.props.isProcessingLogin && //!this.props.spotifyUserID &&
         <TouchableOpacity
           onPress={()=>this.handleLogin()}>
             <Text style={styles.loginButton}>Login With Spotify</Text>
@@ -68,7 +68,7 @@ class Login extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    userID: selectUserID(state),
+    spotifyUserID: selectSpotifyUserID(state),
     isProcessingLogin: selectIsProcessingLogin(state)
   };
 }

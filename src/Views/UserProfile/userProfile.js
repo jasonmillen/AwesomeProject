@@ -12,7 +12,7 @@ import {
   fetchLogout
 } from '../../actions/userActions';
 import { 
-  selectUserID,
+  selectSpotifyUserID,
   selectLogoutSuccess
 } from '../../reducers/userReducer';
 import { navigateAndResetStack } from '../../utility/navigation'; 
@@ -44,7 +44,7 @@ class UserProfile extends React.Component {
     return (
       <View style={styles.profilePage}>
         <Text>Profile Page</Text>
-        <Text>Logged in as {this.props.userID}</Text>
+        <Text>Logged in as {this.props.spotifyUserID}</Text>
         <LogoutButton 
           style={styles.logoutButton}
           onPress={() => this.handleLogoutButtonPress()}
@@ -52,12 +52,11 @@ class UserProfile extends React.Component {
       </View>
     );
   }
-
 };
 
 const mapStateToProps = (state) => {
   return {
-    userID: selectUserID(state),
+    spotifyUserID: selectSpotifyUserID(state),
     logoutSuccess: selectLogoutSuccess(state)
   };
 };

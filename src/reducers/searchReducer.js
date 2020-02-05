@@ -18,7 +18,7 @@ export default searchReducer = (state = initialState, action) => {
       console.log(SEARCH_USER_REQUEST);
       return {
         ...state,
-        userSearchStringID: action.payload.userID,
+        userSearchStringID: action.payload.spotifyUserID,
         userData: null,
         userFound: false,
         isSearchingForUser: true,

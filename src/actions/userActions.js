@@ -2,13 +2,7 @@ import SpotifyWebApi from 'spotify-web-api-js';
 import {
   IP
 } from '../../config';
-import { 
-  setUserID,
-  getUserID,
-  saveTokenData,
-  getTokenData,
-  removeUserIDAndTokenData
-} from '../api/asyncStorage/asyncStorage';
+import * as asAPI from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
 import {
   getSpotifyTokenData,
@@ -20,30 +14,31 @@ import {
 export const SET_LOGGED_IN_USER_REQUEST = 'SET_LOGGED_IN_USER_REQUEST';
 export const SET_LOGGED_IN_USER_SUCCESS = 'SET_LOGGED_IN_USER_SUCCESS';
 
-export const setLoggedInUserRequest = (userID) => {
+export const setLoggedInUserRequest = (spotifyUserID) => {
   return {
     type: SET_LOGGED_IN_USER_REQUEST,
     payload: {
-      userID
+      spotifyUserID
     }
   };
 };
 
 
-export const setLoggedInUserSuccess = (userID) => {
+export const setLoggedInUserSuccess = (spotifyUserID) => {
   return {
     type: SET_LOGGED_IN_USER_SUCCESS,
     payload: {
-      userID
+      spotifyUserID
     }
   };
 };
 
-export const setLoggedInUser = (userID) => {
+export const setLoggedInUser = (spotifyUserID) => {
   return async (dispatch) => {
-    dispatch(setLoggedInUserRequest(userID));
-    await setUserID(userID);
-    dispatch(setLoggedInUserSuccess(userID));
+    dispatch(setLoggedInUserRequest(spotifyUserID));
+    //await setUserID(userID);
+    await asAPI.setSpotifyUserID(spotifyUserID);
+    dispatch(setLoggedInUserSuccess(spotifyUserID));
   }
 };
 
@@ -65,11 +60,12 @@ export const getLoggedInUserError = () => {
   };
 };
 
-export const getLoggedInUserSuccess = (userID, tokenData) => {
+export const getLoggedInUserSuccess = (userID, spotifyUserID, tokenData) => {
   return {
     type: GET_LOGGED_IN_USER_SUCCESS,
     payload: {
       userID,
+      spotifyUserID,
       tokenData
     }
   };
@@ -80,9 +76,11 @@ export const getLoggedInUser = () => {
     dispatch(getLoggedInUserRequest());
     
     try {
-      const userID = await getUserID();
-      const tokenData = await getTokenData();
-      dispatch(getLoggedInUserSuccess(userID, tokenData));
+      //const userID = await getUserID();
+      const spotifyUserID = await asAPI.getSpotifyUserID();
+      const tokenData = await asAPI.getTokenData();
+      let user = await getUserBySpotifyUserID(spotifyUserID);
+      dispatch(getLoggedInUserSuccess(user.id, spotifyUserID, tokenData));
     }
     catch (error) {
       console.log('Error getting logged in user');
@@ -102,12 +100,13 @@ export const loginRequest = () => {
   };
 }
 
-export const loginSuccess = (tokenData, userID) => {
+export const loginSuccess = (tokenData, userID, spotifyUserID) => {
   return {
     type: LOGIN_SUCCESS,
     payload: {
       tokenData,
-      userID
+      userID,
+      spotifyUserID
     }
   };
 }
@@ -123,23 +122,23 @@ export const login = () => {
     dispatch(loginRequest());
     const authCode = await getAuthorizationCode();
     const tokenData = await getSpotifyTokenData(authCode);
-    await saveTokenData(
+    await asAPI.saveTokenData(
       tokenData.accessToken, 
       tokenData.expirationTime, 
       tokenData.refreshToken);
 
     const spotify = new SpotifyWebApi();
     spotify.setAccessToken(tokenData.accessToken);
-    const userData = await spotify.getMe();
-    await setUserID(userData.id);
-    dispatch(loginSuccess(tokenData, userData.id));
+    const spotifyUserData = await spotify.getMe();
+    //await setUserID(userData.id);
+    await asAPI.setSpotifyUserID(spotifyUserData.id);
 
-    const user = await getUserBySpotifyUserID(userData.id);
-    console.log('got user:', user);
+    let user = await getUserBySpotifyUserID(spotifyUserData.id);
     if (!user.id) {
-      await addNewUser(userData.id);
+      user = await addNewUser(userData.id);
     }
-  }
+    dispatch(loginSuccess(tokenData, user.id, spotifyUserData.id));
+  };
 }
 
 export const LOGOUT_REQUEST = 'LOGOUT_REQUEST';
@@ -172,11 +171,11 @@ export const fetchLogout = () => {
     dispatch (logoutRequest());
 
     try {
-      await removeUserIDAndTokenData();
+      await asAPI.removeSpotifyUserIDAndTokenData();
       dispatch (logoutSuccess());
     }
     catch (error) {
       dispatch (logoutError());
     }
   };
-}
+};

@@ -38,7 +38,7 @@ export const setUserID = async (userID) => {
     console.error("Error setting userID", error);
     throw error;
   }
-}
+};
 
 export const getUserID = async () => {
   try {
@@ -50,7 +50,29 @@ export const getUserID = async () => {
     console.error('Error getting userID', error);
     throw error;
   }
-}
+};
+
+export const setSpotifyUserID = async (userID) => {
+  try {
+    await AsyncStorage.setItem('spotifyUserID', userID);
+  }
+  catch (error) {
+    console.error("Error setting spotifyUserID", error);
+    throw error;
+  }
+};
+
+export const getSpotifyUserID = async () => {
+  try {
+    const userID = await AsyncStorage.getItem('spotifyUserID');
+    return userID;
+
+  }
+  catch (error) {
+    console.error('Error getting spotifyUserID', error);
+    throw error;
+  }
+};
 
 export const removeUserIDAndTokenData = async () => {
   try {
@@ -60,7 +82,14 @@ export const removeUserIDAndTokenData = async () => {
     console.error ('Error removing userID and token data', error);
     throw error;
   }
-  
-}
+};
 
-
+export const removeSpotifyUserIDAndTokenData = async () => {
+  try {
+    await AsyncStorage.multiRemove(['spotifyUserID', 'accessToken', 'expirationTime', 'refreshToken']);
+  }
+  catch (error) {
+    console.error ('Error removing spotifyUuserID and token data', error);
+    throw error;
+  }
+};

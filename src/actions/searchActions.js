@@ -14,11 +14,11 @@ export const SEARCH_USER_REQUEST = 'SEARCH_USER_REQUEST';
 export const SEARCH_USER_SUCCESS = 'SEARCH_USER_SUCCESS';
 export const SEARCH_USER_ERROR = 'SEARCH_USER_ERROR';
 
-export const searchUserRequest = (userID) => {
+export const searchUserRequest = (spotifyUserID) => {
   return {
     type: SEARCH_USER_REQUEST,
     payload: {
-      userID
+      spotifyUserID
     }
   };
 };
@@ -39,16 +39,16 @@ export const searchUserError = () => {
   }
 }
 
-export const fetchSearchUser = (userID, tokenData) => {
+export const fetchSearchUser = (spotifyUserID, tokenData) => {
   return async (dispatch) => {
-    dispatch(searchUserRequest(userID));
+    dispatch(searchUserRequest(spotifyUserID));
 
     if (await verifyTokenData(tokenData)) {
       dispatch (setUserTokensSuccess(tokenData));
     }
 
     try {
-      const userData = await searchUser(userID, tokenData.accessToken);
+      const userData = await searchUser(spotifyUserID, tokenData.accessToken);
       dispatch(searchUserSuccess(userData));
     }
     catch (error) {

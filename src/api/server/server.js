@@ -46,3 +46,20 @@ export const addNewUser = async (spotifyUserID) => {
   return response;
 };
 
+export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
+  let response = await fetch(`http://${IP}:3000/api/group/create`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      creatorID,
+      memberSpotifyIDs,
+      playlistID
+    })
+  });
+  response = await response.json();
+  console.log('CREATE GROUP res: ', response);
+};
+
