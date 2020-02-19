@@ -63,3 +63,16 @@ export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
   console.log('CREATE GROUP res: ', response);
 };
 
+export const getGroupsForUser = async (userID) => {
+  let response = await fetch(`http://${IP}:3000/api/user/${userID}/groups`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    }
+  });
+
+  response = await response.json();
+  console.log('got groups from server', response);
+  return response.groups;
+}

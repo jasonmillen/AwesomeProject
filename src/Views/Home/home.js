@@ -10,7 +10,13 @@ import { connect } from 'react-redux';
 import ViewProfileButton from '../../Components/ViewProfileButton';
 import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
 import SearchSongButton from '../../Components/SearchSongButton';
-import { selectSpotifyUserID } from '../../reducers/userReducer';
+import { 
+  selectSpotifyUserID,
+  selectUserID
+} from '../../reducers/userReducer';
+import { selectGroups } from '../../reducers/groupReduer';
+
+import { fetchUserGetGroups } from '../../actions/groupActions';
 
 class Home extends React.Component {
 
@@ -38,12 +44,23 @@ class Home extends React.Component {
     }
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      groups: []
+    };
+  }
+
   componentDidMount() {
     this.props.navigation.setParams({
       handleViewProfileButtonPress: this.handleViewProfileButtonPress,
       handleStartChatButtonPress: this.handleStartChatButtonPress,
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
-    })
+    });
+
+    console.log("SENDING REQUEST TO GET USERS GROUPS");
+    this.props.getGroupsForUser(this.props.userID);
   }
 
   handleViewProfileButtonPress(navigation) {
@@ -63,6 +80,7 @@ class Home extends React.Component {
       <View style={styles.homePage}>
         <Text>Home Page</Text>
         <Text>Logged in as {this.props.spotifyUserID}</Text>
+        <Text>Total num of groups is {this.props.groups.length}</Text>
       </View>
     );
   }
@@ -71,12 +89,17 @@ class Home extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    spotifyUserID: selectSpotifyUserID(state)
+    spotifyUserID: selectSpotifyUserID(state),
+    userID: selectUserID(state),
+    groups: selectGroups(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getGroupsForUser: (userID) => {
+      dispatch (fetchUserGetGroups(userID));
+    }
   };
 };
 

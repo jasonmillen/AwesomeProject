@@ -48,10 +48,46 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
       console.error(error);
       dispatch(groupCreateError());
     }
-    
+  };
+};
 
+export const USER_GET_GROUPS_REQUEST = 'USER_GET_GROUPS_REQUEST';
+export const USER_GET_GROUPS_ERROR = 'USER_GET_GROUPS_ERROR';
+export const USER_GET_GROUPS_SUCCESS = 'USER_GET_GROUPS_SUCCESS';
 
+export const userGetGroupsRequest = () => {
+  return {
+    type: USER_GET_GROUPS_REQUEST,
+    payload: {}
+  };
+};
 
+export const userGetGroupsError = () => {
+  return {
+    type: USER_GET_GROUPS_ERROR,
+    payload: {}
+  };
+};
 
+export const userGetGroupsSuccess = (groups) => {
+  return {
+    type: USER_GET_GROUPS_SUCCESS,
+    payload: {
+      groups
+    }
+  };
+};
+
+export const fetchUserGetGroups = (userID) => {
+  return async (dispatch) => {
+    dispatch (userGetGroupsRequest());
+
+    try {
+      const groups = await serverAPI.getGroupsForUser(userID);
+      dispatch (userGetGroupsSuccess(groups));
+    }
+    catch (error) {
+      dispatch (userGetGroupsError());
+    }
   };
 };
