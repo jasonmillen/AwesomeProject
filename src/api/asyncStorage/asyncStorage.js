@@ -93,3 +93,7 @@ export const removeSpotifyUserIDAndTokenData = async () => {
     throw error;
   }
 };
+
+export const clear = async () => {
+  await AsyncStorage.clear();
+}

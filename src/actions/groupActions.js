@@ -1,7 +1,9 @@
 import { verifyTokenData } from '../api/spotify/util';
-import { createPlaylist } from '../api/spotify/playlist';
+import * as playlistAPI from '../api/spotify/playlist';
 import * as serverAPI from '../api/server/server';
+
 import { setUserTokensSucces } from './tokenActions';
+import token from '../api/spotify/token';
 
 export const GROUP_CREATE_REQUEST = 'GROUP_CREATE_REQUEST';
 export const GROUP_CREATE_SUCCESS = 'GROUP_CREATE_SUCCESS';
@@ -37,11 +39,14 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
     }
 
     try {
-      const playlistData = await createPlaylist(creatorSpotifyID, playlistName, tokenData.accessToken);
+      const playlistData = await playlistAPI.createPlaylist(creatorSpotifyID, playlistName, tokenData.accessToken);
       const playlistID = playlistData.id;
       const res = await serverAPI.createGroup(creatorID, memberSpotifyIDs, playlistID);
 
       dispatch(groupCreateSuccess());
+
+      // refresh group data
+      dispatch(fetchUserGetGroups(creatorID));
       
     }
     catch (error) {
@@ -78,12 +83,22 @@ export const userGetGroupsSuccess = (groups) => {
   };
 };
 
-export const fetchUserGetGroups = (userID) => {
+export const fetchUserGetGroups = (userID, tokenData) => {
   return async (dispatch) => {
     dispatch (userGetGroupsRequest());
 
+    if (await verifyTokenData(tokenData)) {
+      dispatch (setUserTokensSuccess(tokenData));
+    }
+
     try {
       const groups = await serverAPI.getGroupsForUser(userID);
+
+      await Promise.all(groups.map(async group => {
+        const playlistInfo = playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
+        group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
+      }));
+
       dispatch (userGetGroupsSuccess(groups));
     }
     catch (error) {

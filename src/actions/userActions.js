@@ -72,7 +72,8 @@ export const getLoggedInUser = () => {
     dispatch(getLoggedInUserRequest());
     
     try {
-      //const userID = await getUserID();
+      //await asAPI.clear();
+
       const spotifyUserID = await asAPI.getSpotifyUserID();
       const tokenData = await asAPI.getTokenData();
       let user = await serverAPI.getUserBySpotifyUserID(spotifyUserID);
@@ -117,7 +118,11 @@ export const login = () => {
   return async (dispatch) => {
     dispatch(loginRequest());
     const authCode = await getAuthorizationCode();
+    console.log("authCode: ", authCode);
+
     const tokenData = await serverAPI.getSpotifyTokenData(authCode);
+    console.log("token data: ", tokenData);
+  
     await asAPI.saveTokenData(
       tokenData.accessToken, 
       tokenData.expirationTime, 
@@ -130,8 +135,8 @@ export const login = () => {
     await asAPI.setSpotifyUserID(spotifyUserData.id);
 
     let user = await serverAPI.getUserBySpotifyUserID(spotifyUserData.id);
-    if (!user.id) {
-      user = await serverAPI.addNewUser(userData.id);
+    if (!user || !user.id) {
+      user = await serverAPI.addNewUser(spotifyUserData.id);
     }
     dispatch(loginSuccess(tokenData, user.id, spotifyUserData.id));
   };

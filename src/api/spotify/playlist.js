@@ -18,3 +18,19 @@ export const createPlaylist = async (spotifyUserID, playlistName, accessToken) =
   console.log('CREATE PLAYLIST RESPONSE', json);
   return json;
 };
+
+export const getPlaylist = async (playlistID, accessToken) => {
+
+  const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}`;
+  const res = await fetch(uri, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const json = await res.json();
+  console.log("playlist info: ", json);
+  return json;
+};

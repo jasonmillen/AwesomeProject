@@ -74,5 +74,5 @@ export const getGroupsForUser = async (userID) => {
 
   response = await response.json();
   console.log('got groups from server', response);
-  return response.groups;
+  return response;
 }

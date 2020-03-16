@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
+import GroupList from '../../Components/GroupList';
+
 import ViewProfileButton from '../../Components/ViewProfileButton';
 import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
 import SearchSongButton from '../../Components/SearchSongButton';
@@ -20,9 +22,9 @@ import { fetchUserGetGroups } from '../../actions/groupActions';
 
 class Home extends React.Component {
 
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({ navigation, props }) => {
     return {
-      title: 'Chats',
+      title: navigation.getParam('spotifyUserID'),
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchSongButton
@@ -54,6 +56,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.props.navigation.setParams({
+      spotifyUserID: this.props.spotifyUserID,
       handleViewProfileButtonPress: this.handleViewProfileButtonPress,
       handleStartChatButtonPress: this.handleStartChatButtonPress,
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
@@ -75,12 +78,24 @@ class Home extends React.Component {
     navigation.navigate('SearchUser');
   }
 
+  handleGroupListEndReached() {
+    console.log('Group list end reached!');
+  }
+
+  handleGroupListItemPressed(group) {
+    console.log('Pressed group: ' + group.playlistID)
+  }
+
   render() {
+
     return (
       <View style={styles.homePage}>
-        <Text>Home Page</Text>
-        <Text>Logged in as {this.props.spotifyUserID}</Text>
         <Text>Total num of groups is {this.props.groups.length}</Text>
+        <GroupList
+          groups={this.props.groups}
+          onEndReached={() => this.handleGroupListEndReached()}
+          onItemPressed={(group) => this.handleGroupListItemPressed(group)}
+        /> 
       </View>
     );
   }
