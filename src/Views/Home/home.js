@@ -14,11 +14,14 @@ import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
 import SearchSongButton from '../../Components/SearchSongButton';
 import { 
   selectSpotifyUserID,
-  selectUserID
+  selectUserID,
+  selectTokenData
 } from '../../reducers/userReducer';
+
 import { selectGroups } from '../../reducers/groupReduer';
 
 import { fetchUserGetGroups } from '../../actions/groupActions';
+import token from '../../api/spotify/token';
 
 class Home extends React.Component {
 
@@ -63,7 +66,7 @@ class Home extends React.Component {
     });
 
     console.log("SENDING REQUEST TO GET USERS GROUPS");
-    this.props.getGroupsForUser(this.props.userID);
+    this.props.getGroupsForUser(this.props.userID, this.props.tokenData);
   }
 
   handleViewProfileButtonPress(navigation) {
@@ -106,14 +109,15 @@ const mapStateToProps = (state) => {
   return {
     spotifyUserID: selectSpotifyUserID(state),
     userID: selectUserID(state),
-    groups: selectGroups(state)
+    groups: selectGroups(state),
+    tokenData: selectTokenData(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getGroupsForUser: (userID) => {
-      dispatch (fetchUserGetGroups(userID));
+    getGroupsForUser: (userID, tokenData) => {
+      dispatch (fetchUserGetGroups(userID, tokenData));
     }
   };
 };

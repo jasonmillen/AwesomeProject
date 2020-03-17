@@ -93,11 +93,13 @@ export const fetchUserGetGroups = (userID, tokenData) => {
 
     try {
       const groups = await serverAPI.getGroupsForUser(userID);
-
+      
       await Promise.all(groups.map(async group => {
-        const playlistInfo = playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
+        const playlistInfo = await playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
         group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
       }));
+
+      console.log("GROPUS: ", groups);
 
       dispatch (userGetGroupsSuccess(groups));
     }

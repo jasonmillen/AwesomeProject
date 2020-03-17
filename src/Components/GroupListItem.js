@@ -3,23 +3,28 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  View
+  View,
+  Image
 } from 'react-native';
 
 export default ({
   group: {
     id,
     creatorID,
-    playlistID
+    playlistID,
+    imageUrl
   },
   onPress
 }) => {
+
+  const imageSource = imageUrl ? { uri: imageUrl } : require("../resources/empty-playlist.png");
 
   return (
     <TouchableOpacity
     style={styles.container}
     onPress={() => onPress({id, creatorID, playlistID})}
     >
+      <Image source={imageSource} style={styles.image} />
       <View style={styles.playlistInfo}>
         <Text>Playlist ID: {playlistID}</Text>
       </View>
