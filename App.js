@@ -11,6 +11,7 @@ import reducer from './src/reducers/index';
 import Splash from './src/Views/Splash/splash';
 import Login from './src/Views/Login/login';
 import Home from './src/Views/Home/home';
+import Group from './src/Views/Group/group';
 import UserProfile from './src/Views/UserProfile/userProfile';
 import SearchUser from './src/Views/SearchUser/searchUser';
 import SearchSong from './src/Views/SearchSong/searchSong';
@@ -22,6 +23,7 @@ const RootStack = createStackNavigator(
     Splash,
     Login,
     Home,
+    Group,
     UserProfile,
     SearchUser,
     SearchSong

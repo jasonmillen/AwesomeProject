@@ -12,7 +12,8 @@ export default ({
     id,
     creatorID,
     playlistID,
-    imageUrl
+    imageUrl,
+    playlistName
   },
   onPress
 }) => {
@@ -22,10 +23,11 @@ export default ({
   return (
     <TouchableOpacity
     style={styles.container}
-    onPress={() => onPress({id, creatorID, playlistID})}
+    onPress={() => onPress({id, creatorID, playlistID, playlistName})}
     >
       <Image source={imageSource} style={styles.image} />
       <View style={styles.playlistInfo}>
+        <Text>{playlistName}</Text>
         <Text>Playlist ID: {playlistID}</Text>
       </View>
     </TouchableOpacity>

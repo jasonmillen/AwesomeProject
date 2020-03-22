@@ -2,7 +2,7 @@ import { verifyTokenData } from '../api/spotify/util';
 import * as playlistAPI from '../api/spotify/playlist';
 import * as serverAPI from '../api/server/server';
 
-import { setUserTokensSucces } from './tokenActions';
+import { setUserTokensSuccess } from './tokenActions';
 import token from '../api/spotify/token';
 
 export const GROUP_CREATE_REQUEST = 'GROUP_CREATE_REQUEST';
@@ -84,6 +84,7 @@ export const userGetGroupsSuccess = (groups) => {
 };
 
 export const fetchUserGetGroups = (userID, tokenData) => {
+  console.log("fetchUserGetGroups");
   return async (dispatch) => {
     dispatch (userGetGroupsRequest());
 
@@ -97,14 +98,49 @@ export const fetchUserGetGroups = (userID, tokenData) => {
       await Promise.all(groups.map(async group => {
         const playlistInfo = await playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
         group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
+        group.playlistName = playlistInfo.name;
       }));
-
-      console.log("GROPUS: ", groups);
 
       dispatch (userGetGroupsSuccess(groups));
     }
     catch (error) {
+      console.log(error);
       dispatch (userGetGroupsError());
+    }
+  };
+};
+
+// export const GROUP_SELECT_REQUEST = 'GROUP_SELECT_REQUEST';
+// export const GROUP_SELECT_ERROR = 'GROUP_SELECT_ERROR';
+// export const GROUP_SELECT_SUCCESS = 'GROUP_SELECT_SUCCESS';
+
+// export const groupSelectRequest = () => {
+//   return {
+//     type: GROUP_CREATE_REQUEST,
+//     payload: {}
+//   };
+// };
+
+// export const groupSelectError = () => {
+//   return {
+//     type: GROUP_SELECT_ERROR,
+//     payload: {}
+//   };
+// };
+
+// export const groupSelectSuccess = (groupID) => {
+//   return {
+//     type: GROUP_SELECT_SUCCESS,
+//     payload: {}
+//   };
+// };
+
+export const GROUP_SELECT = 'GROUP_SELECT';
+export const groupSelect = (groupID) => {
+  return {
+    type: GROUP_SELECT,
+    payload: {
+      groupID
     }
   };
 };

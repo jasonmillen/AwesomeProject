@@ -31,6 +31,5 @@ export const getPlaylist = async (playlistID, accessToken) => {
   });
 
   const json = await res.json();
-  console.log("playlist info: ", json);
   return json;
 };

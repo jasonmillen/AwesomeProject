@@ -18,14 +18,22 @@ import {
   selectTokenData
 } from '../../reducers/userReducer';
 
-import { selectGroups } from '../../reducers/groupReduer';
+import { 
+  selectUserGetGroupsError,
+  selectUserGetGroupsSuccess,
+  selectGroups,
+  selectSelectedGroupID
+ } from '../../reducers/groupReduer';
 
-import { fetchUserGetGroups } from '../../actions/groupActions';
+import { 
+  fetchUserGetGroups,
+  groupSelect
+ } from '../../actions/groupActions';
 import token from '../../api/spotify/token';
 
 class Home extends React.Component {
 
-  static navigationOptions = ({ navigation, props }) => {
+  static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('spotifyUserID'),
       headerRight: () => (
@@ -52,20 +60,19 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      groups: []
-    };
-  }
-
-  componentDidMount() {
-    this.props.navigation.setParams({
+    props.navigation.setParams({
       spotifyUserID: this.props.spotifyUserID,
       handleViewProfileButtonPress: this.handleViewProfileButtonPress,
       handleStartChatButtonPress: this.handleStartChatButtonPress,
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
     });
 
-    console.log("SENDING REQUEST TO GET USERS GROUPS");
+    this.state = {
+      groups: []
+    };
+  }
+
+  componentDidMount() {
     this.props.getGroupsForUser(this.props.userID, this.props.tokenData);
   }
 
@@ -87,9 +94,26 @@ class Home extends React.Component {
 
   handleGroupListItemPressed(group) {
     console.log('Pressed group: ' + group.playlistID)
+    this.props.selectGroup(group.id);
+    this.props.navigation.navigate('Group', { groupID: group.id, playlistName: group.playlistName });
   }
 
   render() {
+
+    if (this.props.userGetGroupsError) {
+      return (
+        <View>
+          <Text>Error getting groups. Please try again later.</Text>
+        </View>
+      );
+    }
+
+    if (!this.props.userGetGroupsSuccess) {
+      return (
+        <View>
+        </View>
+      );
+    }
 
     return (
       <View style={styles.homePage}>
@@ -110,7 +134,10 @@ const mapStateToProps = (state) => {
     spotifyUserID: selectSpotifyUserID(state),
     userID: selectUserID(state),
     groups: selectGroups(state),
-    tokenData: selectTokenData(state)
+    tokenData: selectTokenData(state),
+    userGetGroupsError: selectUserGetGroupsError(state),
+    userGetGroupsSuccess: selectUserGetGroupsSuccess(state),
+    selectedGroupID: selectSelectedGroupID(state)
   };
 };
 
@@ -118,6 +145,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     getGroupsForUser: (userID, tokenData) => {
       dispatch (fetchUserGetGroups(userID, tokenData));
+    },
+    selectGroup: (groupID) => {
+      dispatch (groupSelect(groupID));
     }
   };
 };
@@ -134,12 +164,12 @@ const styles = StyleSheet.create({
   },
   viewProfileButton: {
     flex: 1,
-    marginLeft: 10,
-    marginRight: 10
+    marginLeft: 15,
+    marginRight: 15
   },
   searchUserHeaderButton: {
     flex: 1,
-    marginRight: 10,
+    marginRight: 20,
     marginLeft: 10
   },
   searchSongButton: {

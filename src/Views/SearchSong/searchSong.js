@@ -22,6 +22,7 @@ import search from '../../api/spotify/search';
 import {
   selectTokenData
 } from '../../reducers/userReducer';
+import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 
 const PAGE = 20;
 
@@ -31,15 +32,20 @@ class SearchSong extends React.Component {
     title: 'Search For Song'
   };
   
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+
+    const group = props.navigation.getParam('group');
 
     this.state = {
       songs: [],
       offset: 0,
       query: '',
       isFetching: false,
-      isEmpty: false
+      isEmpty: false,
+      isForGroupID: group && group.id ? group.id : null,
+      isForGroup: group,
+      addSongToGroupModalView: false
     };
   }
 
@@ -113,6 +119,20 @@ class SearchSong extends React.Component {
     // }
   }
 
+  handleListItemLongPress () {
+    console.log("LONG PRESS");
+    this.setState({ addSongToGroupModalView: true });
+  }
+
+  onAddSongToGroupModalCancel () {
+    this.setState({ addSongToGroupModalView: false });
+  }
+
+  onAddSongToGroupModalOK () {
+    this.setState({ addSongToGroupModalView: false });
+  }
+
+
   render() {
     const { songs, query, isFetching } = this.state;
 
@@ -129,8 +149,15 @@ class SearchSong extends React.Component {
               items={songs}
               onEndReached={() => this.handleEndReached()}
               onItemPress={(id, title) => this.handleListItemPress(id, title)}
+              onItemLongPress={() => this.handleListItemLongPress()}
             />
         }
+        <AddSongToGroupModal
+          style={styles.modal}
+          visible={this.state.addSongToGroupModalView}
+          onOK={() => this.onAddSongToGroupModalOK()}
+          onCancel={() => this.onAddSongToGroupModalCancel()}
+        />
       </View>
     );
   }
@@ -158,6 +185,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     margin: 10,
     marginTop: 10
+  },
+  modal: {
+    flex: 1,
+    width: 200,
+    height: 200,
+    marginTop: 300,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 });
 
