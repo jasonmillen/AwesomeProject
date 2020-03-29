@@ -5,13 +5,16 @@ import {
   USER_GET_GROUPS_REQUEST,
   USER_GET_GROUPS_ERROR,
   USER_GET_GROUPS_SUCCESS,
+  GROUP_ADD_SONG_REQUEST,
+  GROUP_ADD_SONG_ERROR,
+  GROUP_ADD_SONG_SUCCESS,
   GROUP_SELECT
 } from '../actions/groupActions';
 
 const initialState = {
   userGetGroupsSuccess: null,
   userGetGroupsError: null,
-  groupsByID: [],
+  groupsByID: {},
   selectedGroupID: null
 };
 
@@ -54,6 +57,18 @@ export default groupReducer = (state = initialState, action) => {
         userGetGroupsSuccess: true,
         groupsByID
       };
+    }
+    case GROUP_ADD_SONG_REQUEST: {
+      console.log(GROUP_ADD_SONG_REQUEST);
+      return state;
+    }
+    case GROUP_ADD_SONG_ERROR: {
+      console.log(GROUP_ADD_SONG_ERROR);
+      return state;
+    }
+    case GROUP_ADD_SONG_SUCCESS: {
+      console.log(GROUP_ADD_SONG_SUCCESS);
+      return state;
     }
     case GROUP_SELECT: {
       console.log(GROUP_SELECT);

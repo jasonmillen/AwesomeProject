@@ -21,7 +21,7 @@ export default({
   <TouchableOpacity 
     style={styles.container}
     onPress={() => onPress(id, title)}
-    onLongPress={() => onLongPress()}
+    onLongPress={() => onLongPress(id)}
   >
     <Image source={{ uri: imageUri }} style={styles.image}/>
     <View style={styles.songInfo}>

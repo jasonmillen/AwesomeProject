@@ -29,7 +29,7 @@ import {
   fetchUserGetGroups,
   groupSelect
  } from '../../actions/groupActions';
-import token from '../../api/spotify/token';
+//import token from '../../api/spotify/token';
 
 class Home extends React.Component {
 

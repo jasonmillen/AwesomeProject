@@ -11,7 +11,10 @@ import { Linking } from 'expo';
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';
 
+import { fetchMessagesGetForGroup } from '../../actions/messageActions';
+
 import { selectSelectedGroup } from '../../reducers/groupReduer';
+import { selectMessagesForGroup } from '../../reducers/messageReducer';
 
 class Group extends React.Component {
 
@@ -49,6 +52,17 @@ class Group extends React.Component {
     });
   }
 
+  componentDidMount() {
+
+    if (this.props.selectedGroup) {
+      this.props.messagesGetForGroup(this.props.selectedGroup.id);
+    }
+    else {
+      console.error("No selected group when mounting group screen");
+    }
+
+  }
+
   handleSearchSongButtonPress(navigation) {
     navigation.navigate('SearchSong', { group: this.props.selectedGroup });
   }
@@ -65,9 +79,14 @@ class Group extends React.Component {
 
   render() {
 
+    const messages = this.props.messages;
+
     return (
       <View style={styles.homePage}>
         <Text>Group is: {this.props.selectedGroup.id}</Text>
+        {messages &&
+        <Text>Group has {this.props.messages.length} messages</Text>
+        }
       </View>
     );
   }
@@ -75,14 +94,19 @@ class Group extends React.Component {
 };
 
 const mapStateToProps = (state) => {
+  const selectedGroup = selectSelectedGroup(state);
+  const messages = selectMessagesForGroup(state, selectedGroup.id);
   return {
-    selectedGroup: selectSelectedGroup(state)
+    selectedGroup,
+    messages
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
+    messagesGetForGroup: (groupID) => {
+      dispatch(fetchMessagesGetForGroup(groupID));
+    }
   };
 };
 

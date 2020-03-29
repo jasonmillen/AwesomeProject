@@ -1,6 +1,6 @@
-import {
-  refreshTokens
-} from '../api/spotify/token';
+// import {
+//   refreshTokens
+// } from '../api/spotify/token';
 
 export const SET_USER_TOKEN_SUCCESS = 'SET_USER_TOKEN_SUCCESS';
 

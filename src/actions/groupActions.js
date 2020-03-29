@@ -1,9 +1,11 @@
+import Toast from 'react-native-simple-toast';
+
 import { verifyTokenData } from '../api/spotify/util';
 import * as playlistAPI from '../api/spotify/playlist';
 import * as serverAPI from '../api/server/server';
 
 import { setUserTokensSuccess } from './tokenActions';
-import token from '../api/spotify/token';
+//import token from '../api/spotify/token';
 
 export const GROUP_CREATE_REQUEST = 'GROUP_CREATE_REQUEST';
 export const GROUP_CREATE_SUCCESS = 'GROUP_CREATE_SUCCESS';
@@ -110,6 +112,50 @@ export const fetchUserGetGroups = (userID, tokenData) => {
   };
 };
 
+export const GROUP_ADD_SONG_REQUEST = 'GROUP_ADD_SONG_REQUEST';
+export const GROUP_ADD_SONG_ERROR = 'GROUP_ADD_SONG_ERROR';
+export const GROUP_ADD_SONG_SUCCESS = 'GROUP_ADD_SONG_SUCCESS';
+
+export const groupAddSongRequest = () => {
+  return {
+    type: GROUP_ADD_SONG_REQUEST,
+    payload: {}
+  };
+};
+
+export const groupAddSongError = () => {
+  return {
+    type: GROUP_ADD_SONG_ERROR,
+    payload: {}
+  };
+};
+
+export const groupAddSongSuccess = () => {
+  return {
+    type: GROUP_ADD_SONG_SUCCESS,
+    payload: {}
+  };
+};
+
+export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
+  return async (dispatch) => {
+    dispatch(groupAddSongRequest());
+
+    try {
+      await playlistAPI.addSongToPlaylist(playlistID, trackID);
+      const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
+
+      dispatch(groupAddSongSuccess());
+      Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER);
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(groupAddSongError());
+    }
+  }
+}
+
+
 // export const GROUP_SELECT_REQUEST = 'GROUP_SELECT_REQUEST';
 // export const GROUP_SELECT_ERROR = 'GROUP_SELECT_ERROR';
 // export const GROUP_SELECT_SUCCESS = 'GROUP_SELECT_SUCCESS';
@@ -144,3 +190,5 @@ export const groupSelect = (groupID) => {
     }
   };
 };
+
+

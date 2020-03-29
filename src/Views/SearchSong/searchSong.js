@@ -11,6 +11,9 @@ import {
   setUserTokensSuccess
 } from '../../actions/tokenActions';
 import {
+  fetchGroupAddSong
+} from '../../actions/groupActions';
+import {
   verifyTokenData
 } from '../../api/spotify/util';
  
@@ -20,6 +23,7 @@ import Listing from '../../Components/Listing';
 import search from '../../api/spotify/search';
 
 import {
+  selectUserID,
   selectTokenData
 } from '../../reducers/userReducer';
 import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
@@ -45,7 +49,8 @@ class SearchSong extends React.Component {
       isEmpty: false,
       isForGroupID: group && group.id ? group.id : null,
       isForGroup: group,
-      addSongToGroupModalView: false
+      addSongToGroupModalView: false,
+      selectedSongID: null
     };
   }
 
@@ -119,9 +124,12 @@ class SearchSong extends React.Component {
     // }
   }
 
-  handleListItemLongPress () {
+  handleListItemLongPress (songID) {
     console.log("LONG PRESS");
-    this.setState({ addSongToGroupModalView: true });
+    this.setState({ 
+      selectedSongID: songID,
+      addSongToGroupModalView: true 
+    });
   }
 
   onAddSongToGroupModalCancel () {
@@ -130,6 +138,17 @@ class SearchSong extends React.Component {
 
   onAddSongToGroupModalOK () {
     this.setState({ addSongToGroupModalView: false });
+
+    const groupID = this.state.isForGroupID;
+    const playlistID = this.state.isForGroup.playlistID;
+    const songID = this.state.selectedSongID;
+    const userID = this.props.userID;
+    if (!groupID || !songID || !userID) {
+      console.error(`Missing data - groupID: ${groupID}, playlistID: ${playlistID}, songID: ${songID}, userID: ${userID}`);
+      return;
+    }
+
+    this.props.groupAddSong(groupID, playlistID, songID, userID);
   }
 
 
@@ -149,11 +168,12 @@ class SearchSong extends React.Component {
               items={songs}
               onEndReached={() => this.handleEndReached()}
               onItemPress={(id, title) => this.handleListItemPress(id, title)}
-              onItemLongPress={() => this.handleListItemLongPress()}
+              onItemLongPress={(id) => this.handleListItemLongPress(id)}
             />
         }
         <AddSongToGroupModal
           style={styles.modal}
+          group={this.state.isForGroup}
           visible={this.state.addSongToGroupModalView}
           onOK={() => this.onAddSongToGroupModalOK()}
           onCancel={() => this.onAddSongToGroupModalCancel()}
@@ -165,14 +185,18 @@ class SearchSong extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    tokenData: selectTokenData(state)
+    tokenData: selectTokenData(state),
+    userID: selectUserID(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setUserTokensSuccess: (tokenData) => {
-      dispatch (setUserTokensSuccess(tokenData));
+      dispatch(setUserTokensSuccess(tokenData));
+    },
+    groupAddSong: (groupID, playlistID, trackID, senderID) => {
+      dispatch(fetchGroupAddSong(groupID, playlistID, trackID, senderID));
     }
   };
 };

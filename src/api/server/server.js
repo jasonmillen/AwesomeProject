@@ -15,7 +15,22 @@ export const getSpotifyTokenData = async (authCode) => {
   });
   const tokenData = await response.json();
   return tokenData;
-}
+};
+
+export const refreshTokens = async (refreshToken) => {
+  const response = await fetch(`http://${IP}:3000/api/refreshSpotifyToken`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      refreshToken
+    }),
+  });
+  const tokenData = await response.json();
+  return tokenData;
+};
 
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
   const response = await fetch(`http://${IP}:3000/api/user/${spotifyUserID}/spotify`, {
@@ -75,4 +90,41 @@ export const getGroupsForUser = async (userID) => {
   response = await response.json();
   console.log('got groups from server', response);
   return response;
-}
+};
+
+export const groupAddSong = async (groupID, trackID, senderID) => {
+
+  let response = await fetch(`http://${IP}:3000/api/group/track`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      groupID,
+      trackID,
+      senderID
+    })
+  });
+
+  response = await response.json();
+  console.log('created message: ', response);
+
+  return response;
+};
+
+export const groupGetMessages = async (groupID) => {
+
+  let response = await fetch(`http://${IP}:3000/api/group/${groupID}/messages`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  });
+
+  response = await response.json();
+  //console.log('got messages: ', response);
+
+  return response;
+};

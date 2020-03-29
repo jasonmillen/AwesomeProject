@@ -3,7 +3,8 @@ const spotify = new SpotifyWebApi();
 
 import { SPOTIFY_BASE_URL } from '../../../config';
 
-import token, { refreshTokens } from './token';
+//import token, { refreshTokens } from './token';
+import { refreshTokens } from '../server/server';
 
 export const searchUser = async (userID, accessToken) => {
   const uri = `${SPOTIFY_BASE_URL}/users/${userID}`;
