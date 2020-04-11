@@ -15,7 +15,7 @@ import {
 } from '../../actions/groupActions';
 import {
   verifyTokenData
-} from '../../api/spotify/util';
+} from '../../api/spotify/token';
  
 import Search from '../../Components/Search';
 import Listing from '../../Components/Listing';

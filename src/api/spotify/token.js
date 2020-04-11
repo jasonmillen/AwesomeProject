@@ -3,7 +3,8 @@
 // } from '../../../config';
 
 import * as asAPI from '../asyncStorage/asyncStorage';
-import { verifyTokenData } from './util';
+
+import { refreshTokens } from '../server/server';
 
 let _tokenData = {
   accessToken: null,
@@ -21,6 +22,18 @@ export const getTokenData = async () => {
   }
 
   return _tokenData;
+};
+
+// returns true if token data was updated
+export const verifyTokenData = async (tokenData) => {
+  if (tokenData.expirationTime < new Date().getTime()) {
+    const newTokenData = await refreshTokens(tokenData.refreshToken);
+    tokenData.accessToken = newTokenData.accessToken;
+    tokenData.expirationTime = newTokenData.expirationTime;
+    tokenData.refreshToken = newTokenData.refreshToken;
+    return true;
+  }
+  return false;
 };
 
 

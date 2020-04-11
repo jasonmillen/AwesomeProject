@@ -1,12 +1,12 @@
-import SpotifyWebApi from 'spotify-web-api-js';
-const spotify = new SpotifyWebApi();
+/*import { SPOTIFY_BASE_URL } from '../../../config';
 
-import { SPOTIFY_BASE_URL } from '../../../config';
-
-//import token, { refreshTokens } from './token';
 import { refreshTokens } from '../server/server';
 
 export const searchUser = async (userID, accessToken) => {
+
+  const tokenData = await getTokenData();
+
+
   const uri = `${SPOTIFY_BASE_URL}/users/${userID}`;
   const res = await fetch(uri, {
     method: 'GET',
@@ -38,4 +38,4 @@ export const verifyTokenData = async (tokenData) => {
     return true;
   }
   return false;
-};
+};*/

@@ -10,11 +10,17 @@ import { Linking } from 'expo';
 
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';
+import MessageList from '../../Components/MessageList';
 
 import { fetchMessagesGetForGroup } from '../../actions/messageActions';
 
+import { selectUserID, selectUsersByID } from '../../reducers/userReducer';
 import { selectSelectedGroup } from '../../reducers/groupReduer';
-import { selectMessagesForGroup } from '../../reducers/messageReducer';
+import { 
+  selectMessagesForGroup,
+  selectMessagesGetForGroupError,
+  selectMessagesGetForGroupSuccess
+} from '../../reducers/messageReducer';
 
 class Group extends React.Component {
 
@@ -54,13 +60,16 @@ class Group extends React.Component {
 
   componentDidMount() {
 
-    if (this.props.selectedGroup) {
-      this.props.messagesGetForGroup(this.props.selectedGroup.id);
-    }
-    else {
+    if (!this.props.selectedGroup) {
       console.error("No selected group when mounting group screen");
+      throw new Error("No selected group when mounting group screen");
     }
 
+    if (!this.props.messagesGetForGroupSuccess) {
+      this.props.messagesGetForGroup(this.props.selectedGroup.id);
+    }
+
+    console.log('USERS BY ID: ', this.props.usersByID);
   }
 
   handleSearchSongButtonPress(navigation) {
@@ -77,16 +86,25 @@ class Group extends React.Component {
     }
   }
 
+  handleMessageListEndReached() {
+    console.log('Message list end reached!');
+  }
+
   render() {
 
     const messages = this.props.messages;
 
     return (
-      <View style={styles.homePage}>
-        <Text>Group is: {this.props.selectedGroup.id}</Text>
-        {messages &&
-        <Text>Group has {this.props.messages.length} messages</Text>
-        }
+      <View style={styles.groupPage}>
+        {this.props.userID && this.props.messagesGetForGroupSuccess &&
+        <MessageList
+          messages={this.props.messages}
+          userID={this.props.userID}
+          usersByID={this.props.usersByID}
+          onEndReached={() => this.handleMessageListEndReached()}
+          style={styles.messageList}
+        />}
+        {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
       </View>
     );
   }
@@ -96,9 +114,17 @@ class Group extends React.Component {
 const mapStateToProps = (state) => {
   const selectedGroup = selectSelectedGroup(state);
   const messages = selectMessagesForGroup(state, selectedGroup.id);
+  const messagesGetForGroupError = selectMessagesGetForGroupError(state, selectedGroup.id);
+  const messagesGetForGroupSuccess = selectMessagesGetForGroupSuccess(state, selectedGroup.id);
+  const userID = selectUserID(state);
+  const usersByID = selectUsersByID(state);
   return {
     selectedGroup,
-    messages
+    messages,
+    messagesGetForGroupError,
+    messagesGetForGroupSuccess,
+    userID,
+    usersByID,
   };
 };
 
@@ -111,7 +137,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 const styles = StyleSheet.create({
-  homePage: {
+  groupPage: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
@@ -134,6 +160,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     marginLeft: 10
+  },
+  messageList: {
+    marginTop: 10,
+    width: '100%'
   }
 });
 

@@ -46,7 +46,7 @@ class SearchUser extends React.Component {
   handleSearchUserClick () {
     console.log('clicked search');
     console.log(this.props.tokenData);
-    this.props.fetchSearchUser(this.state.searchText, this.props.tokenData);
+    this.props.fetchSearchUser(this.state.searchText);
   }
 
 
@@ -148,8 +148,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchSearchUser: (spotifyUserID, tokenData) => {
-      dispatch(fetchSearchUser(spotifyUserID, tokenData));
+    fetchSearchUser: (spotifyUserID) => {
+      dispatch(fetchSearchUser(spotifyUserID));
     },
     createGroup: (creatorID, creatorSpotifyID, memberSpotifyIDs, playlistName, tokenData) => {
       dispatch(fetchCreateGroup(creatorID, creatorSpotifyID, memberSpotifyIDs, playlistName, tokenData));

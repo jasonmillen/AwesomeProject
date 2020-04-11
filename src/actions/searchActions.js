@@ -1,14 +1,6 @@
 import {
-  verifyTokenData
-} from '../api/spotify/util';
-
-import {
   searchUser
-} from '../api/spotify/util';
-
-import {
-  setUserTokensSuccess
-} from './tokenActions';
+} from '../api/spotify/user';
 
 export const SEARCH_USER_REQUEST = 'SEARCH_USER_REQUEST';
 export const SEARCH_USER_SUCCESS = 'SEARCH_USER_SUCCESS';
@@ -39,16 +31,12 @@ export const searchUserError = () => {
   }
 }
 
-export const fetchSearchUser = (spotifyUserID, tokenData) => {
+export const fetchSearchUser = (spotifyUserID) => {
   return async (dispatch) => {
     dispatch(searchUserRequest(spotifyUserID));
 
-    if (await verifyTokenData(tokenData)) {
-      dispatch (setUserTokensSuccess(tokenData));
-    }
-
     try {
-      const userData = await searchUser(spotifyUserID, tokenData.accessToken);
+      const userData = await searchUser(spotifyUserID);
       dispatch(searchUserSuccess(userData));
     }
     catch (error) {

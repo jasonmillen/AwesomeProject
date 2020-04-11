@@ -11,6 +11,10 @@ import {
 } from '../actions/userActions';
 
 import {
+  USER_GET_USERS_SUCCESS
+} from '../actions/groupActions';
+
+import {
   SET_USER_TOKEN_SUCCESS
 } from '../actions/tokenActions';
 
@@ -23,7 +27,8 @@ const initialState = {
   getLoggedInUserSuccess: false,
   isProcessingLogin: false,
   logoutError: false,
-  logoutSuccess: null
+  logoutSuccess: null,
+  usersByID: {}
 };
 
 
@@ -114,6 +119,15 @@ export default userReducer = (state = initialState, action) => {
         logoutError: false,
         logoutSuccess: true
       };
+    case USER_GET_USERS_SUCCESS:
+      const usersByID = action.payload.users.reduce((usersByID, user) => {
+        usersByID[user.id] = user;
+        return usersByID;
+      }, {});
+      return {
+        ...state,
+        usersByID: usersByID
+      };
     default:
       return state;
   }
@@ -146,4 +160,8 @@ export const selectTokenData = (state) => {
 
 export const selectLogoutSuccess = (state) => {
   return state.user.logoutSuccess;
-}
+};
+
+export const selectUsersByID = (state) => {
+  return state.user.usersByID;
+};

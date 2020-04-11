@@ -1,7 +1,9 @@
 import Toast from 'react-native-simple-toast';
 
-import { verifyTokenData } from '../api/spotify/util';
+import { verifyTokenData } from '../api/spotify/token';
+import * as userAPI from '../api/spotify/user';
 import * as playlistAPI from '../api/spotify/playlist';
+import * as trackAPI from '../api/spotify/track';
 import * as serverAPI from '../api/server/server';
 
 import { setUserTokensSuccess } from './tokenActions';
@@ -85,6 +87,16 @@ export const userGetGroupsSuccess = (groups) => {
   };
 };
 
+export const USER_GET_USERS_SUCCESS = 'USER_GET_USERS_SUCCESS';
+export const userGetUsersSuccess = (users) => {
+  return {
+    type: USER_GET_USERS_SUCCESS,
+    payload: {
+      users
+    }
+  };
+};
+
 export const fetchUserGetGroups = (userID, tokenData) => {
   console.log("fetchUserGetGroups");
   return async (dispatch) => {
@@ -95,7 +107,8 @@ export const fetchUserGetGroups = (userID, tokenData) => {
     }
 
     try {
-      const groups = await serverAPI.getGroupsForUser(userID);
+      const groupsData = await serverAPI.getGroupsForUser(userID);
+      const groups = groupsData.groups;
       
       await Promise.all(groups.map(async group => {
         const playlistInfo = await playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
@@ -104,6 +117,20 @@ export const fetchUserGetGroups = (userID, tokenData) => {
       }));
 
       dispatch (userGetGroupsSuccess(groups));
+
+      const users = groupsData.users;
+      await Promise.all(users.map(async user => {
+        const userInfo = await userAPI.searchUser(user.spotifyUserID);
+        if (userInfo) {
+          user.displayName = userInfo.display_name;
+          user.imageUrl = userInfo.images.length ? userInfo.images[0].url : null
+        }
+        else {
+          console.error('Error getting user info for user: ', user);
+        }
+      }));
+      dispatch (userGetUsersSuccess(users));
+
     }
     catch (error) {
       console.log(error);
@@ -111,6 +138,7 @@ export const fetchUserGetGroups = (userID, tokenData) => {
     }
   };
 };
+
 
 export const GROUP_ADD_SONG_REQUEST = 'GROUP_ADD_SONG_REQUEST';
 export const GROUP_ADD_SONG_ERROR = 'GROUP_ADD_SONG_ERROR';
@@ -130,10 +158,12 @@ export const groupAddSongError = () => {
   };
 };
 
-export const groupAddSongSuccess = () => {
+export const groupAddSongSuccess = (message) => {
   return {
     type: GROUP_ADD_SONG_SUCCESS,
-    payload: {}
+    payload: {
+      message
+    }
   };
 };
 
@@ -144,8 +174,10 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
     try {
       await playlistAPI.addSongToPlaylist(playlistID, trackID);
       const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
+      message.trackInfo = await trackAPI.getTrack(message.trackID);
+      console.log('SONG ADDED: ', message);
 
-      dispatch(groupAddSongSuccess());
+      dispatch(groupAddSongSuccess(message));
       Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER);
     }
     catch (error) {
