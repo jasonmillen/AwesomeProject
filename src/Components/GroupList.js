@@ -16,7 +16,7 @@ export default ({ groups, onEndReached, onItemPressed }) => {
       keyExtractor={group => group.id.toString()}
       ItemSeparatorComponent={() => <Separator /> }
       onEndReached={onEndReached}
-      ListEmptyComponent={() => <Text>No songs.</Text>}
+      ListEmptyComponent={() => <Text>No groups.</Text>}
     />
   );
 

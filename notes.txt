@@ -33,3 +33,10 @@ users->groups: list of users->group mapping
 messages: id, msg content, groupid
 
 messages->users: list of messages->users mapping
+
+8888
+0000
+8880
+0008
+2028
+2222

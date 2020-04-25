@@ -25,6 +25,7 @@ const initialState = {
   userID: null,
   spotifyUserID: null,
   getLoggedInUserSuccess: false,
+  getLoggedInUserError: false,
   isProcessingLogin: false,
   logoutError: false,
   logoutSuccess: null,
@@ -39,11 +40,15 @@ export default userReducer = (state = initialState, action) => {
       return {
         ...state,
         getLoggedInUserSuccess: false,
+        getLoggedInUserError: false
       };
     }
     case GET_LOGGED_IN_USER_ERROR: {
       console.log(GET_LOGGED_IN_USER_ERROR);
-      return state;
+      return {
+        ...state,
+        getLoggedInUserError: true
+      };
     }
     case GET_LOGGED_IN_USER_SUCCESS: {
       console.log(GET_LOGGED_IN_USER_SUCCESS, action.payload.spotifyUserID, action.payload.tokenData);
@@ -51,6 +56,7 @@ export default userReducer = (state = initialState, action) => {
       return {
         ...state,
         userID: action.payload.userID,
+        user: action.payload.user,
         spotifyUserID: action.payload.spotifyUserID,
         accessToken: tokenData.accessToken,
         expirationTime: tokenData.expirationTime,
@@ -75,7 +81,8 @@ export default userReducer = (state = initialState, action) => {
         expirationTime: tokenData.expirationTime,
         refreshToken: tokenData.refreshToken,
         userID: action.payload.userID,
-        spotifyUserID: action.payload.spotifyUserID
+        user: action.payload.user,
+        spotifyUserID: action.payload.spotifyUserID,
       };
     }
     case COMPLETE_LOGIN_PROCESS: {
@@ -113,8 +120,10 @@ export default userReducer = (state = initialState, action) => {
         expirationTime: null,
         refreshToken: null,
         userID: null,
+        user: null,
         spotifyUserID: null,
         getLoggedInUserSuccess: false,
+        getLoggedInUserError: false,
         isProcessingLogin: false,
         logoutError: false,
         logoutSuccess: true
@@ -137,12 +146,20 @@ export const selectUserID = (state) => {
   return state.user.userID;
 };
 
+export const selectUser = (state) => {
+  return state.user.user;
+};
+
 export const selectSpotifyUserID = (state) => {
   return state.user.spotifyUserID;
 }
 
 export const selectGetLoggedInUserSuccess = (state) => {
   return state.user.getLoggedInUserSuccess;
+};
+
+export const selectGetLoggedInUserError = (state) => {
+  return state.user.getLoggedInUserError;
 };
 
 export const selectIsProcessingLogin = (state) => {
@@ -164,4 +181,8 @@ export const selectLogoutSuccess = (state) => {
 
 export const selectUsersByID = (state) => {
   return state.user.usersByID;
+};
+
+export const selectUserByID = (state, userID) => {
+  return state.user.usersByID[userID];
 };

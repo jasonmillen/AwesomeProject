@@ -39,6 +39,7 @@ export const fetchMessagesGetForGroup = (groupID) => {
 
     try {
       const messages = await serverAPI.groupGetMessages(groupID);
+
       await Promise.all(messages.map(async message => {
         if (message.trackID) {
           message.trackInfo = await trackAPI.getTrack(message.trackID);

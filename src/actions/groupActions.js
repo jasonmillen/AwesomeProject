@@ -50,7 +50,7 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
       dispatch(groupCreateSuccess());
 
       // refresh group data
-      dispatch(fetchUserGetGroups(creatorID));
+      dispatch(fetchUserGetGroups(creatorID, tokenData));
       
     }
     catch (error) {

@@ -59,7 +59,6 @@ class Group extends React.Component {
   }
 
   componentDidMount() {
-
     if (!this.props.selectedGroup) {
       console.error("No selected group when mounting group screen");
       throw new Error("No selected group when mounting group screen");
@@ -68,8 +67,6 @@ class Group extends React.Component {
     if (!this.props.messagesGetForGroupSuccess) {
       this.props.messagesGetForGroup(this.props.selectedGroup.id);
     }
-
-    console.log('USERS BY ID: ', this.props.usersByID);
   }
 
   handleSearchSongButtonPress(navigation) {
@@ -93,6 +90,10 @@ class Group extends React.Component {
   render() {
 
     const messages = this.props.messages;
+    if (messages) {
+      console.log('MESSAGES LENGTH: ', messages.length);
+      //console.log('MESSAGES: ', messages);
+    }
 
     return (
       <View style={styles.groupPage}>
@@ -124,7 +125,7 @@ const mapStateToProps = (state) => {
     messagesGetForGroupError,
     messagesGetForGroupSuccess,
     userID,
-    usersByID,
+    usersByID
   };
 };
 

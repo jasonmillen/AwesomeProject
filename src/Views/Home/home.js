@@ -6,6 +6,12 @@ import {
   StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
+// import SockJS from 'sockjs-client';
+// import Stomp from 'stompjs';
+
+import {
+  IP
+} from '../../../config';
 
 import GroupList from '../../Components/GroupList';
 
@@ -15,6 +21,7 @@ import SearchSongButton from '../../Components/SearchSongButton';
 import { 
   selectSpotifyUserID,
   selectUserID,
+  selectUser,
   selectTokenData
 } from '../../reducers/userReducer';
 
@@ -35,7 +42,7 @@ class Home extends React.Component {
 
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam('spotifyUserID'),
+      title: navigation.getParam('displayName') || navigation.getParam('spotifyUserID'),
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchSongButton
@@ -62,18 +69,68 @@ class Home extends React.Component {
 
     props.navigation.setParams({
       spotifyUserID: this.props.spotifyUserID,
+      displayName: this.props.user.displayName,
       handleViewProfileButtonPress: this.handleViewProfileButtonPress,
       handleStartChatButtonPress: this.handleStartChatButtonPress,
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
     });
 
+    // const sock = new SockJS(`http://${IP}:3000/songsharesvc`);
+    // const stompClient = Stomp.over(sock);
+
     this.state = {
-      groups: []
+      groups: [],
+      // sock,
+      // stompClient
     };
+
+    this.onMessageReceived = this.onMessageReceived.bind(this);
+    this.onError = this.onError.bind(this);
+    this.onConnected = this.onConnected.bind(this);
+
+  }
+
+  onMessageReceived(payload) {
+    const message = JSON.parse(payload.body);
+    console.log('MESSAGE PAYLOAD: ', message);
+  }
+
+  onError(error) {
+    console.log('WEBSOCKET ERROR: ', error);
+  }
+
+  onConnected() {
+    const stompClient = this.state.stompClient;
+
+        // Subscribe to the Public Topic
+        stompClient.subscribe('/topic/public', onMessageReceived);
+
+        // Tell your username to the server
+        stompClient.send("/app/chat.register",
+            {},
+            JSON.stringify({sender: 'blah', type: 'JOIN'})
+        );
+
   }
 
   componentDidMount() {
     this.props.getGroupsForUser(this.props.userID, this.props.tokenData);
+
+    //this.state.stompClient.connect({}, this.onConnected, this.onError);
+
+    // console.log('SOCKET SETUP');
+    // this.state.socket.onopen = () => this.state.socket.send(JSON.stringify({type: 'greet', payload: 'Hello Mr. Server!'}));
+    // this.state.socket.onmessage = ({data}) => console.log('SOCKET DATA: ', data);
+
+    // const sock = new SockJS(`http://${IP}:3000/songsharesvc`);
+    // const stompClient = Stomp.over(sock);
+    // stompClient.connect({}, 
+    //   () => {
+    //     stompClient.subscribe('/topic/public')
+
+    //   }
+    // )
+
   }
 
   handleViewProfileButtonPress(navigation) {
@@ -130,9 +187,12 @@ class Home extends React.Component {
 };
 
 const mapStateToProps = (state) => {
+  const userID = selectUserID(state);
+  const user = selectUser(state);
   return {
     spotifyUserID: selectSpotifyUserID(state),
-    userID: selectUserID(state),
+    userID,
+    user,
     groups: selectGroups(state),
     tokenData: selectTokenData(state),
     userGetGroupsError: selectUserGetGroupsError(state),

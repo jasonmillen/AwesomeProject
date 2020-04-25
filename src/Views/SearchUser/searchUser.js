@@ -69,13 +69,13 @@ class SearchUser extends React.Component {
     console.log(      
       this.props.userID,
       this.props.spotifyUserID,
-      [this.props.searchState.userSearchStringID],
+      [this.props.searchState.userSearchStringID.trim().toLowerCase()],
       playlistName,
       this.props.tokenData);
     this.props.createGroup(
       this.props.userID,
       this.props.spotifyUserID,
-      [this.props.searchState.userSearchStringID],
+      [this.props.searchState.userSearchStringID.trim().toLowerCase()],
       playlistName,
       this.props.tokenData);
   }

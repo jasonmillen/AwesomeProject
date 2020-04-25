@@ -5,6 +5,7 @@ import {
 import * as asAPI from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
 import * as serverAPI from '../api/server/server';
+import * as userAPI from '../api/spotify/user';
 
 
 export const SET_LOGGED_IN_USER_REQUEST = 'SET_LOGGED_IN_USER_REQUEST';
@@ -56,11 +57,12 @@ export const getLoggedInUserError = () => {
   };
 };
 
-export const getLoggedInUserSuccess = (userID, spotifyUserID, tokenData) => {
+export const getLoggedInUserSuccess = (userID, user, spotifyUserID, tokenData) => {
   return {
     type: GET_LOGGED_IN_USER_SUCCESS,
     payload: {
       userID,
+      user,
       spotifyUserID,
       tokenData
     }
@@ -77,7 +79,15 @@ export const getLoggedInUser = () => {
       const spotifyUserID = await asAPI.getSpotifyUserID();
       const tokenData = await asAPI.getTokenData();
       let user = await serverAPI.getUserBySpotifyUserID(spotifyUserID);
-      dispatch(getLoggedInUserSuccess(user.id, spotifyUserID, tokenData));
+      if (user) {
+        const userInfo = await userAPI.searchUser(spotifyUserID);
+        user.displayName = userInfo.display_name;
+        user.imageUrl = userInfo.images.length ? userInfo.images[0].url : null;
+        dispatch(getLoggedInUserSuccess(user.id, user, spotifyUserID, tokenData));
+      }
+      else {
+        dispatch (getLoggedInUserError());
+      }
     }
     catch (error) {
       console.log('Error getting logged in user');
@@ -97,13 +107,14 @@ export const loginRequest = () => {
   };
 }
 
-export const loginSuccess = (tokenData, userID, spotifyUserID) => {
+export const loginSuccess = (tokenData, userID, spotifyUserID, user) => {
   return {
     type: LOGIN_SUCCESS,
     payload: {
       tokenData,
       userID,
-      spotifyUserID
+      spotifyUserID,
+      user
     }
   };
 }
@@ -131,14 +142,19 @@ export const login = () => {
     const spotify = new SpotifyWebApi();
     spotify.setAccessToken(tokenData.accessToken);
     const spotifyUserData = await spotify.getMe();
-    //await setUserID(userData.id);
+    
+    console.log('LOGIN USER DATA: ', spotifyUserData);
+
     await asAPI.setSpotifyUserID(spotifyUserData.id);
 
     let user = await serverAPI.getUserBySpotifyUserID(spotifyUserData.id);
     if (!user || !user.id) {
       user = await serverAPI.addNewUser(spotifyUserData.id);
     }
-    dispatch(loginSuccess(tokenData, user.id, spotifyUserData.id));
+    user.displayName = spotifyUserData.display_name;
+    user.imageUrl = spotifyUserData.images.length ? spotifyUserData.images[0].url : null
+
+    dispatch(loginSuccess(tokenData, user.id, spotifyUserData.id, user));
   };
 }
 

@@ -8,6 +8,10 @@ import {
   GROUP_ADD_SONG_SUCCESS
 } from '../actions/groupActions';
 
+import {
+  LOGOUT_SUCCESS
+} from '../actions/userActions';
+
 const initialState = {
   messagesByGroupID: {},
   messagesGetForRequestGroupByGroup: {},
@@ -67,6 +71,9 @@ export default messageReducer = (state = initialState, action) => {
           [message.groupID]: messages
         }
       } 
+    }
+    case LOGOUT_SUCCESS: {
+      return initialState;
     }
     default: {
       return state;

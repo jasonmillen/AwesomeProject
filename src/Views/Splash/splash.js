@@ -11,7 +11,8 @@ import {
 } from '../../actions/userActions';
 import { 
   selectSpotifyUserID,
-  selectGetLoggedInUserSuccess
+  selectGetLoggedInUserSuccess,
+  selectGetLoggedInUserError,
  } from '../../reducers/userReducer';
  import { navigateAndResetStack } from '../../utility/navigation';
 
@@ -34,7 +35,6 @@ class Splash extends React.Component {
 
   async componentDidUpdate() {
     console.log(this.props.spotifyUserID);
-
     if (this.props.getLoggedInUserSuccess) {
       if (this.props.spotifyUserID) {
         this.navigateToHomeScreen();
@@ -42,6 +42,10 @@ class Splash extends React.Component {
       else {
         this.navigateToLoginScreen();
       }
+    }
+
+    if (this.props.getLoggedInUserError) {
+      this.navigateToLoginScreen();
     }
   }
 
@@ -65,7 +69,8 @@ class Splash extends React.Component {
 const mapStateToProps = (state) => {
   return {
     spotifyUserID: selectSpotifyUserID(state),
-    getLoggedInUserSuccess: selectGetLoggedInUserSuccess(state)
+    getLoggedInUserSuccess: selectGetLoggedInUserSuccess(state),
+    getLoggedInUserError: selectGetLoggedInUserError(state)
   };
 }
 
