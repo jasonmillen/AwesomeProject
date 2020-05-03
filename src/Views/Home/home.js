@@ -6,11 +6,10 @@ import {
   StyleSheet
 } from 'react-native';
 import { connect } from 'react-redux';
-// import SockJS from 'sockjs-client';
-// import Stomp from 'stompjs';
 
 import {
-  IP
+  IP,
+  MESSAGE_TYPE
 } from '../../../config';
 
 import GroupList from '../../Components/GroupList';
@@ -36,6 +35,8 @@ import {
   fetchUserGetGroups,
   groupSelect
  } from '../../actions/groupActions';
+
+import { initSocket } from '../../actions/socketActions';
 //import token from '../../api/spotify/token';
 
 class Home extends React.Component {
@@ -75,61 +76,38 @@ class Home extends React.Component {
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
     });
 
-    // const sock = new SockJS(`http://${IP}:3000/songsharesvc`);
-    // const stompClient = Stomp.over(sock);
-
     this.state = {
       groups: [],
-      // sock,
-      // stompClient
     };
-
-    this.onMessageReceived = this.onMessageReceived.bind(this);
-    this.onError = this.onError.bind(this);
-    this.onConnected = this.onConnected.bind(this);
-
-  }
-
-  onMessageReceived(payload) {
-    const message = JSON.parse(payload.body);
-    console.log('MESSAGE PAYLOAD: ', message);
-  }
-
-  onError(error) {
-    console.log('WEBSOCKET ERROR: ', error);
-  }
-
-  onConnected() {
-    const stompClient = this.state.stompClient;
-
-        // Subscribe to the Public Topic
-        stompClient.subscribe('/topic/public', onMessageReceived);
-
-        // Tell your username to the server
-        stompClient.send("/app/chat.register",
-            {},
-            JSON.stringify({sender: 'blah', type: 'JOIN'})
-        );
 
   }
 
   componentDidMount() {
     this.props.getGroupsForUser(this.props.userID, this.props.tokenData);
 
-    //this.state.stompClient.connect({}, this.onConnected, this.onError);
+    this.props.initSocket(this.props.userID);
+    // const ws = new WebSocket(`ws://${IP}:3000/app`);
+    // ws.onopen = () => {
+    //   console.log('OPENED!!');
 
-    // console.log('SOCKET SETUP');
-    // this.state.socket.onopen = () => this.state.socket.send(JSON.stringify({type: 'greet', payload: 'Hello Mr. Server!'}));
-    // this.state.socket.onmessage = ({data}) => console.log('SOCKET DATA: ', data);
+    //   const registerMessage = {
+    //     type: MESSAGE_TYPE.REGISTER_USER,
+    //     value: this.props.userID
+    //   };
 
-    // const sock = new SockJS(`http://${IP}:3000/songsharesvc`);
-    // const stompClient = Stomp.over(sock);
-    // stompClient.connect({}, 
-    //   () => {
-    //     stompClient.subscribe('/topic/public')
-
+    //   ws.send(JSON.stringify(registerMessage));
+    // };
+    // ws.onmessage = data => {
+    //   console.log('GOT MESSAGE!');
+    //   try {
+    //     //const data = JSON.parse(e.data).data;
+    //     console.log('DATA: ', data.data);
     //   }
-    // )
+    //   catch (e) {
+    //     console.log('ERROR: ', e);
+    //   }
+
+    // };
 
   }
 
@@ -208,6 +186,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     selectGroup: (groupID) => {
       dispatch (groupSelect(groupID));
+    },
+    initSocket: (userID) => {
+      dispatch (initSocket(userID));
     }
   };
 };

@@ -9,6 +9,8 @@ import * as serverAPI from '../api/server/server';
 import { setUserTokensSuccess } from './tokenActions';
 //import token from '../api/spotify/token';
 
+import * as sockAPI from './socketActions';
+
 export const GROUP_CREATE_REQUEST = 'GROUP_CREATE_REQUEST';
 export const GROUP_CREATE_SUCCESS = 'GROUP_CREATE_SUCCESS';
 export const GROUP_CREATE_ERROR = 'GROUP_CREATE_ERROR';
@@ -174,8 +176,9 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
     try {
       await playlistAPI.addSongToPlaylist(playlistID, trackID);
       const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
+      console.log('MESSAGE: ', message);
+      sockAPI.groupAddSong(message);
       message.trackInfo = await trackAPI.getTrack(message.trackID);
-      console.log('SONG ADDED: ', message);
 
       dispatch(groupAddSongSuccess(message));
       Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER);

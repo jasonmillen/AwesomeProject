@@ -18,6 +18,10 @@ import {
   SET_USER_TOKEN_SUCCESS
 } from '../actions/tokenActions';
 
+import {
+  REGISTER_USER
+} from '../actions/socketActions';
+
 const initialState = {
   accessToken: null,
   expirationTime: null,
@@ -137,6 +141,9 @@ export default userReducer = (state = initialState, action) => {
         ...state,
         usersByID: usersByID
       };
+    case REGISTER_USER:
+      console.log('REGISTER USER');
+      return state;
     default:
       return state;
   }
