@@ -190,32 +190,6 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
   }
 }
 
-
-// export const GROUP_SELECT_REQUEST = 'GROUP_SELECT_REQUEST';
-// export const GROUP_SELECT_ERROR = 'GROUP_SELECT_ERROR';
-// export const GROUP_SELECT_SUCCESS = 'GROUP_SELECT_SUCCESS';
-
-// export const groupSelectRequest = () => {
-//   return {
-//     type: GROUP_CREATE_REQUEST,
-//     payload: {}
-//   };
-// };
-
-// export const groupSelectError = () => {
-//   return {
-//     type: GROUP_SELECT_ERROR,
-//     payload: {}
-//   };
-// };
-
-// export const groupSelectSuccess = (groupID) => {
-//   return {
-//     type: GROUP_SELECT_SUCCESS,
-//     payload: {}
-//   };
-// };
-
 export const GROUP_SELECT = 'GROUP_SELECT';
 export const groupSelect = (groupID) => {
   return {

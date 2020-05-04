@@ -12,6 +12,10 @@ import {
   LOGOUT_SUCCESS
 } from '../actions/userActions';
 
+import {
+  SOCKET_SEND_SONG
+} from '../actions/socketActions';
+
 const initialState = {
   messagesByGroupID: {},
   messagesGetForRequestGroupByGroup: {},
@@ -74,6 +78,19 @@ export default messageReducer = (state = initialState, action) => {
     }
     case LOGOUT_SUCCESS: {
       return initialState;
+    }
+    case SOCKET_SEND_SONG: {
+      console.log('SOCKET_SEND_SONG');
+      const message = action.payload.message;
+      const groupID = message.groupID;
+      return {
+        ...state,
+        messagesByGroupID: {
+          ...state.messagesByGroupID,
+          //[groupID]: state.messagesByGroupID[groupID].concat([message])
+          [groupID]: [message].concat(state.messagesByGroupID[groupID])
+        }
+      }
     }
     default: {
       return state;

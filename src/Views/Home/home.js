@@ -85,30 +85,8 @@ class Home extends React.Component {
   componentDidMount() {
     this.props.getGroupsForUser(this.props.userID, this.props.tokenData);
 
+    console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
-    // const ws = new WebSocket(`ws://${IP}:3000/app`);
-    // ws.onopen = () => {
-    //   console.log('OPENED!!');
-
-    //   const registerMessage = {
-    //     type: MESSAGE_TYPE.REGISTER_USER,
-    //     value: this.props.userID
-    //   };
-
-    //   ws.send(JSON.stringify(registerMessage));
-    // };
-    // ws.onmessage = data => {
-    //   console.log('GOT MESSAGE!');
-    //   try {
-    //     //const data = JSON.parse(e.data).data;
-    //     console.log('DATA: ', data.data);
-    //   }
-    //   catch (e) {
-    //     console.log('ERROR: ', e);
-    //   }
-
-    // };
-
   }
 
   handleViewProfileButtonPress(navigation) {
