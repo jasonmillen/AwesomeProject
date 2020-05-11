@@ -36,6 +36,26 @@ export const getPlaylist = async (playlistID, accessToken) => {
   return json;
 };
 
+
+export const checkIfUserFollowsPlaylist = async (playlistID, spotifyUserID) => {
+
+  const tokenData = await getTokenData();
+
+  const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}/followers/contains?ids=${spotifyUserID}`;
+  console.log('GET FOLLOWERS QUERY URL: ' + uri);
+  const res = await fetch(uri, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${tokenData.accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  const json = await res.json();
+  console.log('GET FOLLOWERS RESPONSE: ', json);
+  return json[0];
+};
+
 export const addSongToPlaylist = async (playlistID, trackID) => {
 
   const tokenData = await getTokenData();
@@ -55,3 +75,22 @@ export const addSongToPlaylist = async (playlistID, trackID) => {
   const json = await res.json();
   return json;
 };
+
+export const followPlaylist = async (playlistID) => {
+  const tokenData = await getTokenData();
+
+  const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}/followers`;
+  const res = await fetch(uri, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${tokenData.accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+  if (!res.ok || res.status !== 200) {
+    throw new Error("Error following playlist: " + res.statusText);
+  }
+
+  return "OK";
+}

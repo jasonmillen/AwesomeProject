@@ -8,13 +8,17 @@ import {
   GROUP_ADD_SONG_REQUEST,
   GROUP_ADD_SONG_ERROR,
   GROUP_ADD_SONG_SUCCESS,
-  GROUP_SELECT
+  GROUP_SELECT,
+  GROUP_FOLLOW_PLAYLIST_REQUEST,
+  GROUP_FOLLOW_PLAYLIST_ERROR,
+  GROUP_FOLLOW_PLAYLIST_SUCCESS
 } from '../actions/groupActions';
 
 const initialState = {
   userGetGroupsSuccess: null,
   userGetGroupsError: null,
   groupsByID: {},
+  groupFollowStatusByID: {},
   selectedGroupID: null
 };
 
@@ -48,6 +52,7 @@ export default groupReducer = (state = initialState, action) => {
     }
     case USER_GET_GROUPS_SUCCESS: {
       console.log(USER_GET_GROUPS_SUCCESS);
+      console.log(action.payload.groupFollowStatusByID);
       const groupsByID = action.payload.groups.reduce((groupsByID, group) => {
         groupsByID[group.id] = group;
         return groupsByID;
@@ -55,7 +60,8 @@ export default groupReducer = (state = initialState, action) => {
       return {
         ...state,
         userGetGroupsSuccess: true,
-        groupsByID
+        groupsByID,
+        groupFollowStatusByID: action.payload.groupFollowStatusByID
       };
     }
     case GROUP_ADD_SONG_REQUEST: {
@@ -76,6 +82,24 @@ export default groupReducer = (state = initialState, action) => {
         ...state,
         selectedGroupID: action.payload.groupID
       };
+    }
+    case GROUP_FOLLOW_PLAYLIST_REQUEST: {
+      console.log(GROUP_FOLLOW_PLAYLIST_REQUEST);
+      return state;
+    }
+    case GROUP_FOLLOW_PLAYLIST_ERROR: {
+      console.log(GROUP_FOLLOW_PLAYLIST_ERROR);
+    }
+    case GROUP_FOLLOW_PLAYLIST_SUCCESS: {
+      console.log(GROUP_ADD_SONG_SUCCESS);
+      const groupID = action.payload.groupID;
+      return {
+        ...state,
+        groupFollowStatusByID: {
+          ...state.groupFollowStatusByID,
+          [groupID]: true
+        }
+      }
     }
     default:
       return state;
@@ -100,4 +124,8 @@ export const selectSelectedGroupID = (state) => {
 
 export const selectSelectedGroup = (state) => {
   return state.group.groupsByID[state.group.selectedGroupID];
-}
+};
+
+export const selectGroupFollowStatusByID = (state) => {
+  return state.group.groupFollowStatusByID;
+};

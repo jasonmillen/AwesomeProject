@@ -15,11 +15,12 @@ export default ({
     imageUrl,
     playlistName
   },
-  onPress
+  onPress,
+  userIsFollowing,
+  onFollowPlaylistPressed
 }) => {
 
   const imageSource = imageUrl ? { uri: imageUrl } : require("../resources/empty-playlist.png");
-
   return (
     <TouchableOpacity
     style={styles.container}
@@ -28,8 +29,18 @@ export default ({
       <Image source={imageSource} style={styles.image} />
       <View style={styles.playlistInfo}>
         <Text>{playlistName}</Text>
-        <Text>Playlist ID: {playlistID}</Text>
+        {/* <Text>Playlist ID: {playlistID}</Text> */}
       </View>
+      {userIsFollowing === false &&
+        <View style={styles.followPlaylistSection}>
+          <TouchableOpacity 
+            style={styles.followPlaylistButton}
+            onPress={() => onFollowPlaylistPressed({id, creatorID, playlistID, playlistID, playlistName})}
+          >
+            <Text style={styles.followPlaylistText}>Follow</Text>
+          </TouchableOpacity>
+        </View>
+      }
     </TouchableOpacity>
 
   );
@@ -38,11 +49,29 @@ export default ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    alignContent: 'space-between',
+    width: '100%'
   },
   playlistInfo: {
     flexDirection: 'column',
     //alignItems: 'center'
+  },
+  followPlaylistSection: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginRight: 10
+    //alignItems: 'flex-start'
+    //alignContent: 'center'
+  },
+  followPlaylistButton: {
+    backgroundColor: 'green'
+  },
+  followPlaylistText: {
+    color: 'white', 
+    fontWeight: 'bold',
+    margin: 15
   },
   image: {
     width: 100,

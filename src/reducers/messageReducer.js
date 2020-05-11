@@ -13,7 +13,7 @@ import {
 } from '../actions/userActions';
 
 import {
-  SOCKET_SEND_SONG
+  SOCKET_RECEIVE_SONG
 } from '../actions/socketActions';
 
 const initialState = {
@@ -66,8 +66,7 @@ export default messageReducer = (state = initialState, action) => {
     }
     case GROUP_ADD_SONG_SUCCESS: {
       const message = action.payload.message;
-      const messages = state.messagesByGroupID[message.groupID];
-      messages.push(message);
+      const messages = [message].concat(state.messagesByGroupID[message.groupID]);
       return {
         ...state,
         messagesByGroupID: {
@@ -79,15 +78,14 @@ export default messageReducer = (state = initialState, action) => {
     case LOGOUT_SUCCESS: {
       return initialState;
     }
-    case SOCKET_SEND_SONG: {
-      console.log('SOCKET_SEND_SONG');
+    case SOCKET_RECEIVE_SONG: {
+      console.log(SOCKET_RECEIVE_SONG);
       const message = action.payload.message;
       const groupID = message.groupID;
       return {
         ...state,
         messagesByGroupID: {
           ...state.messagesByGroupID,
-          //[groupID]: state.messagesByGroupID[groupID].concat([message])
           [groupID]: [message].concat(state.messagesByGroupID[groupID])
         }
       }
@@ -96,7 +94,6 @@ export default messageReducer = (state = initialState, action) => {
       return state;
     }
   };
-
 };
 
 export const selectMessagesForGroup = (state, groupID) => {

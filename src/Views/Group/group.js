@@ -95,16 +95,26 @@ class Group extends React.Component {
       //console.log('MESSAGES: ', messages);
     }
 
+    let messageComponent;
+    if (this.props.userID && this.props.messagesGetForGroupSuccess) {
+      if (this.props.messages.length > 0) {
+        messageComponent = (
+          <MessageList
+            messages={this.props.messages}
+            userID={this.props.userID}
+            usersByID={this.props.usersByID}
+            onEndReached={() => this.handleMessageListEndReached()}
+            style={styles.messageList} />
+        );
+      }
+      else {
+        messageComponent = <Text>No Messages</Text>;
+      }
+    }
+
     return (
       <View style={styles.groupPage}>
-        {this.props.userID && this.props.messagesGetForGroupSuccess &&
-        <MessageList
-          messages={this.props.messages}
-          userID={this.props.userID}
-          usersByID={this.props.usersByID}
-          onEndReached={() => this.handleMessageListEndReached()}
-          style={styles.messageList}
-        />}
+        {messageComponent}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
       </View>
     );

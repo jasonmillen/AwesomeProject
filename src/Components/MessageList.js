@@ -19,10 +19,10 @@ export default ({ messages, userID, usersByID, onEndReached, style }) => {
       renderItem={({ item }) => <MessageItem message={item} userID={userID} usersByID={usersByID} />}
       keyExtractor={message => message.id.toString()}
       onEndReached={onEndReached}
-      ListEmptyComponent={() => <Text>No messages.</Text>}
+      //ListEmptyComponent={() => <Text>No messages.</Text>}
       style={style}
     />
-    
+
   );
 
 };

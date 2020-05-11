@@ -26,7 +26,7 @@ export const getTokenData = async () => {
 
 // returns true if token data was updated
 export const verifyTokenData = async (tokenData) => {
-  if (tokenData.expirationTime < new Date().getTime()) {
+  if (tokenData && tokenData.expirationTime < new Date().getTime()) {
     const newTokenData = await refreshTokens(tokenData.refreshToken);
     tokenData.accessToken = newTokenData.accessToken;
     tokenData.expirationTime = newTokenData.expirationTime;

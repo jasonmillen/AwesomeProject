@@ -1,9 +1,15 @@
 //import { ws } from '../api/server/socket';
-import { IP, MESSAGE_TYPE } from '../../config';
+import { IP } from '../../config';
 
 import * as trackAPI from '../api/spotify/track';
 
-export let ws = null;
+const MESSAGE_TYPE = {
+  REGISTER_USER: 'REGISTER_USER',
+  SEND_SONG: 'SEND_SONG',
+  CREATE_GROUP: 'CREATE_GROUP'
+};
+
+let ws = null;
 
 export const REGISTER_USER = 'REGISTER_USER';
 export const registerUser = () => {
@@ -14,15 +20,26 @@ export const registerUser = () => {
 };
 
 
-export const SOCKET_SEND_SONG = 'SOCKET_SEND_SONG';
-export const socketSendSong = (message) => {
+export const SOCKET_RECEIVE_SONG = 'SOCKET_RECEIVE_SONG';
+export const socketReceiveSong = (message) => {
   return {
-    type: SOCKET_SEND_SONG,
+    type: SOCKET_RECEIVE_SONG,
     payload: {
       message
     }
   };
-}
+};
+
+export const SOCKET_RECEIVE_GROUP = 'SOCKET_RECEIVE_GROUP';
+export const socketReceiveGroup = (group) => {
+  return {
+    type: SOCKET_RECEIVE_GROUP,
+    payload: {
+      group
+    }
+  };
+};
+
 
 export const initSocket = (userID) => {
   return async (dispatch) => {
@@ -58,8 +75,15 @@ export const initSocket = (userID) => {
         case MESSAGE_TYPE.SEND_SONG: {
           const message = payload.message;
           message.trackInfo = await trackAPI.getTrack(message.trackID);
-          dispatch(socketSendSong(payload.message));
+          dispatch(socketReceiveSong(message));
           return;
+        }
+        case MESSAGE_TYPE.CREATE_GROUP: {
+          const group = payload.group;
+          // TODO: get additional group info
+          dispatch(socketReceiveGroup(group));
+          return;
+
         }
         default: {
           console.log('Unknown message type');
@@ -77,7 +101,17 @@ export const groupAddSong = (message) => {
   const payload = {
     type: MESSAGE_TYPE.SEND_SONG,
     ...message
-  }
+  };
+
+  ws.send(JSON.stringify(payload));
+};
+
+export const createGroup = (group) => {
+
+  const payload = {
+    type: MESSAGE_TYPE.CREATE_GROUP,
+    ...group
+  };
 
   ws.send(JSON.stringify(payload));
 };

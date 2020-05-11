@@ -37,24 +37,19 @@ export default ({
     justifyContent: (userID === senderID) ? 'flex-end' : 'flex-start'
   };
 
-  const trackInfoStyle = {
-    //flexDirection: 'row'
-  };
-
   const senderUser = usersByID[senderID];
   
   const displayName = senderUser ? senderUser.displayName : null;
   const imageUrl = senderUser ? senderUser.imageUrl : null;
 
   return (
-
     <TouchableOpacity style={messageStyle}>
       <View>
         <View style={{ flexDirection: 'row', marginBottom: 5 }}>
             {displayName && <Text style={{ marginRight: 5 }}>{displayName}</Text>}
             {imageUrl && <Image source={{ uri: imageUrl }} style={styles.userImage} />}
         </View>
-        <View style={trackInfoStyle}>
+        <View>
           { trackImage && trackImage.url && <Image source={{ uri: trackImage.url }} style={styles.trackImage} /> }
           <View>
             { trackInfo.name && <Text>{trackInfo.name}</Text>}

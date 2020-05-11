@@ -80,11 +80,12 @@ export const userGetGroupsError = () => {
   };
 };
 
-export const userGetGroupsSuccess = (groups) => {
+export const userGetGroupsSuccess = (groups, groupFollowStatusByID) => {
   return {
     type: USER_GET_GROUPS_SUCCESS,
     payload: {
-      groups
+      groups,
+      groupFollowStatusByID
     }
   };
 };
@@ -99,7 +100,7 @@ export const userGetUsersSuccess = (users) => {
   };
 };
 
-export const fetchUserGetGroups = (userID, tokenData) => {
+export const fetchUserGetGroups = (userID, spotifyUserID, tokenData) => {
   console.log("fetchUserGetGroups");
   return async (dispatch) => {
     dispatch (userGetGroupsRequest());
@@ -107,18 +108,27 @@ export const fetchUserGetGroups = (userID, tokenData) => {
     if (await verifyTokenData(tokenData)) {
       dispatch (setUserTokensSuccess(tokenData));
     }
-
+    
     try {
       const groupsData = await serverAPI.getGroupsForUser(userID);
       const groups = groupsData.groups;
+      const groupFollowStatusByID = {};
       
       await Promise.all(groups.map(async group => {
         const playlistInfo = await playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
         group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
         group.playlistName = playlistInfo.name;
+
+        if (playlistInfo.owner.id  === spotifyUserID) {
+          groupFollowStatusByID[group.id] = true;
+        }
+        else {
+          const isFollowing = await playlistAPI.checkIfUserFollowsPlaylist(group.playlistID, spotifyUserID);
+          groupFollowStatusByID[group.id] = isFollowing;
+        }
       }));
 
-      dispatch (userGetGroupsSuccess(groups));
+      dispatch (userGetGroupsSuccess(groups, groupFollowStatusByID));
 
       const users = groupsData.users;
       await Promise.all(users.map(async user => {
@@ -200,4 +210,49 @@ export const groupSelect = (groupID) => {
   };
 };
 
+
+export const GROUP_FOLLOW_PLAYLIST_REQUEST = 'GROUP_FOLLOW_PLAYLST_REQUEST';
+export const GROUP_FOLLOW_PLAYLIST_ERROR = 'GROUP_FOLLOW_PLAYLST_ERROR';
+export const GROUP_FOLLOW_PLAYLIST_SUCCESS = 'GROUP_FOLLOW_PLAYLST_SUCCESS';
+
+export const groupFollowPlaylistRequest = () => {
+  return {
+    type: GROUP_FOLLOW_PLAYLIST_REQUEST,
+    payload: {}
+  };
+};
+
+export const groupFollowPlaylistError = () => {
+  return {
+    type: GROUP_FOLLOW_PLAYLIST_ERROR,
+    payload: {}
+  };
+};
+
+export const groupFollowPlaylistSuccess = (groupID) => {
+  return {
+    type: GROUP_FOLLOW_PLAYLIST_SUCCESS,
+    payload: {
+      groupID
+    }
+  };
+};
+
+export const groupFollowPlaylist = (group) => {
+  return async (dispatch) => {
+    
+    dispatch(groupFollowPlaylistRequest());
+    
+    try {
+      const response = await playlistAPI.followPlaylist(group.playlistID);
+      dispatch(groupFollowPlaylistSuccess(group.id));
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(groupFollowPlaylistError());
+    }
+
+
+  }
+}
 

@@ -7,11 +7,6 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 
-import {
-  IP,
-  MESSAGE_TYPE
-} from '../../../config';
-
 import GroupList from '../../Components/GroupList';
 
 import ViewProfileButton from '../../Components/ViewProfileButton';
@@ -28,12 +23,14 @@ import {
   selectUserGetGroupsError,
   selectUserGetGroupsSuccess,
   selectGroups,
-  selectSelectedGroupID
+  selectSelectedGroupID,
+  selectGroupFollowStatusByID
  } from '../../reducers/groupReduer';
 
 import { 
   fetchUserGetGroups,
-  groupSelect
+  groupSelect,
+  groupFollowPlaylist
  } from '../../actions/groupActions';
 
 import { initSocket } from '../../actions/socketActions';
@@ -83,7 +80,7 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getGroupsForUser(this.props.userID, this.props.tokenData);
+    this.props.getGroupsForUser(this.props.userID, this.props.spotifyUserID, this.props.tokenData);
 
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
@@ -111,6 +108,10 @@ class Home extends React.Component {
     this.props.navigation.navigate('Group', { groupID: group.id, playlistName: group.playlistName });
   }
 
+  handleFollowPlaylistPressed(group) {
+    this.props.followPlaylist(group);
+  }
+
   render() {
 
     if (this.props.userGetGroupsError) {
@@ -133,8 +134,11 @@ class Home extends React.Component {
         <Text>Total num of groups is {this.props.groups.length}</Text>
         <GroupList
           groups={this.props.groups}
+          groupFollowStatusByID={this.props.groupFollowStatusByID}
           onEndReached={() => this.handleGroupListEndReached()}
           onItemPressed={(group) => this.handleGroupListItemPressed(group)}
+          onFollowPlaylistPressed={(group) => this.handleFollowPlaylistPressed(group)}
+          style={styles.groupList}
         /> 
       </View>
     );
@@ -153,20 +157,24 @@ const mapStateToProps = (state) => {
     tokenData: selectTokenData(state),
     userGetGroupsError: selectUserGetGroupsError(state),
     userGetGroupsSuccess: selectUserGetGroupsSuccess(state),
-    selectedGroupID: selectSelectedGroupID(state)
+    selectedGroupID: selectSelectedGroupID(state),
+    groupFollowStatusByID: selectGroupFollowStatusByID(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getGroupsForUser: (userID, tokenData) => {
-      dispatch (fetchUserGetGroups(userID, tokenData));
+    getGroupsForUser: (userID, spotifyUserID, tokenData) => {
+      dispatch (fetchUserGetGroups(userID, spotifyUserID, tokenData));
     },
     selectGroup: (groupID) => {
       dispatch (groupSelect(groupID));
     },
     initSocket: (userID) => {
       dispatch (initSocket(userID));
+    },
+    followPlaylist: (group) => {
+      dispatch (groupFollowPlaylist(group));
     }
   };
 };
@@ -195,6 +203,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
     marginLeft: 10
+  },
+  groupList: {
+    marginTop: 10,
+    width: '100%'
   }
 });
 
