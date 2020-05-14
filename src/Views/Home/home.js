@@ -80,7 +80,7 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getGroupsForUser(this.props.userID, this.props.spotifyUserID, this.props.tokenData);
+    this.props.getGroupsForUser(this.props.userID, this.props.spotifyUserID);
 
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
@@ -164,8 +164,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getGroupsForUser: (userID, spotifyUserID, tokenData) => {
-      dispatch (fetchUserGetGroups(userID, spotifyUserID, tokenData));
+    getGroupsForUser: (userID, spotifyUserID) => {
+      dispatch (fetchUserGetGroups(userID, spotifyUserID));
     },
     selectGroup: (groupID) => {
       dispatch (groupSelect(groupID));

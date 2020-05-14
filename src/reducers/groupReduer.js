@@ -14,6 +14,8 @@ import {
   GROUP_FOLLOW_PLAYLIST_SUCCESS
 } from '../actions/groupActions';
 
+import { SOCKET_RECEIVE_GROUP } from '../actions/socketActions';
+
 const initialState = {
   userGetGroupsSuccess: null,
   userGetGroupsError: null,
@@ -99,7 +101,22 @@ export default groupReducer = (state = initialState, action) => {
           ...state.groupFollowStatusByID,
           [groupID]: true
         }
-      }
+      };
+    }
+    case SOCKET_RECEIVE_GROUP: {
+      console.log(SOCKET_RECEIVE_GROUP);
+      const group = action.payload.group;
+      return {
+        ...state,
+        groupsByID: {
+          ...state.groupsByID,
+          [group.id]: group
+        },
+        groupFollowStatusByID: {
+          ...state.groupFollowStatusByID,
+          [group.id]: false
+        }
+      };
     }
     default:
       return state;

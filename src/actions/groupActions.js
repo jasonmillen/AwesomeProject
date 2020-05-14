@@ -47,12 +47,13 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
     try {
       const playlistData = await playlistAPI.createPlaylist(creatorSpotifyID, playlistName, tokenData.accessToken);
       const playlistID = playlistData.id;
-      const res = await serverAPI.createGroup(creatorID, memberSpotifyIDs, playlistID);
+      const group = await serverAPI.createGroup(creatorID, memberSpotifyIDs, playlistID);
+      sockAPI.createGroup(group);
 
       dispatch(groupCreateSuccess());
 
       // refresh group data
-      dispatch(fetchUserGetGroups(creatorID, tokenData));
+      dispatch(fetchUserGetGroups(creatorID, creatorSpotifyID));
       
     }
     catch (error) {
@@ -100,22 +101,18 @@ export const userGetUsersSuccess = (users) => {
   };
 };
 
-export const fetchUserGetGroups = (userID, spotifyUserID, tokenData) => {
+export const fetchUserGetGroups = (userID, spotifyUserID) => {
   console.log("fetchUserGetGroups");
   return async (dispatch) => {
     dispatch (userGetGroupsRequest());
 
-    if (await verifyTokenData(tokenData)) {
-      dispatch (setUserTokensSuccess(tokenData));
-    }
-    
     try {
       const groupsData = await serverAPI.getGroupsForUser(userID);
       const groups = groupsData.groups;
       const groupFollowStatusByID = {};
       
       await Promise.all(groups.map(async group => {
-        const playlistInfo = await playlistAPI.getPlaylist(group.playlistID, tokenData.accessToken);
+        const playlistInfo = await playlistAPI.getPlaylist(group.playlistID);
         group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
         group.playlistName = playlistInfo.name;
 

@@ -2,6 +2,7 @@
 import { IP } from '../../config';
 
 import * as trackAPI from '../api/spotify/track';
+import * as playlistAPI from '../api/spotify/playlist';
 
 const MESSAGE_TYPE = {
   REGISTER_USER: 'REGISTER_USER',
@@ -80,7 +81,10 @@ export const initSocket = (userID) => {
         }
         case MESSAGE_TYPE.CREATE_GROUP: {
           const group = payload.group;
-          // TODO: get additional group info
+          // TODO: process user info as well
+          const playlistInfo = await playlistAPI.getPlaylist(group.playlistID);
+          group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
+          group.playlistName = playlistInfo.name;
           dispatch(socketReceiveGroup(group));
           return;
 
@@ -93,7 +97,6 @@ export const initSocket = (userID) => {
     };
   };
 };
-
 
 ///////////// API ////////////////
 export const groupAddSong = (message) => {

@@ -79,8 +79,9 @@ export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
       playlistID
     })
   });
-  response = await response.json();
-  console.log('CREATE GROUP res: ', response);
+  group = await response.json();
+  console.log('CREATE GROUP res: ', group);
+  return group;
 };
 
 export const getGroupsForUser = async (userID) => {
