@@ -5,6 +5,7 @@ import {
   Button,
   StyleSheet
 } from 'react-native';
+import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
 import { Linking } from 'expo';
 
@@ -21,6 +22,8 @@ import {
   selectMessagesGetForGroupError,
   selectMessagesGetForGroupSuccess
 } from '../../reducers/messageReducer';
+
+import * as socketAPI from '../../actions/socketActions';
 
 class Group extends React.Component {
 
@@ -56,11 +59,13 @@ class Group extends React.Component {
       handleViewPlaylistOnSpotifyButtonPress: this.handleViewPlaylistOnSpotifyButtonPress,
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
     });
+
+    this.state = {
+      searchingForSong: false
+    };
   }
 
   componentDidMount() {
-    console.log('COMPONENT DID MOUNT!!!');
-    
     if (!this.props.selectedGroup) {
       console.error("No selected group when mounting group screen");
       throw new Error("No selected group when mounting group screen");
@@ -72,6 +77,8 @@ class Group extends React.Component {
   }
 
   handleSearchSongButtonPress(navigation) {
+    this.setState({ searchingForSong: true });
+    socketAPI.searchSongStart(this.props.userID, this.props.selectedGroup.id);
     navigation.navigate('SearchSong', { group: this.props.selectedGroup });
   }
 
@@ -82,6 +89,12 @@ class Group extends React.Component {
     }
     catch (error) {
       console.log('Error attempting to open group playlist in spotify: ', error);
+    }
+  }
+
+  handleScreenComeIntoFocus() {
+    if (this.state.searchingForSong) {
+      
     }
   }
 
@@ -114,8 +127,13 @@ class Group extends React.Component {
       }
     }
 
+
     return (
       <View style={styles.groupPage}>
+        <NavigationEvents
+          onWillFocus={() => console.log("WILL FOCUS!")}
+          onWillBlur={() => console.log('WILL BLUR!!')}
+        />
         {messageComponent}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
       </View>

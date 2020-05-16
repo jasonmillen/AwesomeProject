@@ -113,7 +113,7 @@ export const fetchUserGetGroups = (userID, spotifyUserID) => {
       
       await Promise.all(groups.map(async group => {
         const playlistInfo = await playlistAPI.getPlaylist(group.playlistID);
-        group.imageUrl = playlistInfo.images.length > 0 ? playlistInfo.images[0].url : "";
+        group.imageUrl = (playlistInfo && playlistInfo.images && playlistInfo.images.length > 0 ) ? playlistInfo.images[0].url : "";
         group.playlistName = playlistInfo.name;
 
         if (playlistInfo.owner.id  === spotifyUserID) {
