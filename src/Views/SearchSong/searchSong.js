@@ -5,6 +5,8 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
+import { HeaderBackButton } from 'react-navigation-stack';
 import { Linking } from 'expo';
 
 import {
@@ -28,16 +30,34 @@ import {
 } from '../../reducers/userReducer';
 import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 
+import { searchSongStop } from '../../actions/socketActions';
+
 const PAGE = 20;
 
 class SearchSong extends React.Component {
 
-  static navigationOptions = {
-    title: 'Search For Song'
+  static navigationOptions = ({ navigation }) => {
+
+    const group = navigation.getParam('group');
+    const userID = navigation.getParam('userID');
+
+    const handleBackButtonPress = () => {
+      console.log('CUSTOM BACK BUTTON', group.id, userID);
+      navigation.dispatch(NavigationActions.back());
+    };
+
+    return {
+      title: 'Search For Song',
+      headerLeft: <HeaderBackButton onPress={handleBackButtonPress} />
+    };
   };
-  
+
   constructor(props) {
     super(props);
+
+    props.navigation.setParams({
+      userID: this.props.userID
+    });
 
     const group = props.navigation.getParam('group');
 
@@ -153,6 +173,10 @@ class SearchSong extends React.Component {
 
 
   render() {
+
+    useFoc
+
+
     const { songs, query, isFetching } = this.state;
 
     return (

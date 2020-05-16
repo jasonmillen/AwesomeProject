@@ -44,7 +44,6 @@ export const checkIfUserFollowsPlaylist = async (playlistID, spotifyUserID) => {
   const tokenData = await getTokenData();
 
   const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}/followers/contains?ids=${spotifyUserID}`;
-  console.log('GET FOLLOWERS QUERY URL: ' + uri);
   const res = await fetch(uri, {
     method: 'GET',
     headers: {
@@ -54,7 +53,7 @@ export const checkIfUserFollowsPlaylist = async (playlistID, spotifyUserID) => {
   });
 
   const json = await res.json();
-  console.log('GET FOLLOWERS RESPONSE: ', json);
+  //console.log('GET FOLLOWERS RESPONSE: ', json);
   return json[0];
 };
 

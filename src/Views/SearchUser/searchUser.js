@@ -8,7 +8,7 @@ import {
   Image,
   StyleSheet
 } from 'react-native';
-import Toast from 'react-native-simple-toast';
+//import Toast from 'react-native-simple-toast';
 
 import StartChatButton from '../../Components/StartChatButton';
 import NamePlaylistModal from '../../Components/NamePlaylistModal';
@@ -62,7 +62,7 @@ class SearchUser extends React.Component {
     console.log('playlist name:', playlistName);
     if (playlistName.trim().length <= 0) {
       console.log('cannot have empty playlist name');
-      Toast.showWithGravity('Please enter a playlist name', Toast.SHORT, Toast.CENTER);
+      //if (Toast) { Toast.showWithGravity('Please enter a playlist name', Toast.SHORT, Toast.CENTER); }
       return;
     }
     this.setState({ namePlaylistModalView: false });

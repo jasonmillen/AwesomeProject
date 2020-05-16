@@ -54,7 +54,7 @@ export default groupReducer = (state = initialState, action) => {
     }
     case USER_GET_GROUPS_SUCCESS: {
       console.log(USER_GET_GROUPS_SUCCESS);
-      console.log(action.payload.groupFollowStatusByID);
+      //console.log(action.payload.groupFollowStatusByID);
       const groupsByID = action.payload.groups.reduce((groupsByID, group) => {
         groupsByID[group.id] = group;
         return groupsByID;

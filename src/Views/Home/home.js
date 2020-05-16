@@ -43,10 +43,10 @@ class Home extends React.Component {
       title: navigation.getParam('displayName') || navigation.getParam('spotifyUserID'),
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
-          <SearchSongButton
+          {/* <SearchSongButton
             style={styles.searchSongButton}
             onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
-          />
+          /> */}
           <SearchUserHeaderButton
             style={styles.searchUserHeaderButton}
             onPress={() => navigation.getParam('handleStartChatButtonPress')(navigation)}

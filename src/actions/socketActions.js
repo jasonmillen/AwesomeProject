@@ -7,7 +7,9 @@ import * as playlistAPI from '../api/spotify/playlist';
 const MESSAGE_TYPE = {
   REGISTER_USER: 'REGISTER_USER',
   SEND_SONG: 'SEND_SONG',
-  CREATE_GROUP: 'CREATE_GROUP'
+  CREATE_GROUP: 'CREATE_GROUP',
+  SEARCH_SONG_START: 'SEARCH_SONG_START',
+  SEARCH_SONG_STOP: 'SEARCH_SONG_STOP'
 };
 
 let ws = null;
@@ -87,7 +89,6 @@ export const initSocket = (userID) => {
           group.playlistName = playlistInfo.name;
           dispatch(socketReceiveGroup(group));
           return;
-
         }
         default: {
           console.log('Unknown message type');
@@ -114,6 +115,34 @@ export const createGroup = (group) => {
   const payload = {
     type: MESSAGE_TYPE.CREATE_GROUP,
     ...group
+  };
+
+  ws.send(JSON.stringify(payload));
+};
+
+export const searchSongStart = (userID, groupID) => {
+
+  console.log('SENDING SEARCHING FOR SONG START');
+  return;
+
+  const payload = {
+    type: MESSAGE_TYPE.SEARCH_SONG_START,
+    userID,
+    groupID
+  };
+
+  ws.send(JSON.stringify(payload));
+};
+
+export const searchSongStop = (userID, groupID) => {
+
+  console.log('SENDING SEARCHING FOR SONG STOP');
+  return;
+
+  const payload = {
+    type: MESSAGE_TYPE.SEARCH_SONG_STOP,
+    userID,
+    groupID
   };
 
   ws.send(JSON.stringify(payload));

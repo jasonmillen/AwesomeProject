@@ -1,4 +1,4 @@
-import Toast from 'react-native-simple-toast';
+//import Toast from 'react-native-simple-toast';
 
 import { verifyTokenData } from '../api/spotify/token';
 import * as userAPI from '../api/spotify/user';
@@ -188,7 +188,7 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
       message.trackInfo = await trackAPI.getTrack(message.trackID);
 
       dispatch(groupAddSongSuccess(message));
-      Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER);
+      //if (Toast) { Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER); }
     }
     catch (error) {
       console.error(error);

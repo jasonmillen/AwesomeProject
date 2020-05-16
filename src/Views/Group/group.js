@@ -59,6 +59,8 @@ class Group extends React.Component {
   }
 
   componentDidMount() {
+    console.log('COMPONENT DID MOUNT!!!');
+    
     if (!this.props.selectedGroup) {
       console.error("No selected group when mounting group screen");
       throw new Error("No selected group when mounting group screen");
