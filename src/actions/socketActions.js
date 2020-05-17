@@ -43,6 +43,28 @@ export const socketReceiveGroup = (group) => {
   };
 };
 
+export const SOCKET_RECEIVE_SEARCH_SONG_START = 'SOCKET_RECEIVE_SEARCH_SONG_START';
+export const socketReceiveSearchSongStart = (userID, groupID) => {
+  return {
+    type: SOCKET_RECEIVE_SEARCH_SONG_START,
+    payload: {
+      userID,
+      groupID
+    }
+  };
+};
+
+export const SOCKET_RECEIVE_SEARCH_SONG_STOP = 'SOCKET_RECEIVE_SEARCH_SONG_STOP';
+export const socketReceiveSearchSongStop = (userID, groupID) => {
+  return {
+    type: SOCKET_RECEIVE_SEARCH_SONG_STOP,
+    payload: {
+      userID,
+      groupID
+    }
+  }
+}
+
 
 export const initSocket = (userID) => {
   return async (dispatch) => {
@@ -90,6 +112,18 @@ export const initSocket = (userID) => {
           dispatch(socketReceiveGroup(group));
           return;
         }
+        case MESSAGE_TYPE.SEARCH_SONG_START: {
+          const userID = payload.userID;
+          const groupID = payload.groupID;
+          dispatch(socketReceiveSearchSongStart(userID, groupID));
+          return;
+        }
+        case MESSAGE_TYPE.SEARCH_SONG_STOP: {
+          const userID = payload.userID;
+          const groupID = payload.groupID;
+          dispatch(socketReceiveSearchSongStop(userID, groupID));
+          return;
+        }
         default: {
           console.log('Unknown message type');
           return;
@@ -123,7 +157,7 @@ export const createGroup = (group) => {
 export const searchSongStart = (userID, groupID) => {
 
   console.log('SENDING SEARCHING FOR SONG START');
-  return;
+  //return;
 
   const payload = {
     type: MESSAGE_TYPE.SEARCH_SONG_START,
@@ -137,7 +171,7 @@ export const searchSongStart = (userID, groupID) => {
 export const searchSongStop = (userID, groupID) => {
 
   console.log('SENDING SEARCHING FOR SONG STOP');
-  return;
+  //return;
 
   const payload = {
     type: MESSAGE_TYPE.SEARCH_SONG_STOP,

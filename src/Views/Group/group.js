@@ -16,14 +16,14 @@ import MessageList from '../../Components/MessageList';
 import { fetchMessagesGetForGroup } from '../../actions/messageActions';
 
 import { selectUserID, selectUsersByID } from '../../reducers/userReducer';
-import { selectSelectedGroup } from '../../reducers/groupReduer';
+import { selectSelectedGroup, selectUsersSearchingForSongsForGroupID } from '../../reducers/groupReduer';
 import { 
   selectMessagesForGroup,
   selectMessagesGetForGroupError,
   selectMessagesGetForGroupSuccess
 } from '../../reducers/messageReducer';
 
-import * as socketAPI from '../../actions/socketActions';
+//import * as socketAPI from '../../actions/socketActions';
 
 class Group extends React.Component {
 
@@ -60,9 +60,9 @@ class Group extends React.Component {
       handleSearchSongButtonPress: this.handleSearchSongButtonPress
     });
 
-    this.state = {
-      searchingForSong: false
-    };
+    // this.state = {
+    //   searchingForSong: false
+    // };
   }
 
   componentDidMount() {
@@ -77,8 +77,8 @@ class Group extends React.Component {
   }
 
   handleSearchSongButtonPress(navigation) {
-    this.setState({ searchingForSong: true });
-    socketAPI.searchSongStart(this.props.userID, this.props.selectedGroup.id);
+    //this.setState({ searchingForSong: true });
+    //socketAPI.searchSongStart(this.props.userID, this.props.selectedGroup.id);
     navigation.navigate('SearchSong', { group: this.props.selectedGroup });
   }
 
@@ -92,18 +92,17 @@ class Group extends React.Component {
     }
   }
 
-  handleScreenComeIntoFocus() {
-    if (this.state.searchingForSong) {
-      
-    }
-  }
+  // handleScreenComeIntoFocus() {
+  //   if (this.state.searchingForSong) {
+
+  //   }
+  // }
 
   handleMessageListEndReached() {
     console.log('Message list end reached!');
   }
 
   render() {
-
     const messages = this.props.messages;
     if (messages) {
       console.log('MESSAGES LENGTH: ', messages.length);
@@ -127,14 +126,19 @@ class Group extends React.Component {
       }
     }
 
+    let usersSearchingComponent = null;
+    if (this.props.usersSearchingForSongs && this.props.usersSearchingForSongs.length > 0) {
+      usersSearchingComponent = this.props.usersSearchingForSongs.map(userID => {
+        const user = this.props.usersByID[userID];
+        const displayText = user.displayName ? user.displayName : user.spotifyUserID;
+        return <Text key={userID}>{displayText} is searching for songs</Text>;
+      });
+    }
 
     return (
       <View style={styles.groupPage}>
-        <NavigationEvents
-          onWillFocus={() => console.log("WILL FOCUS!")}
-          onWillBlur={() => console.log('WILL BLUR!!')}
-        />
         {messageComponent}
+        {<View>{usersSearchingComponent}</View>}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
       </View>
     );
@@ -149,13 +153,15 @@ const mapStateToProps = (state) => {
   const messagesGetForGroupSuccess = selectMessagesGetForGroupSuccess(state, selectedGroup.id);
   const userID = selectUserID(state);
   const usersByID = selectUsersByID(state);
+  const usersSearchingForSongs = selectUsersSearchingForSongsForGroupID(state, selectedGroup.id);
   return {
     selectedGroup,
     messages,
     messagesGetForGroupError,
     messagesGetForGroupSuccess,
     userID,
-    usersByID
+    usersByID,
+    usersSearchingForSongs
   };
 };
 

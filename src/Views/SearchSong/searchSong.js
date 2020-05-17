@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-// import { NavigationActions } from 'react-navigation';
+import { NavigationEvents, /*NavigationActions*/ } from 'react-navigation';
 // import { HeaderBackButton } from 'react-navigation-stack';
 import { Linking } from 'expo';
 
@@ -30,7 +30,7 @@ import {
 } from '../../reducers/userReducer';
 import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 
-// import { searchSongStop } from '../../actions/socketActions';
+import * as socketAPI from '../../actions/socketActions';
 
 const PAGE = 20;
 
@@ -70,7 +70,8 @@ class SearchSong extends React.Component {
       isForGroupID: group && group.id ? group.id : null,
       isForGroup: group,
       addSongToGroupModalView: false,
-      selectedSongID: null
+      selectedSongID: null,
+      startedSearching: false
     };
   }
 
@@ -112,11 +113,17 @@ class SearchSong extends React.Component {
   }
 
   handleSearchChange(text) {
+
+    if (!this.state.startedSearching && this.props.userID && this.state.isForGroupID) {
+      socketAPI.searchSongStart(this.props.userID, this.state.isForGroupID);
+    }
+
     this.setState({
       isEmpty: false,
       query: text,
       offset: 0,
       songs: [],
+      startedSearching: true
     }, () => {
       this.loadNextPage();
     });
@@ -171,6 +178,12 @@ class SearchSong extends React.Component {
     this.props.groupAddSong(groupID, playlistID, songID, userID);
   }
 
+  handleComponentWillBlur () {
+    if (this.props.userID && this.state.isForGroupID) {
+      socketAPI.searchSongStop(this.props.userID, this.state.isForGroupID);
+    }
+  }
+
 
   render() {
 
@@ -178,6 +191,9 @@ class SearchSong extends React.Component {
 
     return (
       <View style={styles.container}>
+        <NavigationEvents
+          onWillBlur={() => this.handleComponentWillBlur()}
+        />
         <Search 
           onChange={text => this.handleSearchChange(text)}
           text={query}

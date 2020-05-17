@@ -14,13 +14,18 @@ import {
   GROUP_FOLLOW_PLAYLIST_SUCCESS
 } from '../actions/groupActions';
 
-import { SOCKET_RECEIVE_GROUP } from '../actions/socketActions';
+import { 
+  SOCKET_RECEIVE_GROUP, 
+  SOCKET_RECEIVE_SEARCH_SONG_START, 
+  SOCKET_RECEIVE_SEARCH_SONG_STOP 
+} from '../actions/socketActions';
 
 const initialState = {
   userGetGroupsSuccess: null,
   userGetGroupsError: null,
   groupsByID: {},
   groupFollowStatusByID: {},
+  usersSearchingForSongsByGroupID: {},
   selectedGroupID: null
 };
 
@@ -118,6 +123,51 @@ export default groupReducer = (state = initialState, action) => {
         }
       };
     }
+    case SOCKET_RECEIVE_SEARCH_SONG_START: {
+      console.log(SOCKET_RECEIVE_SEARCH_SONG_START);
+      const userID = action.payload.userID;
+      const groupID = action.payload.groupID;
+      let usersSearchingForSongs = state.usersSearchingForSongsByGroupID[groupID];
+      if (!usersSearchingForSongs) {
+        usersSearchingForSongs = [userID];
+      }
+      else if (usersSearchingForSongs.indexOf(userID) < 0) {
+        usersSearchingForSongs = usersSearchingForSongs.concat([userID]);
+      }
+
+      return {
+        ...state,
+        usersSearchingForSongsByGroupID: {
+          ...state.usersSearchingForSongsByGroupID,
+          [groupID]: usersSearchingForSongs
+        }
+      };
+    }
+    case SOCKET_RECEIVE_SEARCH_SONG_STOP: {
+      console.log(SOCKET_RECEIVE_SEARCH_SONG_STOP);
+      const userID = action.payload.userID;
+      const groupID = action.payload.groupID;
+      let usersSearchingForSongs = state.usersSearchingForSongsByGroupID[groupID];
+      if (!usersSearchingForSongs) {
+        usersSearchingForSongs = [];
+      }
+      else if (usersSearchingForSongs.indexOf(userID) >= 0) {
+        usersSearchingForSongs = usersSearchingForSongs.filter(id => { return id !== userID})
+      }
+
+      return {
+        ...state,
+        usersSearchingForSongsByGroupID: {
+          ...state.usersSearchingForSongsByGroupID,
+          [groupID]: usersSearchingForSongs
+        }
+      };
+    }
+    case SOCKET_RECEIVE_SEARCH_SONG_STOP: {
+      return {
+        ...state
+      };
+    }
     default:
       return state;
   }
@@ -145,4 +195,9 @@ export const selectSelectedGroup = (state) => {
 
 export const selectGroupFollowStatusByID = (state) => {
   return state.group.groupFollowStatusByID;
+};
+
+export const selectUsersSearchingForSongsForGroupID = (state, groupID) => {
+  console.log('SELECITNG!!!!!!');
+  return state.group.usersSearchingForSongsByGroupID[groupID];
 };
