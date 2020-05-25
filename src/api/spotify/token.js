@@ -36,6 +36,14 @@ export const verifyTokenData = async (tokenData) => {
   return false;
 };
 
+export const clearTokenData = () => {
+  _tokenData = {
+    accessToken: null,
+    expirationTime: null,
+    refreshToken: null
+  };
+};
+
 
 /*const apiPrefix = 'https://accounts.spotify.com/api';
 const base64credentials = 'OGNmNTM4MGY1ODhjNGVhMTg4NDk2ZTI1NGVkNjM3NjA6MjZjZjkxMTg2ZDdlNDBhMWI1ZmVlY2Y0NDlmNzk4MWI=';

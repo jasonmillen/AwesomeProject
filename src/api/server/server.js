@@ -2,6 +2,8 @@ import {
   IP
 } from '../../../config';
 
+import { getSsTokenData } from './ssToken';
+
 export const getSpotifyTokenData = async (authCode) => {
   const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
     method: 'POST',
@@ -13,8 +15,14 @@ export const getSpotifyTokenData = async (authCode) => {
       authCode: authCode.params.code
     }),
   });
-  const tokenData = await response.json();
-  return tokenData;
+  const res = await response.json();
+  console.log('GET SPOTIFY TOKEN DATA RES: ', res);
+  const tokenData = res.tokenData;
+  const ssTokenData = res.ssTokenData;
+  return { 
+    tokenData, 
+    ssTokenData 
+  };
 };
 
 export const refreshTokens = async (refreshToken) => {
@@ -32,10 +40,15 @@ export const refreshTokens = async (refreshToken) => {
   return tokenData;
 };
 
+
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
+
+  const ssTokenData = await getSsTokenData();
+
   let response = await fetch(`http://${IP}:3000/api/user/${spotifyUserID}/spotify`, {
     method: 'GET',
     headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     }

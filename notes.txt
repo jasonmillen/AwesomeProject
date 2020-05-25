@@ -19,6 +19,7 @@ auth flow:
 
 4) what if our jwt token expires...? (constantly refresh in the background, or user will have to re-authenticate) (store this in memory) (can use expo secure store: )https://docs.expo.io/versions/latest/sdk/securestore/
 
+5) need to handle expiration of refresh token
 
 
 

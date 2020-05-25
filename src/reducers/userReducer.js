@@ -26,6 +26,11 @@ const initialState = {
   accessToken: null,
   expirationTime: null,
   refreshToken: null,
+  // ssTokenData: {
+  //   ssAccessToken: null,
+  //   ssExpirationTime: null,
+  //   ssRefreshToken: null
+  // },
   userID: null,
   spotifyUserID: null,
   getLoggedInUserSuccess: false,
@@ -57,6 +62,7 @@ export default userReducer = (state = initialState, action) => {
     case GET_LOGGED_IN_USER_SUCCESS: {
       console.log(GET_LOGGED_IN_USER_SUCCESS, action.payload.spotifyUserID, action.payload.tokenData);
       const tokenData = action.payload.tokenData;
+      // const ssTokenData = action.payload.ssTokenData;
       return {
         ...state,
         userID: action.payload.userID,
@@ -65,6 +71,11 @@ export default userReducer = (state = initialState, action) => {
         accessToken: tokenData.accessToken,
         expirationTime: tokenData.expirationTime,
         refreshToken: tokenData.refreshToken,
+        // ssTokenData: {
+        //   ssAccessToken: ssTokenData && ssTokenData.ssAccessToken ? ssTokenData.ssAccessToken : null,
+        //   ssExpirationTime: ssTokenData && ssTokenData.ssExpirationTime ? ssTokenData.ssExpirationTime : null,
+        //   ssRefreshToken: ssTokenData && ssTokenData.ssRefreshToken ? ssTokenData.ssRefreshToken : null,
+        // },
         getLoggedInUserSuccess: true
       };
     }
@@ -79,11 +90,17 @@ export default userReducer = (state = initialState, action) => {
     case LOGIN_SUCCESS: {
       console.log(LOGIN_SUCCESS);
       const tokenData = action.payload.tokenData;
+      // const ssTokenData = action.payload.ssTokenData;
       return {
         ...state,
         accessToken: tokenData.accessToken,
         expirationTime: tokenData.expirationTime,
         refreshToken: tokenData.refreshToken,
+        // ssTokenData: {
+        //   ssAccessToken: ssTokenData.ssAccessToken,
+        //   ssExpirationTime: ssTokenData.ssExpirationTime,
+        //   ssRefreshToken: ssTokenData.ssRefreshToken
+        // },
         userID: action.payload.userID,
         user: action.payload.user,
         spotifyUserID: action.payload.spotifyUserID,
@@ -123,6 +140,11 @@ export default userReducer = (state = initialState, action) => {
         accessToken: null,
         expirationTime: null,
         refreshToken: null,
+        // ssTokenData: {
+        //   ssAccessToken: null,
+        //   ssExpirationTime: null,
+        //   ssRefreshToken: null
+        // },
         userID: null,
         user: null,
         spotifyUserID: null,

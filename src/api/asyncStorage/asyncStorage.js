@@ -30,27 +30,57 @@ export const getTokenData = async () => {
   }
 };
 
-export const setUserID = async (userID) => {
+export const saveSsTokenData = async (ssAccessToken, ssExpirationTime, ssRefreshToken) => {
   try {
-    await AsyncStorage.setItem('userID', userID);
+    await AsyncStorage.multiSet([
+      ['ssAccessToken', ssAccessToken],
+      ['ssExpirationTime', ssExpirationTime.toString()],
+      ['ssRefreshToken', ssRefreshToken]
+    ]);
   }
   catch (error) {
-    console.error("Error setting userID", error);
+    console.log('Error saving token data', error);
     throw error;
   }
 };
 
-export const getUserID = async () => {
+export const getSsTokenData = async () => {
+  const keys = ['ssAccessToken', 'ssExpirationTime', 'ssRefreshToken'];
   try {
-    const userID = await AsyncStorage.getItem('userID');
-    return userID;
-
+    const stores = await AsyncStorage.multiGet(keys);
+    const userData = stores.reduce((data, store, i) => {
+      data[store[0]] = store[1];
+      return data;
+    }, {});
+    return userData;
   }
   catch (error) {
-    console.error('Error getting userID', error);
+    console.log('Error getting token data', error);
     throw error;
   }
 };
+
+// export const setUserID = async (userID) => {
+//   try {
+//     await AsyncStorage.setItem('userID', userID);
+//   }
+//   catch (error) {
+//     console.error("Error setting userID", error);
+//     throw error;
+//   }
+// };
+
+// export const getUserID = async () => {
+//   try {
+//     const userID = await AsyncStorage.getItem('userID');
+//     return userID;
+
+//   }
+//   catch (error) {
+//     console.error('Error getting userID', error);
+//     throw error;
+//   }
+// };
 
 export const setSpotifyUserID = async (userID) => {
   try {
@@ -74,19 +104,27 @@ export const getSpotifyUserID = async () => {
   }
 };
 
-export const removeUserIDAndTokenData = async () => {
-  try {
-    await AsyncStorage.multiRemove(['userID', 'accessToken', 'expirationTime', 'refreshToken']);
-  }
-  catch (error) {
-    console.error ('Error removing userID and token data', error);
-    throw error;
-  }
-};
+// export const removeUserIDAndTokenData = async () => {
+//   try {
+//     await AsyncStorage.multiRemove(['userID', 'accessToken', 'expirationTime', 'refreshToken']);
+//   }
+//   catch (error) {
+//     console.error ('Error removing userID and token data', error);
+//     throw error;
+//   }
+// };
 
 export const removeSpotifyUserIDAndTokenData = async () => {
   try {
-    await AsyncStorage.multiRemove(['spotifyUserID', 'accessToken', 'expirationTime', 'refreshToken']);
+    await AsyncStorage.multiRemove([
+      'spotifyUserID', 
+      'accessToken', 
+      'expirationTime', 
+      'refreshToken',
+      'ssAccessToken',
+      'ssExpirationTime',
+      'ssRefreshToken'
+    ]);
   }
   catch (error) {
     console.error ('Error removing spotifyUuserID and token data', error);
@@ -94,6 +132,7 @@ export const removeSpotifyUserIDAndTokenData = async () => {
   }
 };
 
+// utility function to clear async storage if we need to - not used
 export const clear = async () => {
   await AsyncStorage.clear();
 }
