@@ -4,6 +4,7 @@ import {
 
 import { getSsTokenData } from './ssToken';
 
+
 export const getSpotifyTokenData = async (authCode) => {
   const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
     method: 'POST',
@@ -43,8 +44,10 @@ export const refreshTokens = async (refreshToken) => {
 
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
 
+  console.log('BEFORE');
   const ssTokenData = await getSsTokenData();
 
+  console.log('AFTER')
   let response = await fetch(`http://${IP}:3000/api/user/${spotifyUserID}/spotify`, {
     method: 'GET',
     headers: {
@@ -61,6 +64,7 @@ export const getUserBySpotifyUserID = async (spotifyUserID) => {
 
   return res;
 };
+
 
 
 export const addNewUser = async (spotifyUserID) => {

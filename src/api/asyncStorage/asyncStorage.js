@@ -1,6 +1,10 @@
 import { AsyncStorage } from 'react-native';
 
 export const saveTokenData = async (accessToken, expirationTime, refreshToken) => {
+  if (!accessToken || !expirationTime || !refreshToken) {
+    throw new Error('Invalid tokenData in saveTokenData()');
+  }
+
   try {
     await AsyncStorage.multiSet([
       ['accessToken', accessToken],
@@ -31,6 +35,10 @@ export const getTokenData = async () => {
 };
 
 export const saveSsTokenData = async (ssAccessToken, ssExpirationTime, ssRefreshToken) => {
+  if (!ssAccessToken || !ssExpirationTime || !ssRefreshToken) {
+    throw new Error('Invalid ssTokenData in saveSsTokenData()');
+  }
+
   try {
     await AsyncStorage.multiSet([
       ['ssAccessToken', ssAccessToken],

@@ -11,13 +11,14 @@ export const getSsTokenData = async () => {
     _ssTokenData = await asAPI.getSsTokenData();
   }
 
+  console.log(2);
   if (await verifySsTokenData(_ssTokenData)) {
     await asAPI.saveSsTokenData(_ssTokenData.ssAccessToken, _ssTokenData.ssExpirationTime, _ssTokenData.ssRefreshToken);
   }
 
+  console.log(3);
   return _ssTokenData;
 };
-
 
 // returns true if token data was updated
 const verifySsTokenData = async (ssTokenData) => {
@@ -31,13 +32,14 @@ const verifySsTokenData = async (ssTokenData) => {
   return false;
 };
 
+
 // this would make more sense to put in /api/server/server.js, but this would result in cyclic dependency between server.js and ssToken.js
 const refreshSsTokens = async (ssRefreshToken) => {
   // TODO: implement me
   return {
-    ssAccessToken,
-    ssExpirationTime,
-    ssRefreshToken
+    ssAccessToken: null,
+    ssExpirationTime: null,
+    ssRefreshToken: null
   }
 };
 

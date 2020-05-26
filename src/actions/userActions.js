@@ -79,9 +79,15 @@ export const getLoggedInUser = () => {
     
     try {
       //await asAPI.clear();
-
       const spotifyUserID = await asAPI.getSpotifyUserID();
       const tokenData = await asAPI.getTokenData();
+      const ssTokenData = await asAPI.getSsTokenData();
+
+      if (!spotifyUserID || !tokenData || !ssTokenData) {
+        // should switch this to just return not logged in - shouldn't have to throw error here
+        throw new Error('No logged in user');
+      }
+
       // const ssTokenData = await asAPI.getSsTokenData();
       let user = await serverAPI.getUserBySpotifyUserID(spotifyUserID);
       if (user) {
