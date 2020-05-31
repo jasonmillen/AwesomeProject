@@ -1,3 +1,4 @@
+import { IP } from '../../../config';
 import * as asAPI from '../asyncStorage/asyncStorage';
 
 let _ssTokenData = {
@@ -23,10 +24,11 @@ export const getSsTokenData = async () => {
 // returns true if token data was updated
 const verifySsTokenData = async (ssTokenData) => {
   if (ssTokenData && ssTokenData.ssExpirationTime < new Date().getTime()) {
+    console.log('refreshing ssTokenData');
     const newSsTokenData = await refreshSsTokens(ssTokenData.ssRefreshToken);
     ssTokenData.ssAccessToken = newSsTokenData.ssAccessToken;
-    ssTokenData.ssAccessToken = newSsTokenData.ssExpirationTime;
-    ssTokenData.ssAccessToken = newSsTokenData.ssRefreshToken;
+    ssTokenData.ssExpirationTime = newSsTokenData.ssExpirationTime;
+    ssTokenData.ssRefreshToken = newSsTokenData.ssRefreshToken;
     return true;
   }
   return false;
@@ -35,12 +37,20 @@ const verifySsTokenData = async (ssTokenData) => {
 
 // this would make more sense to put in /api/server/server.js, but this would result in cyclic dependency between server.js and ssToken.js
 const refreshSsTokens = async (ssRefreshToken) => {
-  // TODO: implement me
-  return {
-    ssAccessToken: null,
-    ssExpirationTime: null,
-    ssRefreshToken: null
-  }
+  const response = await fetch(`http://${IP}:3000/auth/refresh`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ssRefreshToken
+    }),
+  });
+
+  const ssTokenData = await response.json();
+  console.log("REFRESHED SSTOKENDATA: ", ssTokenData);
+  return ssTokenData;
 };
 
 export const clearSsTokenData = () => {

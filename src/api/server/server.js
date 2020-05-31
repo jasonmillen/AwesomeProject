@@ -27,9 +27,13 @@ export const getSpotifyTokenData = async (authCode) => {
 };
 
 export const refreshTokens = async (refreshToken) => {
+
+  const ssTokenData = await getSsTokenData();
+
   const response = await fetch(`http://${IP}:3000/api/refreshSpotifyToken`, {
     method: 'POST',
     headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
@@ -41,11 +45,11 @@ export const refreshTokens = async (refreshToken) => {
   return tokenData;
 };
 
-
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
 
   console.log('BEFORE');
   const ssTokenData = await getSsTokenData();
+
 
   console.log('AFTER')
   let response = await fetch(`http://${IP}:3000/api/user/${spotifyUserID}/spotify`, {
@@ -66,11 +70,14 @@ export const getUserBySpotifyUserID = async (spotifyUserID) => {
 };
 
 
-
 export const addNewUser = async (spotifyUserID) => {
+
+  const ssTokenData = await getSsTokenData();
+
   let response = await fetch(`http://${IP}:3000/api/user/create`, {
     method: 'POST',
     headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
@@ -84,9 +91,13 @@ export const addNewUser = async (spotifyUserID) => {
 };
 
 export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
+
+  const ssTokenData = await getSsTokenData();
+
   let response = await fetch(`http://${IP}:3000/api/group/create`, {
     method: 'POST',
     headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
@@ -102,9 +113,13 @@ export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
 };
 
 export const getGroupsForUser = async (userID) => {
+
+  const ssTokenData = await getSsTokenData();
+
   let response = await fetch(`http://${IP}:3000/api/user/${userID}/groups`, {
     method: 'GET',
     headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     }
@@ -116,9 +131,12 @@ export const getGroupsForUser = async (userID) => {
 
 export const groupAddSong = async (groupID, trackID, senderID) => {
 
+  const ssTokenData = await getSsTokenData();
+
   let response = await fetch(`http://${IP}:3000/api/group/track`, {
     method: 'POST',
     headers: {
+      Bearer: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json'
     },
@@ -137,9 +155,12 @@ export const groupAddSong = async (groupID, trackID, senderID) => {
 
 export const groupGetMessages = async (groupID) => {
 
+  const ssTokenData = await getSsTokenData();
+
   let response = await fetch(`http://${IP}:3000/api/group/${groupID}/messages`, {
     method: 'GET',
     headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json'
     }
