@@ -91,6 +91,7 @@ export const getLoggedInUser = () => {
       // const ssTokenData = await asAPI.getSsTokenData();
       let user = await serverAPI.getUserBySpotifyUserID(spotifyUserID);
       if (user) {
+        await asAPI.setUserID(user.id);
         const userInfo = await userAPI.searchUser(spotifyUserID);
         user.displayName = userInfo.display_name;
         user.imageUrl = userInfo.images.length ? userInfo.images[0].url : null;
@@ -170,6 +171,7 @@ export const login = () => {
     if (!user || !user.id) {
       user = await serverAPI.addNewUser(spotifyUserData.id);
     }
+    await asAPI.setUserID(user.id);
     user.displayName = spotifyUserData.display_name;
     user.imageUrl = spotifyUserData.images.length ? spotifyUserData.images[0].url : null
 

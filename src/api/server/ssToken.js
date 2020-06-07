@@ -1,11 +1,25 @@
 import { IP } from '../../../config';
 import * as asAPI from '../asyncStorage/asyncStorage';
 
+// we keep this data here because it would be a pain to get it from the redux store
+// if we got it from the redux store, the userID and tokenData would have to be passed with all actions
+
+let _userID = null;
+
+export const getUserID = async () => {
+  if (!_userID) {
+    _userID = await asAPI.getUserID();
+  }
+
+  return _userID;
+};
+
 let _ssTokenData = {
   ssAccessToken: null,
   ssExpirationTime: null,
   ssRefreshToken: null
 };
+
 
 export const getSsTokenData = async () => {
   if (!_ssTokenData.ssAccessToken || !_ssTokenData.ssExpirationTime || !_ssTokenData.ssRefreshToken) {

@@ -69,27 +69,30 @@ export const getSsTokenData = async () => {
   }
 };
 
-// export const setUserID = async (userID) => {
-//   try {
-//     await AsyncStorage.setItem('userID', userID);
-//   }
-//   catch (error) {
-//     console.error("Error setting userID", error);
-//     throw error;
-//   }
-// };
+export const setUserID = async (userID) => {
 
-// export const getUserID = async () => {
-//   try {
-//     const userID = await AsyncStorage.getItem('userID');
-//     return userID;
+  const userIDString = userID.toString();
 
-//   }
-//   catch (error) {
-//     console.error('Error getting userID', error);
-//     throw error;
-//   }
-// };
+  try {
+    await AsyncStorage.setItem('userID', userIDString);
+  }
+  catch (error) {
+    console.error("Error setting userID", error);
+    throw error;
+  }
+};
+
+export const getUserID = async () => {
+  try {
+    const userIDString = await AsyncStorage.getItem('userID');
+    return parseInt(userIDString);
+
+  }
+  catch (error) {
+    console.error('Error getting userID', error);
+    throw error;
+  }
+};
 
 export const setSpotifyUserID = async (userID) => {
   try {
