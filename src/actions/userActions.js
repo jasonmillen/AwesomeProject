@@ -1,7 +1,4 @@
 import SpotifyWebApi from 'spotify-web-api-js';
-import {
-  IP
-} from '../../config';
 import * as asAPI from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
 import * as serverAPI from '../api/server/server';

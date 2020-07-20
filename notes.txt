@@ -1,3 +1,7 @@
+helpful commands:
+tail applicaiton logs: heroku logs -a song-share-app -t
+access heroku postgres db: heroku pg:psql postgresql-regular-65249 --app song-share-app
+
 https://tech.trello.com/why-we-chose-kafka/
 
 https://hackernoon.com/scaling-websockets-9a31497af051

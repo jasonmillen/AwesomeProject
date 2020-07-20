@@ -1,4 +1,4 @@
-import { IP } from '../../../config';
+import { BASE_URL } from '../../../config';
 import * as asAPI from '../asyncStorage/asyncStorage';
 
 // we keep this data here because it would be a pain to get it from the redux store
@@ -51,7 +51,7 @@ const verifySsTokenData = async (ssTokenData) => {
 
 // this would make more sense to put in /api/server/server.js, but this would result in cyclic dependency between server.js and ssToken.js
 const refreshSsTokens = async (ssRefreshToken) => {
-  const response = await fetch(`http://${IP}:3000/auth/refresh`, {
+  const response = await fetch(`${BASE_URL}/auth/refresh`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

@@ -1,12 +1,13 @@
 import {
-  IP
+  BASE_URL
 } from '../../../config';
 
 import { getUserID, getSsTokenData } from './ssToken';
 
 
 export const getSpotifyTokenData = async (authCode) => {
-  const response = await fetch(`http://${IP}:3000/api/getSpotifyToken`, {
+  console.log(`sending request to ${BASE_URL}/api/getSpotifyToken`);
+  const response = await fetch(`${BASE_URL}/api/getSpotifyToken`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -16,6 +17,7 @@ export const getSpotifyTokenData = async (authCode) => {
       authCode: authCode.params.code
     }),
   });
+  console.log('GOT RESPONSE');
   const res = await response.json();
   console.log('GET SPOTIFY TOKEN DATA RES: ', res);
   const tokenData = res.tokenData;
@@ -31,7 +33,7 @@ export const refreshTokens = async (refreshToken) => {
   const userID = await getUserID();
   const ssTokenData = await getSsTokenData();
 
-  const response = await fetch(`http://${IP}:3000/api/refreshSpotifyToken`, {
+  const response = await fetch(`${BASE_URL}/api/refreshSpotifyToken`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
@@ -54,7 +56,7 @@ export const getUserBySpotifyUserID = async (spotifyUserID) => {
 
 
   console.log('AFTER')
-  let response = await fetch(`http://${IP}:3000/api/user/${spotifyUserID}/spotify`, {
+  let response = await fetch(`${BASE_URL}/api/user/${spotifyUserID}/spotify`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
@@ -76,7 +78,7 @@ export const addNewUser = async (spotifyUserID) => {
 
   const ssTokenData = await getSsTokenData();
 
-  let response = await fetch(`http://${IP}:3000/api/user/create`, {
+  let response = await fetch(`${BASE_URL}/api/user/create`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
@@ -96,7 +98,7 @@ export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
 
   const ssTokenData = await getSsTokenData();
 
-  let response = await fetch(`http://${IP}:3000/api/group/create`, {
+  let response = await fetch(`${BASE_URL}/api/group/create`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
@@ -119,7 +121,7 @@ export const getGroupsForUser = async (userID) => {
 
   const ssTokenData = await getSsTokenData();
 
-  let response = await fetch(`http://${IP}:3000/api/user/${userID}/groups`, {
+  let response = await fetch(`${BASE_URL}/api/user/${userID}/groups`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
@@ -137,10 +139,10 @@ export const groupAddSong = async (groupID, trackID, senderID) => {
 
   const ssTokenData = await getSsTokenData();
 
-  let response = await fetch(`http://${IP}:3000/api/group/track`, {
+  let response = await fetch(`${BASE_URL}/api/group/track`, {
     method: 'POST',
     headers: {
-      Bearer: `Bearer ${ssTokenData.ssAccessToken}`,
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
       'UserID': senderID
@@ -164,7 +166,7 @@ export const groupGetMessages = async (groupID) => {
   const userID = await getUserID();
   const ssTokenData = await getSsTokenData();
 
-  let response = await fetch(`http://${IP}:3000/api/group/${groupID}/messages`, {
+  let response = await fetch(`${BASE_URL}/api/group/${groupID}/messages`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,

@@ -1,5 +1,5 @@
 //import { ws } from '../api/server/socket';
-import { IP } from '../../config';
+import { WS_URL } from '../../config';
 
 import * as trackAPI from '../api/spotify/track';
 import * as playlistAPI from '../api/spotify/playlist';
@@ -74,7 +74,7 @@ export const initSocket = (userID) => {
       return;
     }
 
-    ws = new WebSocket(`ws://${IP}:3000/app`);
+    ws = new WebSocket(`${WS_URL}/app`);
 
     ws.onopen = () => {
       console.log('OPENED!!');
