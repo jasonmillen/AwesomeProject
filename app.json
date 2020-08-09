@@ -28,6 +28,10 @@
       "infoPlist": {
         "LSApplicationQueriesSchemes": ["spotify"]
       }
+    },
+    "android": {
+      "package": "com.jasonmillen.AwesomeProject",
+      "versionCode": 1
     }
   }
 }
