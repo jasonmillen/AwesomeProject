@@ -2,6 +2,7 @@
   "expo": {
     "name": "Awesome Project",
     "slug": "AwesomeProject",
+    "scheme": "songshare",
     "privacy": "public",
     "platforms": [
       "ios",

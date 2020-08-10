@@ -1,4 +1,4 @@
-import { AuthSession } from 'expo';
+import * as AuthSession from 'expo-auth-session';
 
 import getSpotifyCredentials from './credentials';
 
@@ -13,6 +13,7 @@ export const getAuthorizationCode = async () => {
   let result;
   try {
     const credentials = getSpotifyCredentials();
+    AuthSession.mak
     const redirectUrl = AuthSession.getRedirectUrl();
     result = await AuthSession.startAsync({
       authUrl:
