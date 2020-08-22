@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Awesome Project",
-    "slug": "AwesomeProject",
+    "name": "Song Share",
+    "slug": "SongShare",
     "scheme": "songshare",
     "privacy": "public",
     "platforms": [
@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -33,7 +33,7 @@
     },
     "android": {
       "package": "com.jasonmillen.AwesomeProject",
-      "versionCode": 1
+      "versionCode": 2
     }
   }
 }
