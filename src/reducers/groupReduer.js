@@ -185,9 +185,30 @@ export const selectGroups = (state) => {
   return Object.values(state.group.groupsByID);
 };
 
+export const selectGroupsOrderedByLastUpdateTime = (state) => {
+
+  const groupsLastUpdateTimeComparator = (groupA, groupB) => {
+    if (groupA.lastUpdateTime === null && groupB.lastUpdateTime === null) {
+      return 0;
+    }
+    if (groupA.lastUpdateTime === null) {
+      return 1;
+    }
+    if (groupB.lastUpdateTime === null) {
+      return -1;
+    }
+    return groupA.lastUpdateTime > groupB.lastUpdateTime ? -1 : groupA.lastUpdateTime < groupB.lastUpdateTime ? 1 : 0;
+  };
+
+  let groups = Object.values(state.group.groupsByID);
+  groups.sort(groupsLastUpdateTimeComparator);
+  return groups;
+};
+
 export const selectSelectedGroupID = (state) => {
   return state.group.selectedGroupID;
 };
+
 
 export const selectSelectedGroup = (state) => {
   return state.group.groupsByID[state.group.selectedGroupID];

@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-import { NavigationEvents, /*NavigationActions*/ } from 'react-navigation';
+import { NavigationEvents /*NavigationActions*/ } from 'react-navigation';
 // import { HeaderBackButton } from 'react-navigation-stack';
 import { Linking } from 'expo';
 
@@ -77,6 +77,10 @@ class SearchSong extends React.Component {
 
   async componentDidMount() {
     //await this.loadNextPage();
+
+    this._unsubscribe = this.props.navigation.addListener('blur', () => {
+      console.log("HANDLING BLURR EVENT!!");
+    });
   }
 
   async loadNextPage() {
@@ -179,11 +183,11 @@ class SearchSong extends React.Component {
   }
 
   handleComponentWillBlur () {
+    console.log("HANDLING COMPONENT BLURRING!!!!");
     if (this.props.userID && this.state.isForGroupID) {
       socketAPI.searchSongStop(this.props.userID, this.state.isForGroupID);
     }
   }
-
 
   render() {
 
@@ -192,6 +196,9 @@ class SearchSong extends React.Component {
     return (
       <View style={styles.container}>
         <NavigationEvents
+          onDidFocus={() => console.log('FOCUS111111')}
+          onWillFocus={() => console.log("FOCUS222222")}
+          onDidBlur={() => console.log("BLUR11111111")}
           onWillBlur={() => this.handleComponentWillBlur()}
         />
         <Search 

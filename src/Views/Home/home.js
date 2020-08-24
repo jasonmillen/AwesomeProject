@@ -22,7 +22,7 @@ import {
 import { 
   selectUserGetGroupsError,
   selectUserGetGroupsSuccess,
-  selectGroups,
+  selectGroupsOrderedByLastUpdateTime,
   selectSelectedGroupID,
   selectGroupFollowStatusByID
  } from '../../reducers/groupReduer';
@@ -143,8 +143,8 @@ class Home extends React.Component {
       </View>
     );
   }
-
 };
+
 
 const mapStateToProps = (state) => {
   const userID = selectUserID(state);
@@ -153,7 +153,7 @@ const mapStateToProps = (state) => {
     spotifyUserID: selectSpotifyUserID(state),
     userID,
     user,
-    groups: selectGroups(state),
+    groups: selectGroupsOrderedByLastUpdateTime(state),
     tokenData: selectTokenData(state),
     userGetGroupsError: selectUserGetGroupsError(state),
     userGetGroupsSuccess: selectUserGetGroupsSuccess(state),

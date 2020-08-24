@@ -4,7 +4,6 @@ import {
 
 import { getUserID, getSsTokenData } from './ssToken';
 
-
 export const getSpotifyTokenData = async (authCode) => {
   console.log(`sending request to ${BASE_URL}/api/getSpotifyToken`);
   const response = await fetch(`${BASE_URL}/api/getSpotifyToken`, {
