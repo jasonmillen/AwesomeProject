@@ -20,9 +20,9 @@ import { navigateAndResetStack } from '../../utility/navigation';
 
 class Login extends React.Component {
 
-  static navigationOptions = {
-    header: null
-  };
+  // static navigationOptions = {
+  //   header: null
+  // };
 
   async componentDidMount() {
     console.log(this.props.spotifyUserID);

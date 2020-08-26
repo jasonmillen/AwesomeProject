@@ -2,8 +2,10 @@ import React from 'react';
 import { createStore, applyMiddleware } from 'redux'; 
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+// import { createAppContainer } from 'react-navigation';
+// import { createStackNavigator } from 'react-navigation-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import reducer from './src/reducers/index';
 
@@ -18,31 +20,63 @@ import SearchSong from './src/Views/SearchSong/searchSong';
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 
-const RootStack = createStackNavigator(
-  {
-    Splash,
-    Login,
-    Home,
-    Group,
-    UserProfile,
-    SearchUser,
-    SearchSong
-  },
-  {
-    initialRouteName: 'Splash'
-  }
-);
+// const RootStack = createStackNavigator(
+//   {
+//     Splash,
+//     Login,
+//     Home,
+//     Group,
+//     UserProfile,
+//     SearchUser,
+//     SearchSong
+//   },
+//   {
+//     initialRouteName: 'Splash'
+//   }
+// );
 
-const AppContainer = createAppContainer(RootStack);
+// const AppContainer = createAppContainer(RootStack);
 
+const Stack = createStackNavigator();
 
 export default class App extends React.Component {
 
   render() {
     return (
       <Provider store={store}>
-        <AppContainer />
+        {/* <AppContainer /> */}
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Splash">
+            <Stack.Screen
+              name="Splash"
+              component={Splash}
+              options={{ headerShown: false }}/>
+            <Stack.Screen
+              name="Login"
+              component={Login} 
+              options={{ headerShown: false }}/>
+            <Stack.Screen
+              name="Home"
+              component={Home}/>
+            <Stack.Screen
+              name="Group"
+              component={Group}/>
+            <Stack.Screen
+              name="UserProfile"
+              component={UserProfile} 
+              options={{ title: 'Profile' }}/>
+            <Stack.Screen
+              name="SearchUser"
+              component={SearchUser}
+              options={{ title: 'Search For Users' }}/> 
+            <Stack.Screen
+              name="SearchSong"
+              component={SearchSong}
+              options={{ title: 'Search For Song' }}/> 
+          </Stack.Navigator>
+        </NavigationContainer>
       </Provider>
     )
   }
 };
+

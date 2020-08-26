@@ -19,11 +19,11 @@ import { navigateAndResetStack } from '../../utility/navigation';
 
 class UserProfile extends React.Component {
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: 'Profile'
-    }
-  };
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     title: 'Profile'
+  //   }
+  // };
 
   componentDidUpdate () {
     if (this.props.logoutSuccess) {

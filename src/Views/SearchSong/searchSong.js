@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-import { NavigationEvents /*NavigationActions*/ } from 'react-navigation';
+// import { NavigationEvents /*NavigationActions*/ } from 'react-navigation';
 // import { HeaderBackButton } from 'react-navigation-stack';
 import { Linking } from 'expo';
 
@@ -36,21 +36,21 @@ const PAGE = 20;
 
 class SearchSong extends React.Component {
 
-  static navigationOptions = ({ navigation }) => {
+  // static navigationOptions = ({ navigation }) => {
 
-    // const group = navigation.getParam('group');
-    // const userID = navigation.getParam('userID');
+  //   // const group = navigation.getParam('group');
+  //   // const userID = navigation.getParam('userID');
 
-    // const handleBackButtonPress = () => {
-    //   console.log('CUSTOM BACK BUTTON', group.id, userID);
-    //   navigation.dispatch(NavigationActions.back());
-    // };
+  //   // const handleBackButtonPress = () => {
+  //   //   console.log('CUSTOM BACK BUTTON', group.id, userID);
+  //   //   navigation.dispatch(NavigationActions.back());
+  //   // };
 
-    return {
-      title: 'Search For Song',
-      // headerLeft: <HeaderBackButton onPress={handleBackButtonPress} />
-    };
-  };
+  //   return {
+  //     title: 'Search For Song',
+  //     // headerLeft: <HeaderBackButton onPress={handleBackButtonPress} />
+  //   };
+  // };
 
   constructor(props) {
     super(props);
@@ -59,7 +59,8 @@ class SearchSong extends React.Component {
     //   userID: this.props.userID
     // });
 
-    const group = props.navigation.getParam('group');
+    // const group = props.navigation.getParam('group');
+    const group = props.route.params?.group ?? null;
 
     this.state = {
       songs: [],
@@ -80,7 +81,12 @@ class SearchSong extends React.Component {
 
     this._unsubscribe = this.props.navigation.addListener('blur', () => {
       console.log("HANDLING BLURR EVENT!!");
+      this.handleComponentWillBlur();
     });
+  }
+
+  async componentWillUnmount() {
+    this._unsubscribe();
   }
 
   async loadNextPage() {
@@ -195,12 +201,12 @@ class SearchSong extends React.Component {
 
     return (
       <View style={styles.container}>
-        <NavigationEvents
+        {/* <NavigationEvents
           onDidFocus={() => console.log('FOCUS111111')}
           onWillFocus={() => console.log("FOCUS222222")}
           onDidBlur={() => console.log("BLUR11111111")}
           onWillBlur={() => this.handleComponentWillBlur()}
-        />
+        /> */}
         <Search 
           onChange={text => this.handleSearchChange(text)}
           text={query}

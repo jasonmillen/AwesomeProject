@@ -30,9 +30,9 @@ import {
 
 class SearchUser extends React.Component {
 
-  static navigationOptions = {
-    title: 'Search For Users'
-  };
+  // static navigationOptions = {
+  //   title: 'Search For Users'
+  // };
 
   constructor (props) {
     super (props);

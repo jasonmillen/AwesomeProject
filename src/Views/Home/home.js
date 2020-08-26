@@ -11,7 +11,7 @@ import GroupList from '../../Components/GroupList';
 
 import ViewProfileButton from '../../Components/ViewProfileButton';
 import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
-import SearchSongButton from '../../Components/SearchSongButton';
+// import SearchSongButton from '../../Components/SearchSongButton';
 import { 
   selectSpotifyUserID,
   selectUserID,
@@ -38,39 +38,57 @@ import { initSocket } from '../../actions/socketActions';
 
 class Home extends React.Component {
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.getParam('displayName') || navigation.getParam('spotifyUserID'),
+  // static navigationOptions = ({ navigation }) => {
+  //   return {
+  //     title: navigation.getParam('displayName') || navigation.getParam('spotifyUserID'),
+  //     headerRight: () => (
+  //       <View style={styles.titleBarRightButtonView}>
+  //         {/* <SearchSongButton
+  //           style={styles.searchSongButton}
+  //           onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
+  //         /> */}
+  //         <SearchUserHeaderButton
+  //           style={styles.searchUserHeaderButton}
+  //           onPress={() => navigation.getParam('handleStartChatButtonPress')(navigation)}
+  //         />
+  //       </View>
+  //     ),
+  //     headerLeft: () => (
+  //       <ViewProfileButton
+  //         style={styles.viewProfileButton}
+  //         onPress={() => navigation.getParam('handleViewProfileButtonPress')(navigation)}
+  //       />
+  //     )
+  //   }
+  // };
+
+  constructor(props) {
+    super(props);
+
+    // props.navigation.setParams({
+    //   spotifyUserID: this.props.spotifyUserID,
+    //   displayName: this.props.user.displayName,
+    //   handleViewProfileButtonPress: this.handleViewProfileButtonPress,
+    //   handleStartChatButtonPress: this.handleStartChatButtonPress,
+    //   handleSearchSongButtonPress: this.handleSearchSongButtonPress
+    // });
+
+    props.navigation.setOptions({
+      title: this.props.user.displayName || this.props.spotifyUserID,
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
-          {/* <SearchSongButton
-            style={styles.searchSongButton}
-            onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
-          /> */}
           <SearchUserHeaderButton
             style={styles.searchUserHeaderButton}
-            onPress={() => navigation.getParam('handleStartChatButtonPress')(navigation)}
+            onPress={() => this.handleStartChatButtonPress(props.navigation)}
           />
         </View>
       ),
       headerLeft: () => (
         <ViewProfileButton
           style={styles.viewProfileButton}
-          onPress={() => navigation.getParam('handleViewProfileButtonPress')(navigation)}
+          onPress={() => this.handleViewProfileButtonPress(props.navigation)}
         />
       )
-    }
-  };
-
-  constructor(props) {
-    super(props);
-
-    props.navigation.setParams({
-      spotifyUserID: this.props.spotifyUserID,
-      displayName: this.props.user.displayName,
-      handleViewProfileButtonPress: this.handleViewProfileButtonPress,
-      handleStartChatButtonPress: this.handleStartChatButtonPress,
-      handleSearchSongButtonPress: this.handleSearchSongButtonPress
     });
 
     this.state = {
@@ -187,10 +205,10 @@ const styles = StyleSheet.create({
   },
   titleBarRightButtonView: {
     flex: 1,
+    alignItems: 'center',
     flexDirection: 'row'
   },
   viewProfileButton: {
-    flex: 1,
     marginLeft: 15,
     marginRight: 15
   },
