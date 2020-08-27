@@ -18,10 +18,6 @@ import {
 
 class Splash extends React.Component {
 
-  // static navigationOptions = {
-  //   header: null
-  // };
-
   async componentDidMount() {
     console.log(this.props.spotifyUserID);
 

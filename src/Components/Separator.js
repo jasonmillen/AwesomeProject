@@ -4,10 +4,9 @@ import { FlatList, View, Text } from 'react-native';
 export default ({ items }) => (
   <View
     style={{
+      width: '100%',
       height: 1,
-      backgroundColor: 'green',
-      marginTop: 10,
-      marginBottom: 10
+      backgroundColor: 'gray'
     }}
   />
 );

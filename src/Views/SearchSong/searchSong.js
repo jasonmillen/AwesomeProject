@@ -5,8 +5,6 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-// import { NavigationEvents /*NavigationActions*/ } from 'react-navigation';
-// import { HeaderBackButton } from 'react-navigation-stack';
 import { Linking } from 'expo';
 
 import {
@@ -36,30 +34,9 @@ const PAGE = 20;
 
 class SearchSong extends React.Component {
 
-  // static navigationOptions = ({ navigation }) => {
-
-  //   // const group = navigation.getParam('group');
-  //   // const userID = navigation.getParam('userID');
-
-  //   // const handleBackButtonPress = () => {
-  //   //   console.log('CUSTOM BACK BUTTON', group.id, userID);
-  //   //   navigation.dispatch(NavigationActions.back());
-  //   // };
-
-  //   return {
-  //     title: 'Search For Song',
-  //     // headerLeft: <HeaderBackButton onPress={handleBackButtonPress} />
-  //   };
-  // };
-
   constructor(props) {
     super(props);
 
-    // props.navigation.setParams({
-    //   userID: this.props.userID
-    // });
-
-    // const group = props.navigation.getParam('group');
     const group = props.route.params?.group ?? null;
 
     this.state = {
@@ -80,7 +57,6 @@ class SearchSong extends React.Component {
     //await this.loadNextPage();
 
     this._unsubscribe = this.props.navigation.addListener('blur', () => {
-      console.log("HANDLING BLURR EVENT!!");
       this.handleComponentWillBlur();
     });
   }
@@ -153,12 +129,6 @@ class SearchSong extends React.Component {
     catch (error) {
       console.log('Error: ', error);
     }
-    // if (Linking.canOpenUrl(`spotify:track:${songID}`)) {
-    //   console.log('CAN OPEN');
-    // }
-    // else {
-    //   console.log('CANNOT OPEN');
-    // }
   }
 
   handleListItemLongPress (songID) {
@@ -201,12 +171,6 @@ class SearchSong extends React.Component {
 
     return (
       <View style={styles.container}>
-        {/* <NavigationEvents
-          onDidFocus={() => console.log('FOCUS111111')}
-          onWillFocus={() => console.log("FOCUS222222")}
-          onDidBlur={() => console.log("BLUR11111111")}
-          onWillBlur={() => this.handleComponentWillBlur()}
-        /> */}
         <Search 
           onChange={text => this.handleSearchChange(text)}
           text={query}

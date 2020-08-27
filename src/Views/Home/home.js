@@ -16,6 +16,8 @@ import {
   selectSpotifyUserID,
   selectUserID,
   selectUser,
+  selectUsersByID,
+  selectUsersByGroupID,
   selectTokenData
 } from '../../reducers/userReducer';
 
@@ -38,40 +40,8 @@ import { initSocket } from '../../actions/socketActions';
 
 class Home extends React.Component {
 
-  // static navigationOptions = ({ navigation }) => {
-  //   return {
-  //     title: navigation.getParam('displayName') || navigation.getParam('spotifyUserID'),
-  //     headerRight: () => (
-  //       <View style={styles.titleBarRightButtonView}>
-  //         {/* <SearchSongButton
-  //           style={styles.searchSongButton}
-  //           onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
-  //         /> */}
-  //         <SearchUserHeaderButton
-  //           style={styles.searchUserHeaderButton}
-  //           onPress={() => navigation.getParam('handleStartChatButtonPress')(navigation)}
-  //         />
-  //       </View>
-  //     ),
-  //     headerLeft: () => (
-  //       <ViewProfileButton
-  //         style={styles.viewProfileButton}
-  //         onPress={() => navigation.getParam('handleViewProfileButtonPress')(navigation)}
-  //       />
-  //     )
-  //   }
-  // };
-
   constructor(props) {
     super(props);
-
-    // props.navigation.setParams({
-    //   spotifyUserID: this.props.spotifyUserID,
-    //   displayName: this.props.user.displayName,
-    //   handleViewProfileButtonPress: this.handleViewProfileButtonPress,
-    //   handleStartChatButtonPress: this.handleStartChatButtonPress,
-    //   handleSearchSongButtonPress: this.handleSearchSongButtonPress
-    // });
 
     props.navigation.setOptions({
       title: this.props.user.displayName || this.props.spotifyUserID,
@@ -149,9 +119,10 @@ class Home extends React.Component {
 
     return (
       <View style={styles.homePage}>
-        <Text>Total num of groups is {this.props.groups.length}</Text>
         <GroupList
           groups={this.props.groups}
+          usersByID={this.props.usersByID}
+          usersByGroupID={this.props.usersByGroupID}
           groupFollowStatusByID={this.props.groupFollowStatusByID}
           onEndReached={() => this.handleGroupListEndReached()}
           onItemPressed={(group) => this.handleGroupListItemPressed(group)}
@@ -171,6 +142,8 @@ const mapStateToProps = (state) => {
     spotifyUserID: selectSpotifyUserID(state),
     userID,
     user,
+    usersByID: selectUsersByID(state),
+    usersByGroupID: selectUsersByGroupID(state),
     groups: selectGroupsOrderedByLastUpdateTime(state),
     tokenData: selectTokenData(state),
     userGetGroupsError: selectUserGetGroupsError(state),
@@ -223,7 +196,6 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   groupList: {
-    marginTop: 10,
     width: '100%'
   }
 });

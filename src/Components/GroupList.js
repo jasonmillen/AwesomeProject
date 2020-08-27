@@ -8,7 +8,9 @@ import GroupListItem from './GroupListItem';
 import Separator from './Separator';
 
 export default ({ 
-  groups, 
+  groups,
+  usersByID,
+  usersByGroupID,
   groupFollowStatusByID, 
   onEndReached, 
   onItemPressed, 
@@ -22,6 +24,8 @@ export default ({
     return (
       <GroupListItem 
         group={group} 
+        userIDs={usersByGroupID[group.id]}
+        usersByID={usersByID}
         onPress={onItemPressed} 
         userIsFollowing={userIsFollowing}
         onFollowPlaylistPressed={onFollowPlaylistPressed}/>
@@ -31,12 +35,11 @@ export default ({
   return (
     <FlatList
       data={groups}
-      //renderItem={({ item }) => <GroupListItem group={item} onPress={onItemPressed} />}
       renderItem={renderItemFunc}
       keyExtractor={group => group.id.toString()}
       ItemSeparatorComponent={() => <Separator /> }
       onEndReached={onEndReached}
-      ListEmptyComponent={() => <Text>No groups.</Text>}
+      ListEmptyComponent={() => <Text>No groups</Text>}
       style={style}
     />
   );

@@ -2,8 +2,6 @@ import React from 'react';
 import { createStore, applyMiddleware } from 'redux'; 
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-// import { createAppContainer } from 'react-navigation';
-// import { createStackNavigator } from 'react-navigation-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -20,23 +18,6 @@ import SearchSong from './src/Views/SearchSong/searchSong';
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 
-// const RootStack = createStackNavigator(
-//   {
-//     Splash,
-//     Login,
-//     Home,
-//     Group,
-//     UserProfile,
-//     SearchUser,
-//     SearchSong
-//   },
-//   {
-//     initialRouteName: 'Splash'
-//   }
-// );
-
-// const AppContainer = createAppContainer(RootStack);
-
 const Stack = createStackNavigator();
 
 export default class App extends React.Component {
@@ -44,7 +25,6 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        {/* <AppContainer /> */}
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Splash">
             <Stack.Screen

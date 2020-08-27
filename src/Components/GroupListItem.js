@@ -15,21 +15,39 @@ export default ({
     imageUrl,
     playlistName
   },
+  userIDs,
+  usersByID,
   onPress,
   userIsFollowing,
   onFollowPlaylistPressed
 }) => {
 
-  const imageSource = imageUrl ? { uri: imageUrl } : require("../resources/empty-playlist.png");
+  let imageSource = null;
+  if (imageUrl) {
+    imageSource = { uri: imageUrl };
+  }
+  else {
+    for (const userID of userIDs) {
+      const userImageUrl = usersByID[userID]?.imageUrl;
+      if (userImageUrl) {
+        imageSource = { uri: userImageUrl };
+      }
+    }
+    
+  }
+  
+  
+  require("../resources/empty-playlist.png");
+  
   return (
     <TouchableOpacity
-    style={styles.container}
-    onPress={() => onPress({id, creatorID, playlistID, playlistName})}
+      style={styles.container}
+      onPress={() => onPress({id, creatorID, playlistID, playlistName})}
     >
       <Image source={imageSource} style={styles.image} />
       <View style={styles.playlistInfo}>
         <Text>{playlistName}</Text>
-        {/* <Text>Playlist ID: {playlistID}</Text> */}
+        <Text>Users: {userIDs.toString()}</Text>
       </View>
       {userIsFollowing === false &&
         <View style={styles.followPlaylistSection}>
@@ -76,7 +94,10 @@ const styles = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
-    marginRight: 10
+    marginRight: 10,
+    marginLeft: 5,
+    marginTop: 5,
+    marginBottom: 5
   },
   title: {}
 });
