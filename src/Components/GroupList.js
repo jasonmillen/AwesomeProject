@@ -22,7 +22,7 @@ export default ({
     const group = item; // item is just the group
     const userIsFollowing = groupFollowStatusByID[group.id];
     return (
-      <GroupListItem 
+      <GroupListItem
         group={group} 
         userIDs={usersByGroupID[group.id]}
         usersByID={usersByID}

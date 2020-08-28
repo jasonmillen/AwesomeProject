@@ -7,6 +7,9 @@ import {
   Image
 } from 'react-native';
 
+import { ICON_CIRCLE } from '../constants/images';
+
+
 export default ({
   group: {
     id,
@@ -27,27 +30,35 @@ export default ({
     imageSource = { uri: imageUrl };
   }
   else {
-    for (const userID of userIDs) {
-      const userImageUrl = usersByID[userID]?.imageUrl;
-      if (userImageUrl) {
-        imageSource = { uri: userImageUrl };
-      }
-    }
-    
+    imageSource = ICON_CIRCLE; //require("../resources/empty-playlist.png");
   }
+  // else {
+  //   for (const userID of userIDs) {
+  //     const userImageUrl = usersByID[userID]?.imageUrl;
+  //     if (userImageUrl) {
+  //       imageSource = { uri: userImageUrl };
+  //     }
+  //   }
+  // }
+  // if (!imageSource) {
+  //   imageSource = require("../resources/empty-playlist.png");
+  // }
   
-  
-  require("../resources/empty-playlist.png");
   
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => onPress({id, creatorID, playlistID, playlistName})}
     >
-      <Image source={imageSource} style={styles.image} />
+      <View style={styles.imageContainer}>
+        <Image source={imageSource} style={styles.image} />
+        <View style={styles.viewTextStyle}>
+          <Text style={styles.textStyle}>{'Hi'}</Text>
+        </View>
+      </View>
       <View style={styles.playlistInfo}>
         <Text>{playlistName}</Text>
-        <Text>Users: {userIDs.toString()}</Text>
+        {userIDs && <Text>Users: {userIDs.toString()}</Text>}
       </View>
       {userIsFollowing === false &&
         <View style={styles.followPlaylistSection}>
@@ -68,20 +79,17 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignContent: 'space-between',
+    alignContent: 'flex-start',
     width: '100%'
   },
   playlistInfo: {
-    flexDirection: 'column',
-    //alignItems: 'center'
+    flex: 1,
+    flexDirection: 'column'
   },
   followPlaylistSection: {
-    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     marginRight: 10
-    //alignItems: 'flex-start'
-    //alignContent: 'center'
   },
   followPlaylistButton: {
     backgroundColor: 'green'
@@ -99,5 +107,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5
   },
-  title: {}
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  viewTextStyle: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textStyle: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    color: 'white'
+  }
 });

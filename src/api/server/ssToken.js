@@ -26,12 +26,10 @@ export const getSsTokenData = async () => {
     _ssTokenData = await asAPI.getSsTokenData();
   }
 
-  console.log(2);
   if (await verifySsTokenData(_ssTokenData)) {
     await asAPI.saveSsTokenData(_ssTokenData.ssAccessToken, _ssTokenData.ssExpirationTime, _ssTokenData.ssRefreshToken);
   }
 
-  console.log(3);
   return _ssTokenData;
 };
 

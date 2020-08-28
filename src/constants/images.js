@@ -1,0 +1,1 @@
+export const ICON_CIRCLE = require('../resources/circle.png');

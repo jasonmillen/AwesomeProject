@@ -19,7 +19,7 @@ import {
 class Splash extends React.Component {
 
   async componentDidMount() {
-    console.log(this.props.spotifyUserID);
+    console.log('spotify user id - splash screen 1: ', this.props.spotifyUserID);
 
     if (this.props.spotifyUserID) {
       this.navigateToHomeScreen();
@@ -30,7 +30,7 @@ class Splash extends React.Component {
   }
 
   async componentDidUpdate() {
-    console.log(this.props.spotifyUserID);
+    console.log('spotify user id - splash screen 2: ', this.props.spotifyUserID);
     if (this.props.getLoggedInUserSuccess) {
       if (this.props.spotifyUserID) {
         this.navigateToHomeScreen();

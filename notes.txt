@@ -6,6 +6,8 @@ https://tech.trello.com/why-we-chose-kafka/
 
 https://hackernoon.com/scaling-websockets-9a31497af051
 
+have mobile phone hit webserver on computer on localhost over usb: https://stackoverflow.com/a/53920173/14179842
+
 
 https://medium.com/@taylorhughes/the-right-way-to-implement-facebook-login-in-a-mobile-app-57e2eca3648b
 auth flow:

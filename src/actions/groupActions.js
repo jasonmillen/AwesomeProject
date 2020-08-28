@@ -126,9 +126,11 @@ export const fetchUserGetGroups = (userID, spotifyUserID) => {
         }
       }));
 
+      console.log('GROUP FOLLOW STATUS BY ID: ', groupFollowStatusByID);
       dispatch (userGetGroupsSuccess(groups, groupFollowStatusByID));
 
       const users = groupsData.users;
+
       await Promise.all(users.map(async user => {
         const userInfo = await userAPI.searchUser(user.spotifyUserID);
         if (userInfo) {
@@ -141,12 +143,12 @@ export const fetchUserGetGroups = (userID, spotifyUserID) => {
       }));
       const usersByGroupID = groupsData.usersByGroupID;
       dispatch (userGetUsersSuccess(users, usersByGroupID));
-
     }
     catch (error) {
-      console.log(error);
+      console.log('ERROR', error);
       dispatch (userGetGroupsError());
     }
+
   };
 };
 
