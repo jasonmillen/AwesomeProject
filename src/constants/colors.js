@@ -1,0 +1,1 @@
+export const LIGHT_GREEN = '#72df89';
