@@ -27,37 +27,26 @@ import {
 
 class Group extends React.Component {
 
-  static navigationOptions = ({ navigation }) => {
-
-    const groupID = navigation.getParam('groupID');
-    const playlistName = navigation.getParam('playlistName');
-    return {
-      title: playlistName ? playlistName : `Group ${groupID}`,
-      headerRight: () => (
-        <View style={styles.titleBarRightButtonView}>
-          <SearchSongButton
-            style={styles.searchSongButton}
-            onPress={() => navigation.getParam('handleSearchSongButtonPress')(navigation)}
-          />
-          <ViewPlaylistOnSpotifyButton
-            style={styles.viewPlaylistOnSpotifyButton}
-            onPress={() => navigation.getParam('handleViewPlaylistOnSpotifyButtonPress')()}
-          />
-        </View>
-      )
-
-    };
-  };
-
   constructor(props) {
     super(props);
 
     this.handleViewPlaylistOnSpotifyButtonPress = this.handleViewPlaylistOnSpotifyButtonPress.bind(this);
     this.handleSearchSongButtonPress = this.handleSearchSongButtonPress.bind(this);
 
-    props.navigation.setParams({
-      handleViewPlaylistOnSpotifyButtonPress: this.handleViewPlaylistOnSpotifyButtonPress,
-      handleSearchSongButtonPress: this.handleSearchSongButtonPress
+    props.navigation.setOptions({
+      title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
+      headerRight: () => (
+        <View style={styles.titleBarRightButtonView}>
+          <SearchSongButton
+            style={styles.searchSongButton}
+            onPress={() => this.handleSearchSongButtonPress(props.navigation)}
+          />
+          <ViewPlaylistOnSpotifyButton
+            style={styles.viewPlaylistOnSpotifyButton}
+            onPress={() => this.handleViewPlaylistOnSpotifyButtonPress()}
+          />
+        </View>
+      )
     });
 
     // this.state = {
@@ -181,7 +170,8 @@ const styles = StyleSheet.create({
   },
   titleBarRightButtonView: {
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   viewPlaylistOnSpotifyButton: {
     flex: 1,

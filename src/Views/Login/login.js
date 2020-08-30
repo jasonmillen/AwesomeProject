@@ -20,12 +20,12 @@ import { navigateAndResetStack } from '../../utility/navigation';
 
 class Login extends React.Component {
 
-  static navigationOptions = {
-    header: null
-  };
+  // static navigationOptions = {
+  //   header: null
+  // };
 
   async componentDidMount() {
-    console.log(this.props.spotifyUserID);
+    console.log('spotifyuserid - login screen: ', this.props.spotifyUserID);
 
     if (this.props.spotifyUserID) {
       this.props.navigation.navigate('Home');
@@ -34,7 +34,7 @@ class Login extends React.Component {
   }
 
   async componentDidUpdate() {
-    console.log(this.props.spotifyUserID);
+    console.log('spotifyuserid - login screen 2: ', this.props.spotifyUserID);
 
     if (this.props.spotifyUserID) {
       this.navigateToHomeScreen();

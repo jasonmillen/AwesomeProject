@@ -38,7 +38,8 @@ const initialState = {
   isProcessingLogin: false,
   logoutError: false,
   logoutSuccess: null,
-  usersByID: {}
+  usersByID: {},
+  usersByGroupID: {}
 };
 
 
@@ -159,9 +160,11 @@ export default userReducer = (state = initialState, action) => {
         usersByID[user.id] = user;
         return usersByID;
       }, {});
+      const usersByGroupID = action.payload.usersByGroupID;
       return {
         ...state,
-        usersByID: usersByID
+        usersByID: usersByID,
+        usersByGroupID
       };
     case REGISTER_USER:
       console.log('REGISTER USER');
@@ -214,4 +217,8 @@ export const selectUsersByID = (state) => {
 
 export const selectUserByID = (state, userID) => {
   return state.user.usersByID[userID];
+};
+
+export const selectUsersByGroupID = (state) => {
+  return state.user.usersByGroupID;
 };
