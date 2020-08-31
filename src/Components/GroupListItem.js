@@ -21,6 +21,7 @@ export default ({
   },
   userIDs,
   usersByID,
+  messages,
   onPress,
   userIsFollowing,
   onFollowPlaylistPressed
@@ -32,11 +33,28 @@ export default ({
   }
 
   // userIsFollowing = Math.random() > 0.5 ? false : userIsFollowing;
-  console.log('LAST UPDATE TIME: ', lastUpdateTime);
+
   const lastUpdateTimeAsDate = lastUpdateTime ? new Date(lastUpdateTime): null;
   if (lastUpdateTimeAsDate && !isValidDate(lastUpdateTimeAsDate)) {
     console.error('Tried to parse invalid date: ', lastUpdateTime);
     lastUpdateTimeAsDate = null;
+  }
+
+  let groupDisplayMessage = null;
+  if (messages && messages.length > 0) {
+    const message = messages[0];
+    if (message.trackID) {
+      const artist = (message.trackInfo.artists && message.trackInfo.artists[0]) ? message.trackInfo.artists[0] : null
+      const trackName = message.trackInfo.name || null;
+      groupDisplayMessage = (artist && artist.name && trackName) ? `${artist.name}, ${trackName}` : '';
+    }
+    else {
+      // TODO: handle non track messages (if support is added)
+      groupDisplayMessage = '';
+    }
+  }
+  else {
+    groupDisplayMessage = 'No messages yet';
   }
   
   return (
@@ -54,7 +72,7 @@ export default ({
       </View>
       <View style={styles.playlistInfo}>
         <Text style={styles.playlistNameText}>{playlistName}</Text>
-        <Text numberOfLines={1} style={styles.playlistText}>This is some sample text i wonder what will happen if i make it reall really long and even another line long</Text>
+      <Text numberOfLines={1} style={styles.playlistText}>{groupDisplayMessage}</Text>
       </View>
       <View style={styles.screenRightSide}>
         {!userIsFollowing &&

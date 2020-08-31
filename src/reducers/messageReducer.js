@@ -96,6 +96,10 @@ export default messageReducer = (state = initialState, action) => {
   };
 };
 
+export const selectMessagesByGroupID = (state) => {
+  return state.message.messagesByGroupID;
+};
+
 export const selectMessagesForGroup = (state, groupID) => {
   return state.message.messagesByGroupID[groupID];
 };
@@ -104,10 +108,22 @@ export const selectMessagesGetForGroupRequest = (state, groupID) => {
   return state.message.messagesGetForRequestGroupByGroup[groupID];
 };
 
+export const selectMessagesGetForGroupRequestByGroupID = (state) => {
+  return state.message.messagesGetForRequestGroupByGroup;
+};
+
 export const selectMessagesGetForGroupError = (state, groupID) => {
   return state.message.messagesGetForErrorGroupByGroup[groupID];
 };
 
+export const selectMessagesGetForGroupErrorByGroupID = (state) => {
+  return state.message.messagesGetForErrorGroupByGroup;
+};
+
 export const selectMessagesGetForGroupSuccess = (state, groupID) => {
   return state.message.messagesGetForSuccessGroupByGroup[groupID];
+};
+
+export const selectMessagesGetForGroupSuccessByGroupID = (state) => {
+  return state.message.messagesGetForGroupSuccessByGroup;
 };

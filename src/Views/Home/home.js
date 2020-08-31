@@ -30,10 +30,19 @@ import {
  } from '../../reducers/groupReduer';
 
 import { 
+  selectMessagesByGroupID,
+  selectMessagesGetForGroupRequestByGroupID,
+  selectMessagesGetForGroupErrorByGroupID,
+  selectMessagesGetForGroupSuccessByGroupID
+} from '../../reducers/messageReducer';
+
+import { 
   fetchUserGetGroups,
   groupSelect,
   groupFollowPlaylist
- } from '../../actions/groupActions';
+} from '../../actions/groupActions';
+
+import { fetchMessagesGetForGroup } from '../../actions/messageActions';
 
 import { initSocket } from '../../actions/socketActions';
 //import token from '../../api/spotify/token';
@@ -72,6 +81,19 @@ class Home extends React.Component {
 
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
+  }
+
+  componentDidUpdate() {
+    
+    const groups = this.props.groups;
+    if (groups && groups.length > 0) {
+      groups.forEach(group => {
+        if (this.props.messagesGetForGroupRequestByGroupID[group.id] !== true) {
+          this.props.getMessagesForGroup(group.id);
+        }
+      });
+    }
+
   }
 
   handleViewProfileButtonPress(navigation) {
@@ -123,6 +145,7 @@ class Home extends React.Component {
           groups={this.props.groups}
           usersByID={this.props.usersByID}
           usersByGroupID={this.props.usersByGroupID}
+          messagesByGroupID={this.props.messagesByGroupID}
           groupFollowStatusByID={this.props.groupFollowStatusByID}
           onEndReached={() => this.handleGroupListEndReached()}
           onItemPressed={(group) => this.handleGroupListItemPressed(group)}
@@ -145,6 +168,10 @@ const mapStateToProps = (state) => {
     usersByID: selectUsersByID(state),
     usersByGroupID: selectUsersByGroupID(state),
     groups: selectGroupsOrderedByLastUpdateTime(state),
+    messagesByGroupID: selectMessagesByGroupID(state),
+    messagesGetForGroupRequestByGroupID: selectMessagesGetForGroupRequestByGroupID(state),
+    messagesGetForGroupErrorByGroupID: selectMessagesGetForGroupErrorByGroupID(state),
+    messagesGetForGroupSuccessByGroupID: selectMessagesGetForGroupSuccessByGroupID(state),
     tokenData: selectTokenData(state),
     userGetGroupsError: selectUserGetGroupsError(state),
     userGetGroupsSuccess: selectUserGetGroupsSuccess(state),
@@ -166,6 +193,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     followPlaylist: (group) => {
       dispatch (groupFollowPlaylist(group));
+    },
+    getMessagesForGroup: (groupID) => {
+      dispatch (fetchMessagesGetForGroup(groupID));
     }
   };
 };

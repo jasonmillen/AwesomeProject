@@ -11,7 +11,8 @@ export default ({
   groups,
   usersByID,
   usersByGroupID,
-  groupFollowStatusByID, 
+  messagesByGroupID,
+  groupFollowStatusByID,
   onEndReached, 
   onItemPressed, 
   onFollowPlaylistPressed,
@@ -25,6 +26,7 @@ export default ({
       <GroupListItem
         group={group} 
         userIDs={usersByGroupID[group.id]}
+        messages={messagesByGroupID[group.id]}
         usersByID={usersByID}
         onPress={onItemPressed} 
         userIsFollowing={userIsFollowing}
