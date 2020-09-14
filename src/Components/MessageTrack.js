@@ -7,6 +7,8 @@ import {
   Image
 } from 'react-native';
 
+import { LIGHT_BLUE } from '../constants/colors';
+
 export default ({
   message: {
     id,
@@ -21,6 +23,9 @@ export default ({
   usersByID
 }) => {
 
+  const sentByMe = userID === senderID;
+  const _styles = getStyles(sentByMe);
+
   const artist = (trackInfo.artists && trackInfo.artists[0]) ? trackInfo.artists[0] : null;
   const trackImage = (trackInfo.album && trackInfo.album.images && trackInfo.album.images[0]) ? trackInfo.album.images[0] : null;
   const album = trackInfo.album ? trackInfo.album.name : null;
@@ -29,50 +34,115 @@ export default ({
   // changes 2020-03-29T15:04:08.091+0000 to 2020-03-29T15:04:08.091
   sentTime = new Date(sentTime.slice(0, -5));
 
-  const messageStyle = {
-    flexDirection: 'row',
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 10,
-    justifyContent: (userID === senderID) ? 'flex-end' : 'flex-start'
-  };
-
   const senderUser = usersByID[senderID];
   
   const displayName = senderUser ? senderUser.displayName : null;
   const imageUrl = senderUser ? senderUser.imageUrl : null;
 
   return (
-    <TouchableOpacity style={messageStyle}>
-      <View>
-        <View style={{ flexDirection: 'row', marginBottom: 5 }}>
-            {displayName && <Text style={{ marginRight: 5 }}>{displayName}</Text>}
-            {imageUrl && <Image source={{ uri: imageUrl }} style={styles.userImage} />}
+    <View style={_styles.messageStyle}>
+      { !sentByMe && 
+        <View style={styles.userImageView}>
+          {imageUrl && <Image source={{ uri: imageUrl }} style={styles.userImage} />}
         </View>
-        <View>
-          { trackImage && trackImage.url && <Image source={{ uri: trackImage.url }} style={styles.trackImage} /> }
+      }
+      <View>
+        {!sentByMe && displayName && <Text style={{ marginLeft: 10, marginBottom: 5, color: 'gray' }}>{displayName}</Text>}
+        <View style={_styles.trackInfo}>
+          { trackImage && trackImage.url && <Image source={{ uri: trackImage.url }} style={_styles.trackImage} /> }
           <View>
-            { trackInfo.name && <Text>{trackInfo.name}</Text>}
-            { artist && artist.name && <Text>{artist.name}</Text> }
+            { trackInfo.name && 
+              <View style={_styles.trackNameViewStyle}>
+                <Text numberOfLines={1} style={_styles.trackNameTextStyle}>{trackInfo.name}</Text>
+              </View>
+            }
+            { artist && artist.name && 
+              <View style={_styles.trackArtistViewStyle}>
+                <Text numberOfLines={1} style={_styles.trackArtistTextStyle}>{artist.name}</Text>
+              </View>
+            }
             {/* <Text>Sent: {sentTime.toLocaleString()}</Text> */}
           </View>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
 
   );
 };
 
+const getStyles = (sentByMe) => {
+  return {
+    messageStyle: {
+      flexDirection: 'row',
+      marginLeft: 10,
+      marginRight: 20,
+      marginTop: 10,
+      marginBottom: 10,
+      justifyContent: sentByMe ? 'flex-end' : 'flex-start'
+    },
+    trackNameViewStyle: {
+      marginTop: 1,
+      marginRight: sentByMe ? 0 : 40,
+      backgroundColor: sentByMe ? LIGHT_BLUE : 'gray',
+      borderTopRightRadius: sentByMe ? 2 : 15,
+      borderTopLeftRadius: sentByMe ? 15 : 2,
+      borderBottomRightRadius: sentByMe ? 2 : 15,
+      borderBottomLeftRadius: sentByMe ? 15 : 2,
+      // borderRadius: 15,
+      alignSelf: sentByMe ? 'flex-end' : 'flex-start'
+    },
+    trackNameTextStyle: {
+      // textAlign: sentByMe ? 'right' : 'left',
+      color: 'white',
+      marginTop: 4,
+      marginBottom: 4,
+      marginLeft: 10,
+      marginRight: 10
+    },
+    trackArtistViewStyle: {
+      marginTop: 1,
+      backgroundColor: sentByMe ? LIGHT_BLUE : 'gray',
+      borderTopRightRadius: sentByMe ? 2 : 15,
+      borderTopLeftRadius: sentByMe ? 15 : 2,
+      borderBottomRightRadius: 15,
+      borderBottomLeftRadius: 15,
+      // borderRadius: 15,
+      alignSelf: sentByMe ? 'flex-end' : 'flex-start'
+    },
+    trackArtistTextStyle: {
+      // textAlign: sentByMe ? 'right' : 'left',
+      color: 'white',
+      marginTop: 4,
+      marginBottom: 4,
+      marginLeft: 10,
+      marginRight: 10
+    },
+    trackImage: {
+      width: 150,
+      height: 150,
+      borderTopRightRadius: 15,
+      borderTopLeftRadius: 15,
+      borderBottomRightRadius: sentByMe ? 2 : 15,
+      borderBottomLeftRadius: sentByMe ? 15 : 2,
+      //borderRadius: 15,
+      borderWidth: 2,
+      borderColor: sentByMe ? LIGHT_BLUE : 'gray'
+    },
+    trackInfo: {
+      flex: 1,
+      alignItems: sentByMe ? 'flex-end' : 'flex-start'
+    }
+  }
+}
+
 let styles = StyleSheet.create({
   userImage: {
-    width: 20,
-    height: 20,
-    borderRadius: 20/2
+    width: 30,
+    height: 30,
+    borderRadius: 100
   },
-  trackImage: {
-    width: 120,
-    height: 120,
+  userImageView: {
+    alignSelf: 'flex-end',
     marginRight: 10
-  },
-  title: {}
+  }
 });

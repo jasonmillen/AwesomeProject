@@ -32,7 +32,7 @@ export default ({
     imageSource = { uri: imageUrl };
   }
 
-  // userIsFollowing = Math.random() > 0.5 ? false : userIsFollowing;
+  userIsFollowing = Math.random() > 0.5 ? false : userIsFollowing;
 
   const lastUpdateTimeAsDate = lastUpdateTime ? new Date(lastUpdateTime): null;
   if (lastUpdateTimeAsDate && !isValidDate(lastUpdateTimeAsDate)) {

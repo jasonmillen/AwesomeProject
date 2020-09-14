@@ -189,8 +189,9 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   messageList: {
-    marginTop: 10,
-    width: '100%'
+    // marginTop: 10,
+    width: '100%',
+    marginBottom: 1
   }
 });
 
