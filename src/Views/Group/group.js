@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking'
 
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';

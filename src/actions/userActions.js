@@ -3,6 +3,7 @@ import * as asAPI from '../api/asyncStorage/asyncStorage';
 import { getAuthorizationCode } from '../api/spotify/auth';
 import * as serverAPI from '../api/server/server';
 import * as userAPI from '../api/spotify/user';
+import * as trackAPI from '../api/spotify/track';
 
 import { clearTokenData } from '../api/spotify/token';
 import { clearSsTokenData } from '../api/server/ssToken';
@@ -213,6 +214,78 @@ export const fetchLogout = () => {
     }
     catch (error) {
       dispatch (logoutError());
+    }
+  };
+};
+
+
+export const GET_RECOMMENDED_TRACKS_REQUEST = 'GET_RECOMMENDED_TRACKS_REQUEST';
+export const GET_RECOMMENDED_TRACKS_ERROR = 'GET_RECOMMENDED_TRACKS_ERROR';
+export const GET_RECOMMENDED_TRACKS_SUCCESS = 'GET_RECOMMENDED_TRACKS_SUCCESS';
+
+export const getRecommendedTracksRequest = () => {
+  return {
+    type: GET_RECOMMENDED_TRACKS_REQUEST,
+    payload: {}
+  };
+};
+
+export const getRecommendedTracksError = () => {
+  return {
+    type: GET_RECOMMENDED_TRACKS_ERROR,
+    payload: {}
+  };
+};
+
+export const getRecommendedTracksSuccess = (tracks) => {
+  return {
+    type: GET_RECOMMENDED_TRACKS_SUCCESS,
+    payload: {
+      tracks
+    }
+  };
+};
+
+export const fetchGetRecommendedTracks = () => {
+  return async (dispatch) => {
+    dispatch (getRecommendedTracksRequest());
+
+    try {
+
+      let recommendedTracks = [];
+      const trackIDs = new Set();
+
+      let recentlyPlayedTracks = await trackAPI.getRecentlyPlayedTracks();
+      recentlyPlayedTracks.forEach(track => {
+        track = track.track;
+        if (!trackIDs.has(track.id)) {
+          trackIDs.add(track.id);
+          recommendedTracks.push(trackAPI.normalizeTrack(track));
+        }
+      });
+      if (recentlyPlayedTracks.length < 20) {
+        console.log('GETTING TOP TRACKS');
+        let topTracks = await trackAPI.getTopTracks();
+      }
+      if (recentlyPlayedTracks.length < 20) {
+        console.log('GETTING VIRAL TRACKS');
+        let viralTracks = await trackAPI.getTop50ViralGlobalTracks();
+        viralTracks.forEach(track => {
+          track = track.track;
+          if (!trackIDs.has(track.id)) {
+            trackIDs.add(track.id);
+            recommendedTracks.push(trackAPI.normalizeTrack(track));
+          }
+        });
+      }
+
+      console.log('REC TRACKS: ', recommendedTracks);
+
+      dispatch (getRecommendedTracksSuccess(recommendedTracks));
+    }
+    catch (error) {
+      console.log('Error getting recommended tracks: ', error);
+      dispatch (getRecommendedTracksError());
     }
   };
 };

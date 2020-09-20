@@ -7,7 +7,10 @@ import {
   COMPLETE_LOGIN_PROCESS,
   LOGOUT_REQUEST,
   LOGOUT_ERROR,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  GET_RECOMMENDED_TRACKS_REQUEST,
+  GET_RECOMMENDED_TRACKS_ERROR,
+  GET_RECOMMENDED_TRACKS_SUCCESS
 } from '../actions/userActions';
 
 import {
@@ -39,7 +42,8 @@ const initialState = {
   logoutError: false,
   logoutSuccess: null,
   usersByID: {},
-  usersByGroupID: {}
+  usersByGroupID: {},
+  defaultRecommendedTracks: []
 };
 
 
@@ -169,6 +173,17 @@ export default userReducer = (state = initialState, action) => {
     case REGISTER_USER:
       console.log('REGISTER USER');
       return state;
+    case GET_RECOMMENDED_TRACKS_REQUEST:
+      return state;
+    case GET_RECOMMENDED_TRACKS_ERROR:
+      console.log(GET_RECOMMENDED_TRACKS_ERROR);
+      return state;
+    case GET_RECOMMENDED_TRACKS_SUCCESS:
+      const defaultRecommendedTracks = action.payload.tracks;
+      return {
+        ...state,
+        defaultRecommendedTracks
+      };
     default:
       return state;
   }
@@ -222,3 +237,7 @@ export const selectUserByID = (state, userID) => {
 export const selectUsersByGroupID = (state) => {
   return state.user.usersByGroupID;
 };
+
+export const selectDefaultRecommendedTracks = (state) => {
+  return state.user.defaultRecommendedTracks;
+}

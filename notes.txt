@@ -1,3 +1,7 @@
+TODO:
+fix duplicate songs in the song search list
+handle messages slow to load in the group list view
+
 helpful commands:
 tail applicaiton logs: heroku logs -a song-share-app -t
 access heroku postgres db: heroku pg:psql postgresql-regular-65249 --app song-share-app

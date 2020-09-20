@@ -27,7 +27,7 @@ export default messageReducer = (state = initialState, action) => {
 
   switch (action.type) {
     case MESSAGES_GET_FOR_GROUP_REQUEST: {
-      console.log(MESSAGES_GET_FOR_GROUP_REQUEST);
+      // console.log(MESSAGES_GET_FOR_GROUP_REQUEST);
       const groupID = action.payload.groupID;
       return {
         ...state,
@@ -38,7 +38,7 @@ export default messageReducer = (state = initialState, action) => {
       };
     }
     case MESSAGES_GET_FOR_GROUP_ERROR: {
-      console.log(MESSAGES_GET_FOR_GROUP_ERROR);
+      // console.log(MESSAGES_GET_FOR_GROUP_ERROR);
       const groupID = action.payload.groupID;
       return {
         ...state,
@@ -49,7 +49,7 @@ export default messageReducer = (state = initialState, action) => {
       };
     }
     case MESSAGES_GET_FOR_GROUP_SUCCESS: {
-      console.log(MESSAGES_GET_FOR_GROUP_SUCCESS);
+      // console.log(MESSAGES_GET_FOR_GROUP_SUCCESS);
       const groupID = action.payload.groupID;
       const messages = action.payload.messages;
       return {

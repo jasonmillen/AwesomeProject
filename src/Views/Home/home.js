@@ -36,6 +36,10 @@ import {
   selectMessagesGetForGroupSuccessByGroupID
 } from '../../reducers/messageReducer';
 
+import {
+  fetchGetRecommendedTracks
+} from '../../actions/userActions';
+
 import { 
   fetchUserGetGroups,
   groupSelect,
@@ -81,6 +85,7 @@ class Home extends React.Component {
 
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
+    this.props.getRecommendedTracks();
   }
 
   componentDidUpdate() {
@@ -196,6 +201,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     getMessagesForGroup: (groupID) => {
       dispatch (fetchMessagesGetForGroup(groupID));
+    },
+    getRecommendedTracks: () => {
+      dispatch (fetchGetRecommendedTracks());
     }
   };
 };

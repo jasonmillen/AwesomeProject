@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   StyleSheet
 } from 'react-native';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking';
 
 import {
   setUserTokensSuccess
@@ -19,12 +19,14 @@ import {
  
 import Search from '../../Components/Search';
 import Listing from '../../Components/Listing';
+import Separator from '../../Components/Separator';
 
 import search from '../../api/spotify/search';
 
 import {
   selectUserID,
-  selectTokenData
+  selectTokenData,
+  selectDefaultRecommendedTracks
 } from '../../reducers/userReducer';
 import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 
@@ -66,9 +68,9 @@ class SearchSong extends React.Component {
   }
 
   async loadNextPage() {
-    const { songs, offset, query, isFetching, isEmpty } = this.state;
+    const { songs, offset, query, isFetching, isEmpty, startedSearching } = this.state;
 
-    if (isFetching || isEmpty) {
+    if (isFetching || isEmpty || !startedSearching) {
       return;
     }
 
@@ -118,6 +120,7 @@ class SearchSong extends React.Component {
   }
 
   async handleEndReached() {
+    console.log('ENDING HAS BEEN REACHED!!!!!');
     await this.loadNextPage();
   }
 
@@ -167,24 +170,27 @@ class SearchSong extends React.Component {
 
   render() {
 
-    const { songs, query, isFetching } = this.state;
+    const { songs, query, isFetching, startedSearching } = this.state;
 
     return (
       <View style={styles.container}>
         <Search 
           onChange={text => this.handleSearchChange(text)}
           text={query}
+          style={styles.searchInput}
         />
+        <Separator />
         {
           (isFetching && songs.length === 0)
           ? <ActivityIndicator />
           : <Listing
-              items={songs}
+              items={startedSearching ? songs : this.props.defaultRecommendedTracks}
               onEndReached={() => this.handleEndReached()}
               onItemPress={(id, title) => this.handleListItemPress(id, title)}
               onItemLongPress={(id) => this.handleListItemLongPress(id)}
             />
         }
+
         <AddSongToGroupModal
           style={styles.modal}
           group={this.state.isForGroup}
@@ -200,7 +206,8 @@ class SearchSong extends React.Component {
 const mapStateToProps = (state) => {
   return {
     tokenData: selectTokenData(state),
-    userID: selectUserID(state)
+    userID: selectUserID(state),
+    defaultRecommendedTracks: selectDefaultRecommendedTracks(state)
   };
 };
 
@@ -221,8 +228,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'stretch',
     justifyContent: 'flex-start',
-    margin: 10,
-    marginTop: 10
+    //margin: 10,
+    //marginTop: 10
   },
   modal: {
     flex: 1,
@@ -232,6 +239,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  searchInput: {
+    margin: 10
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchSong);

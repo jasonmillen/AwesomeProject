@@ -126,7 +126,7 @@ export const fetchUserGetGroups = (userID, spotifyUserID) => {
         }
       }));
 
-      console.log('GROUP FOLLOW STATUS BY ID: ', groupFollowStatusByID);
+      // console.log('GROUP FOLLOW STATUS BY ID: ', groupFollowStatusByID);
       dispatch (userGetGroupsSuccess(groups, groupFollowStatusByID));
 
       const users = groupsData.users;
