@@ -51,8 +51,8 @@ export default class App extends React.Component {
               options={{ title: 'Search For Users' }}/> 
             <Stack.Screen
               name="SearchSong"
-              component={SearchSong}
-              options={{ title: 'Search For Song' }}/> 
+              component={SearchSong} />
+              {/* options={{ title: 'Search For Song' }}/>  */}
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>

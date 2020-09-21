@@ -37,11 +37,12 @@ export default class Search extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.search}>
-          <Ionicons name='md-search' size={25} style={styles.searchIcon} color='grey' />
-          <TextInput 
+          {/* <Ionicons name='md-search' size={25} style={styles.searchIcon} color='grey' /> */}
+          <TextInput
+            //autoFocus={true}
             style={styles.input} 
             value={text}
-            placeholder='Search here...'
+            placeholder='Search for song here...'
             placeholderTextColor='grey'
             onChangeText={newText => this.handleChangeText(newText)} />
         </View>
@@ -52,10 +53,11 @@ export default class Search extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: GREY_GREEN
+    backgroundColor: GREY_GREEN,
+    marginLeft: -20
   },
   search: {
-    margin: 3,
+    //margin: 3,
     //flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',

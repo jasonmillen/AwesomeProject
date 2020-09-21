@@ -39,6 +39,16 @@ class SearchSong extends React.Component {
   constructor(props) {
     super(props);
 
+    props.navigation.setOptions({
+      title: null,
+      headerTitle: (props) => (
+        <Search 
+          onChange={text => this.handleSearchChange(text)}
+          //text={query}
+        />
+      )
+    });
+
     const group = props.route.params?.group ?? null;
 
     this.state = {
@@ -174,12 +184,12 @@ class SearchSong extends React.Component {
 
     return (
       <View style={styles.container}>
-        <Search 
+        {/* <Search 
           onChange={text => this.handleSearchChange(text)}
           text={query}
           style={styles.searchInput}
         />
-        <Separator />
+        <Separator /> */}
         {
           (isFetching && songs.length === 0)
           ? <ActivityIndicator />
@@ -238,9 +248,6 @@ const styles = StyleSheet.create({
     marginTop: 300,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  searchInput: {
-    margin: 10
   }
 });
 
