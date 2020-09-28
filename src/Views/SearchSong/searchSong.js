@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import {
   View,
   ActivityIndicator,
-  StyleSheet
+  StyleSheet,
+  Text
 } from 'react-native';
 import * as Linking from 'expo-linking';
 
@@ -21,7 +22,7 @@ import Search from '../../Components/Search';
 import Listing from '../../Components/Listing';
 import Separator from '../../Components/Separator';
 
-import search from '../../api/spotify/search';
+import search, { debouncedSearch } from '../../api/spotify/search';
 
 import {
   selectUserID,
@@ -31,6 +32,8 @@ import {
 import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 
 import * as socketAPI from '../../actions/socketActions';
+
+import { debounce } from '../../utility/util';
 
 const PAGE = 20;
 
@@ -63,6 +66,10 @@ class SearchSong extends React.Component {
       selectedSongID: null,
       startedSearching: false
     };
+
+    this.debouncedLoadNextPage = debounce(async () => {
+      await this.loadNextPage(false);
+    }, 50);
   }
 
   async componentDidMount() {
@@ -77,10 +84,10 @@ class SearchSong extends React.Component {
     this._unsubscribe();
   }
 
-  async loadNextPage() {
+  async loadNextPage(append) {
     const { songs, offset, query, isFetching, isEmpty, startedSearching } = this.state;
 
-    if (isFetching || isEmpty || !startedSearching) {
+    if (isEmpty || !startedSearching) {
       return;
     }
 
@@ -105,7 +112,7 @@ class SearchSong extends React.Component {
 
     this.setState({
       isFetching: false,
-      songs: [...songs, ...newSongs],
+      songs: append ? [...songs, ...newSongs] : newSongs,
       offset: offset + PAGE
     });
   }
@@ -120,10 +127,10 @@ class SearchSong extends React.Component {
       isEmpty: false,
       query: text,
       offset: 0,
-      songs: [],
+      //songs: [],
       startedSearching: true
     }, () => {
-      this.loadNextPage();
+      this.debouncedLoadNextPage();
     });
 
     console.log('search text is', text);
@@ -131,10 +138,10 @@ class SearchSong extends React.Component {
 
   async handleEndReached() {
     console.log('ENDING HAS BEEN REACHED!!!!!');
-    await this.loadNextPage();
+    await this.loadNextPage(true);
   }
 
-  handleListItemPress (songID, songTitle) {
+  openTrackInSpotify (songID, songTitle) {
     console.log('PRESSED: ', songID, songTitle);
     try {
       Linking.openURL(`spotify:track:${songID}`);
@@ -144,12 +151,21 @@ class SearchSong extends React.Component {
     }
   }
 
-  handleListItemLongPress (songID) {
-    console.log("LONG PRESS");
+  openModalToConfirmSharingSong (track) {
     this.setState({ 
-      selectedSongID: songID,
+      selectedSongID: track.id,
+      selectedTrack: track,
       addSongToGroupModalView: true 
     });
+  }
+
+
+  handleListItemPress (track) {
+    this.openModalToConfirmSharingSong(track);
+  }
+
+  handleListItemLongPress (songID) {
+    console.log("LONG PRESS");
   }
 
   onAddSongToGroupModalCancel () {
@@ -193,8 +209,10 @@ class SearchSong extends React.Component {
         {
           (isFetching && songs.length === 0)
           ? <ActivityIndicator />
+          : (startedSearching && query.trim().length == 0) 
+          ? <Text>No results</Text>
           : <Listing
-              items={startedSearching ? songs : this.props.defaultRecommendedTracks}
+              items={startedSearching && songs.length > 0 ? songs : this.props.defaultRecommendedTracks}
               onEndReached={() => this.handleEndReached()}
               onItemPress={(id, title) => this.handleListItemPress(id, title)}
               onItemLongPress={(id) => this.handleListItemLongPress(id)}
@@ -204,6 +222,7 @@ class SearchSong extends React.Component {
         <AddSongToGroupModal
           style={styles.modal}
           group={this.state.isForGroup}
+          track={this.state.selectedTrack}
           visible={this.state.addSongToGroupModalView}
           onOK={() => this.onAddSongToGroupModalOK()}
           onCancel={() => this.onAddSongToGroupModalCancel()}

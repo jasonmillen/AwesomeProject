@@ -19,8 +19,6 @@ const DAYS_OF_WEEK = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday
 
 export const getDateDisplayString = (date) => {
 
-
-
   const dateNow = new Date();
   const diffInSeconds = (dateNow.getTime() - date.getTime()) / 1000;
   const diffInDays = diffInSeconds / SECONDS_IN_DAY;
@@ -60,3 +58,46 @@ export const getDateDisplayString = (date) => {
   return `${month}/${dayOfMonth}/${year}`
   
 };
+
+
+export const  debounce = (func, wait, immediate) => {
+  // 'private' variable for instance
+  // The returned function will be able to reference this due to closure.
+  // Each call to the returned function will share this common timer.
+  let timeout;
+
+  // Calling debounce returns a new anonymous function
+  return async () => {
+    // reference the context and args for the setTimeout function
+    const context = this, args = arguments;
+
+    // Should the function be called now? If immediate is true
+    //   and not already in a timeout then the answer is: Yes
+    const callNow = immediate && !timeout;
+
+    // This is the basic debounce behaviour where you can call this 
+    //   function several times, but it will only execute once 
+    //   [before or after imposing a delay]. 
+    //   Each time the returned function is called, the timer starts over.
+    clearTimeout(timeout);
+
+    // Set the new timeout
+    timeout = setTimeout(async () => {
+
+      // Inside the timeout function, clear the timeout variable
+      // which will let the next execution run when in 'immediate' mode
+      timeout = null;
+
+      // Check if the function already ran with the immediate flag
+      if (!immediate) {
+        // Call the original function with apply
+        // apply lets you define the 'this' object as well as the arguments 
+        //    (both captured before setTimeout)
+        await func.apply(context, args);
+      }
+    }, wait);
+
+    // Immediate mode and no wait timer? Execute the function..
+    if (callNow) await func.apply(context, args);
+  }
+}

@@ -1,6 +1,8 @@
+import { debounce } from '../../utility/util';
+
 const apiPrefix = 'https://api.spotify.com/v1';
 
-export default async ({
+const search = async ({
   offset,
   limit,
   q,
@@ -36,3 +38,7 @@ export default async ({
       : undefined
   }));
 };
+
+export const debouncedSearch = debounce(search, 50);
+
+export default search;

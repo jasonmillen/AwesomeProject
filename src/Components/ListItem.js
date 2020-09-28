@@ -23,7 +23,7 @@ export default({
 }) => (
   <TouchableOpacity 
     style={styles.container}
-    onPress={() => onPress(id, title)}
+    onPress={() => onPress({ id, title, artist, album, imageUri })}
     onLongPress={() => onLongPress(id)}
   >
     <Image source={{ uri: imageUri }} style={styles.image}/>
