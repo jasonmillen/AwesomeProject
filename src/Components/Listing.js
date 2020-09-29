@@ -6,7 +6,7 @@ import Separator from './Separator';
 
 import { LIGHT_GREEN } from '../constants/colors';
 
-export default ({ items, onEndReached, onItemPress, onItemLongPress }) => {
+export default ({ items, onEndReached, onItemPress, onItemLongPress, onScroll }) => {
   return (
     <FlatList
       style={styles.container}
@@ -15,7 +15,8 @@ export default ({ items, onEndReached, onItemPress, onItemLongPress }) => {
       keyExtractor={item => item.id.toString()}
       //ItemSeparatorComponent={() => <Separator />}
       onEndReached={onEndReached}
-      ListEmptyComponent={() => <Text>No songs.</Text>}
+      //ListEmptyComponent={() => <Text>No songs.</Text>}
+      onScroll={onScroll}
     />
   );
 }

@@ -34,6 +34,7 @@ import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 import * as socketAPI from '../../actions/socketActions';
 
 import { debounce } from '../../utility/util';
+import { DARK_GREEN } from '../../constants/colors';
 
 const PAGE = 20;
 
@@ -64,12 +65,14 @@ class SearchSong extends React.Component {
       isForGroup: group,
       addSongToGroupModalView: false,
       selectedSongID: null,
-      startedSearching: false
+      startedSearching: false,
+      startedFetching: false,
+      startedScrolling: false
     };
 
     this.debouncedLoadNextPage = debounce(async () => {
       await this.loadNextPage(false);
-    }, 50);
+    }, 250);
   }
 
   async componentDidMount() {
@@ -91,7 +94,7 @@ class SearchSong extends React.Component {
       return;
     }
 
-    this.setState({ isFetching: true });
+    this.setState({ isFetching: true, startedFetching: query.trim().length > 0 ? true : false });
 
     const tokenData = this.props.tokenData;
     if (await verifyTokenData(tokenData)) {
@@ -127,7 +130,6 @@ class SearchSong extends React.Component {
       isEmpty: false,
       query: text,
       offset: 0,
-      //songs: [],
       startedSearching: true
     }, () => {
       this.debouncedLoadNextPage();
@@ -194,22 +196,35 @@ class SearchSong extends React.Component {
     }
   }
 
+  handleOnListScroll() {
+    this.setState({ startedScrolling: true });
+  }
+
   render() {
 
-    const { songs, query, isFetching, startedSearching } = this.state;
+    const { songs, query, isFetching, startedSearching, startedFetching, startedScrolling } = this.state;
+
+    const showActivityIndicator = isFetching && songs.length === 0;
+    const showDefaultRecommendedTracks = startedSearching === false || (query.trim().length === 0 && !showActivityIndicator);
+    const showNoResults = songs.length === 0 && !isFetching && startedFetching && !showActivityIndicator && !showDefaultRecommendedTracks;
 
     return (
       <View style={styles.container}>
-        {/* <Search 
-          onChange={text => this.handleSearchChange(text)}
-          text={query}
-          style={styles.searchInput}
-        />
-        <Separator /> */}
-        {
+        {showActivityIndicator && <ActivityIndicator />}
+        {showNoResults && <Text>No Results</Text>}
+        {!showActivityIndicator && !showNoResults &&
+          <Listing
+            items={showDefaultRecommendedTracks ? this.props.defaultRecommendedTracks : songs}
+            onEndReached={() => this.handleEndReached()}
+            onItemPress={(id, title) => this.handleListItemPress(id, title)}
+            onItemLongPress={(id) => this.handleListItemLongPress(id)}
+            onScroll={() => this.handleOnListScroll()}
+          />
+        }
+        {/* {
           (isFetching && songs.length === 0)
           ? <ActivityIndicator />
-          : (startedSearching && query.trim().length == 0) 
+          : (songs.length === 0 && !showDefaultRecommendedTracks) 
           ? <Text>No results</Text>
           : <Listing
               items={startedSearching && songs.length > 0 ? songs : this.props.defaultRecommendedTracks}
@@ -217,7 +232,7 @@ class SearchSong extends React.Component {
               onItemPress={(id, title) => this.handleListItemPress(id, title)}
               onItemLongPress={(id) => this.handleListItemLongPress(id)}
             />
-        }
+        } */}
 
         <AddSongToGroupModal
           style={styles.modal}
@@ -267,6 +282,12 @@ const styles = StyleSheet.create({
     marginTop: 300,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  recommendedText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: DARK_GREEN,
+    margin: 10
   }
 });
 
