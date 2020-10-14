@@ -4,9 +4,12 @@ import {
   View,
   ActivityIndicator,
   StyleSheet,
-  Text
+  Text,
+  TouchableOpacity
 } from 'react-native';
 import * as Linking from 'expo-linking';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
 import {
   setUserTokensSuccess
@@ -34,7 +37,7 @@ import AddSongToGroupModal from '../../Components/AddSongToGroupModal';
 import * as socketAPI from '../../actions/socketActions';
 
 import { debounce } from '../../utility/util';
-import { DARK_GREEN } from '../../constants/colors';
+import { DARK_GREEN, GREY_GREEN } from '../../constants/colors';
 
 const PAGE = 20;
 
@@ -43,15 +46,14 @@ class SearchSong extends React.Component {
   constructor(props) {
     super(props);
 
-    props.navigation.setOptions({
-      title: null,
-      headerTitle: (props) => (
-        <Search 
-          onChange={text => this.handleSearchChange(text)}
-          //text={query}
-        />
-      )
-    });
+    // props.navigation.setOptions({
+    //   title: null,
+    //   headerTitle: (props) => (
+    //     <Search 
+    //       onChange={text => this.handleSearchChange(text)}
+    //     />
+    //   )
+    // });
 
     const group = props.route.params?.group ?? null;
 
@@ -209,40 +211,38 @@ class SearchSong extends React.Component {
     const showNoResults = songs.length === 0 && !isFetching && startedFetching && !showActivityIndicator && !showDefaultRecommendedTracks;
 
     return (
-      <View style={styles.container}>
-        {showActivityIndicator && <ActivityIndicator />}
-        {showNoResults && <Text>No Results</Text>}
-        {!showActivityIndicator && !showNoResults &&
-          <Listing
-            items={showDefaultRecommendedTracks ? this.props.defaultRecommendedTracks : songs}
-            onEndReached={() => this.handleEndReached()}
-            onItemPress={(id, title) => this.handleListItemPress(id, title)}
-            onItemLongPress={(id) => this.handleListItemLongPress(id)}
-            onScroll={() => this.handleOnListScroll()}
-          />
-        }
-        {/* {
-          (isFetching && songs.length === 0)
-          ? <ActivityIndicator />
-          : (songs.length === 0 && !showDefaultRecommendedTracks) 
-          ? <Text>No results</Text>
-          : <Listing
-              items={startedSearching && songs.length > 0 ? songs : this.props.defaultRecommendedTracks}
+      <SafeAreaView style={styles.container}>
+        <View style={styles.titleBar}>
+          <TouchableOpacity
+            style={styles.titleBarBackButton}
+            onPress={() => this.props.navigation.goBack()}>
+            <Ionicons name='ios-arrow-back' size={30} />
+          </TouchableOpacity>
+          <Search onChange={text => this.handleSearchChange(text)}/>
+        </View>
+        <View>
+          {showActivityIndicator && <ActivityIndicator />}
+          {showNoResults && <Text>No Results</Text>}
+          {!showActivityIndicator && !showNoResults &&
+            <Listing
+              items={showDefaultRecommendedTracks ? this.props.defaultRecommendedTracks : songs}
               onEndReached={() => this.handleEndReached()}
               onItemPress={(id, title) => this.handleListItemPress(id, title)}
               onItemLongPress={(id) => this.handleListItemLongPress(id)}
+              onScroll={() => this.handleOnListScroll()}
             />
-        } */}
+          }
 
-        <AddSongToGroupModal
-          style={styles.modal}
-          group={this.state.isForGroup}
-          track={this.state.selectedTrack}
-          visible={this.state.addSongToGroupModalView}
-          onOK={() => this.onAddSongToGroupModalOK()}
-          onCancel={() => this.onAddSongToGroupModalCancel()}
-        />
-      </View>
+          <AddSongToGroupModal
+            style={styles.modal}
+            group={this.state.isForGroup}
+            track={this.state.selectedTrack}
+            visible={this.state.addSongToGroupModalView}
+            onOK={() => this.onAddSongToGroupModalOK()}
+            onCancel={() => this.onAddSongToGroupModalCancel()}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
 };
@@ -272,8 +272,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'stretch',
     justifyContent: 'flex-start',
-    //margin: 10,
-    //marginTop: 10
   },
   modal: {
     flex: 1,
@@ -288,6 +286,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: DARK_GREEN,
     margin: 10
+  },
+  titleBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: GREY_GREEN
+  },
+  titleBarBackButton: {
+    width: 25,
+    margin: 10,
+    alignItems: 'center'
   }
 });
 

@@ -6,9 +6,13 @@ import {
   View,
   Button,
   Image,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 //import Toast from 'react-native-simple-toast';
+import { Ionicons } from '@expo/vector-icons';
+
+import { GREY_GREEN } from '../../constants/colors';
 
 import StartChatButton from '../../Components/StartChatButton';
 import NamePlaylistModal from '../../Components/NamePlaylistModal';
@@ -42,7 +46,16 @@ class SearchUser extends React.Component {
   handleSearchUserClick () {
     console.log('clicked search');
     console.log(this.props.tokenData);
-    this.props.fetchSearchUser(this.state.searchText);
+    this.searchForUser(this.state.searchText);
+  }
+
+  hanleSearchSubmit (searchText) {
+    console.log('submitted search ' + searchText);
+    this.searchForUser(searchText);
+  }
+
+  searchForUser (spotifyUserID) {
+    this.props.fetchSearchUser(spotifyUserID);
   }
 
 
@@ -88,7 +101,7 @@ class SearchUser extends React.Component {
     else if (searchState.userSearchStringID && searchState.userFound) {
       userData = searchState.userData;
       searchFeedback = (
-        <View>
+        <View style={styles.foundUserView}>
           <Text>Found user: {searchState.userSearchStringID}</Text>
           <Text style={styles.userDisplayName}>{userData.display_name}</Text>
           {
@@ -110,16 +123,25 @@ class SearchUser extends React.Component {
 
     return (
       <View style={styles.searchUserPage}>
-        <TextInput 
-          style={styles.searchUserTextInput} 
-          onChangeText={text => this.setState({ searchText: text })}
-          placeholder='Enter a spotify user ID'
-        />
+        <View style={styles.searchBar}>
+          <TouchableOpacity
+            style={styles.searchIconButton}
+            onPress={() => this.handleSearchUserClick()}>
+            <Ionicons color='grey' name='md-search' size={30} />
+          </TouchableOpacity>
+          <TextInput 
+            style={styles.searchUserTextInput} 
+            onChangeText={text => this.setState({ searchText: text })}
+            placeholder='Enter a spotify user ID'
+            returnKeyType='search'
+            onSubmitEditing={searchEvent => this.hanleSearchSubmit(searchEvent.nativeEvent.text)}
+          />
+        </View>
 
-        <Button 
+        {/* <Button 
           title='Search'
           onPress={() => this.handleSearchUserClick()}
-        />
+        /> */}
         {searchFeedback}
         <NamePlaylistModal
           style={styles.modal}
@@ -163,9 +185,10 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   searchUserTextInput: {
+    flex: 1,
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1
+    //borderColor: 'gray',
+    //borderWidth: 1
   },
   userDisplayName: {
     fontSize: 20,
@@ -182,6 +205,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: GREY_GREEN
+  },
+  searchIconButton: {
+    margin: 8
+  },
+  foundUserView: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'space-around'
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchUser);

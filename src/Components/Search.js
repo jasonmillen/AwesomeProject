@@ -53,8 +53,10 @@ export default class Search extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: GREY_GREEN,
-    marginLeft: -20
+    //width: '100%',
+    flex: 1,
+    //backgroundColor: GREY_GREEN,
+    //marginLeft: -20,
   },
   search: {
     //margin: 3,
@@ -65,22 +67,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     //backgroundColor: GREY_GREEN
   },
-  text: {
-    marginTop: 10,
-    marginBottom: 10
-  },
   input: {
     flex: 1,
     //borderWidth: 1,
     borderColor: 'black',
     padding: 10,
-    height: 40,
+    height: 50,
     borderRadius: 20,
     //backgroundColor: GREY_GREEN
-  },
-  searchIcon: {
-    //backgroundColor: 'grey',
-    //flex: 1
-    marginLeft: 10
   }
 });

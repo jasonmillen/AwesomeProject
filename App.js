@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import reducer from './src/reducers/index';
 
@@ -25,36 +26,39 @@ export default class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Splash">
-            <Stack.Screen
-              name="Splash"
-              component={Splash}
-              options={{ headerShown: false }}/>
-            <Stack.Screen
-              name="Login"
-              component={Login} 
-              options={{ headerShown: false }}/>
-            <Stack.Screen
-              name="Home"
-              component={Home}/>
-            <Stack.Screen
-              name="Group"
-              component={Group}/>
-            <Stack.Screen
-              name="UserProfile"
-              component={UserProfile} 
-              options={{ title: 'Profile' }}/>
-            <Stack.Screen
-              name="SearchUser"
-              component={SearchUser}
-              options={{ title: 'Search For Users' }}/> 
-            <Stack.Screen
-              name="SearchSong"
-              component={SearchSong} />
-              {/* options={{ title: 'Search For Song' }}/>  */}
-          </Stack.Navigator>
-        </NavigationContainer>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator initialRouteName="Splash">
+              <Stack.Screen
+                name="Splash"
+                component={Splash}
+                options={{ headerShown: false }}/>
+              <Stack.Screen
+                name="Login"
+                component={Login} 
+                options={{ headerShown: false }}/>
+              <Stack.Screen
+                name="Home"
+                component={Home}/>
+              <Stack.Screen
+                name="Group"
+                component={Group}/>
+              <Stack.Screen
+                name="UserProfile"
+                component={UserProfile} 
+                options={{ title: 'Profile' }}/>
+              <Stack.Screen
+                name="SearchUser"
+                component={SearchUser}
+                options={{ title: 'Search For User' }}/> 
+              <Stack.Screen
+                name="SearchSong"
+                component={SearchSong}
+                options={{ headerShown: false }} />
+                {/* options={{ title: 'Search For Song' }}/>  */}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
       </Provider>
     )
   }

@@ -57,7 +57,7 @@ class Home extends React.Component {
     super(props);
 
     props.navigation.setOptions({
-      title: this.props.user.displayName || this.props.spotifyUserID,
+      title: 'Chats',//this.props.user.displayName || this.props.spotifyUserID,
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchUserHeaderButton
