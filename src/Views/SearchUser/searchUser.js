@@ -7,8 +7,11 @@ import {
   Button,
   Image,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
+import { HeaderHeightContext } from "@react-navigation/stack";
 //import Toast from 'react-native-simple-toast';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -99,22 +102,36 @@ class SearchUser extends React.Component {
       searchFeedback = (<Text>Could not find user: {searchState.userSearchStringID}</Text>);
     }
     else if (searchState.userSearchStringID && searchState.userFound) {
-      userData = searchState.userData;
+      const userData = searchState.userData;
+      const userImageUrl = userData && Array.isArray(userData.images) && userData.images.length > 0 && userData.images[0].url ?
+        userData.images[0].url : null;
+
+      const keyboardVerticalOffset = Platform.OS === 'ios' ? 64 : 0
+
       searchFeedback = (
-        <View style={styles.foundUserView}>
-          <Text>Found user: {searchState.userSearchStringID}</Text>
-          <Text style={styles.userDisplayName}>{userData.display_name}</Text>
-          {
-            (userData && Array.isArray(userData.images) && userData.images.length > 0 && userData.images[0].url) && 
-            <Image
-              style={{width: 200, height: 200}}
-              source={{uri: userData.images[0].url}}
-            />
-          }
-          <StartChatButton
-            onPress={() => this.handleStartChatButtonClick()}
-          />
-        </View>
+        <HeaderHeightContext.Consumer>
+          {headerHeight => (
+            <KeyboardAvoidingView 
+              {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
+              //behavior={Platform.OS == "ios" ? "padding" : "height"}
+              keyboardVerticalOffset={headerHeight + keyboardVerticalOffset}
+            >
+              <View style={styles.foundUserView}>
+                <Text>Found user: {searchState.userSearchStringID}</Text>
+                <Text style={styles.userDisplayName}>{userData.display_name}</Text>
+                {userImageUrl ? 
+                  <Image
+                    style={styles.userImage}
+                    source={{uri: userImageUrl}}/> :
+                  <Ionicons name='ios-contact' size={150} color='grey' />
+                }
+                <StartChatButton
+                  onPress={() => this.handleStartChatButtonClick()}
+                />
+              </View>
+            </KeyboardAvoidingView>
+          )}
+        </HeaderHeightContext.Consumer>
       );
     }
     else {
@@ -142,7 +159,9 @@ class SearchUser extends React.Component {
           title='Search'
           onPress={() => this.handleSearchUserClick()}
         /> */}
-        {searchFeedback}
+        <View style={styles.container}>
+          {searchFeedback}
+        </View>
         <NamePlaylistModal
           style={styles.modal}
           visible={this.state.namePlaylistModalView}
@@ -214,11 +233,23 @@ const styles = StyleSheet.create({
     margin: 8
   },
   foundUserView: {
-    flex: 1,
+    flex: .75,
+    //height: 300,
     flexDirection: 'column',
-    backgroundColor: 'grey',
+    backgroundColor: 'yellow',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'blue'
+  },
+  userImage: {
+    width: 150, 
+    height: 150
   }
 });
 
