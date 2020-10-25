@@ -5,6 +5,8 @@ import {
   StyleSheet
 } from 'react-native';
 
+import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../constants/colors';
+
 export default (props) => {
 
   return (
@@ -21,6 +23,6 @@ export default (props) => {
 const styles = StyleSheet.create({
   text: {
     fontSize: 20,
-    color: 'blue'
+    color: 'white'
   }
 });

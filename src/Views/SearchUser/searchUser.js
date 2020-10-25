@@ -1,4 +1,5 @@
 import React from 'react';
+import { Keyboard } from 'react-native';
 import { connect } from 'react-redux';
 import {
   Text,
@@ -9,13 +10,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  TouchableWithoutFeedback
 } from 'react-native';
 import { HeaderHeightContext } from "@react-navigation/stack";
 //import Toast from 'react-native-simple-toast';
 import { Ionicons } from '@expo/vector-icons';
+import * as Linking from 'expo-linking'
 
-import { GREY_GREEN } from '../../constants/colors';
+import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../../constants/colors';
 
 import StartChatButton from '../../Components/StartChatButton';
 import NamePlaylistModal from '../../Components/NamePlaylistModal';
@@ -61,6 +64,16 @@ class SearchUser extends React.Component {
     this.props.fetchSearchUser(spotifyUserID);
   }
 
+  handleViewUserButtonClick() {
+    const spotifyUserID = this.props.searchState.userData.id;
+    console.log(`will navigate to user id: ${spotifyUserID}`);
+    try {
+      Linking.openURL(`spotify:user:${spotifyUserID}`);
+    }
+    catch (error) {
+      console.log('Error attempting to open user` in spotify: ', error);
+    }
+  }
 
   handleStartChatButtonClick () {
     this.setState({ namePlaylistModalView: true });
@@ -109,29 +122,40 @@ class SearchUser extends React.Component {
       const keyboardVerticalOffset = Platform.OS === 'ios' ? 64 : 0
 
       searchFeedback = (
-        <HeaderHeightContext.Consumer>
-          {headerHeight => (
-            <KeyboardAvoidingView 
-              {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
-              //behavior={Platform.OS == "ios" ? "padding" : "height"}
-              keyboardVerticalOffset={headerHeight + keyboardVerticalOffset}
-            >
-              <View style={styles.foundUserView}>
-                <Text>Found user: {searchState.userSearchStringID}</Text>
-                <Text style={styles.userDisplayName}>{userData.display_name}</Text>
-                {userImageUrl ? 
-                  <Image
-                    style={styles.userImage}
-                    source={{uri: userImageUrl}}/> :
-                  <Ionicons name='ios-contact' size={150} color='grey' />
-                }
-                <StartChatButton
-                  onPress={() => this.handleStartChatButtonClick()}
-                />
-              </View>
-            </KeyboardAvoidingView>
-          )}
-        </HeaderHeightContext.Consumer>
+        <View>
+          <HeaderHeightContext.Consumer>
+            {headerHeight => (
+              <KeyboardAvoidingView 
+                {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
+                //behavior={Platform.OS == "ios" ? "padding" : "height"}
+                keyboardVerticalOffset={headerHeight + keyboardVerticalOffset}
+              >
+                <View style={styles.foundUserView}>
+                  <Text style={styles.userDisplayName}>{userData.display_name}</Text>
+                  {userImageUrl ? 
+                    <Image
+                      style={styles.userImage}
+                      source={{uri: userImageUrl}}/> :
+                    <Ionicons name='ios-contact' size={150} color='grey' />
+                  }
+                  <Text style={styles.spotifyUserIdText}>Spotify User ID: {searchState.userSearchStringID}</Text>
+                </View>
+              </KeyboardAvoidingView>
+            )}
+          </HeaderHeightContext.Consumer>
+          <View style={styles.startChatSection}>
+            <TouchableOpacity 
+              style={styles.viewUserButton}
+              onPress={() => this.handleViewUserButtonClick()}>
+              <Text style={{ fontSize: 20 }}>View User</Text>
+            </TouchableOpacity>
+            <StartChatButton
+              style={styles.startChatButton}
+              onPress={() => this.handleStartChatButtonClick()}
+            />
+          </View>
+        </View>
+
       );
     }
     else {
@@ -154,14 +178,11 @@ class SearchUser extends React.Component {
             onSubmitEditing={searchEvent => this.hanleSearchSubmit(searchEvent.nativeEvent.text)}
           />
         </View>
-
-        {/* <Button 
-          title='Search'
-          onPress={() => this.handleSearchUserClick()}
-        /> */}
-        <View style={styles.container}>
-          {searchFeedback}
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.container}>
+            {searchFeedback}
+          </View>
+        </TouchableWithoutFeedback>
         <NamePlaylistModal
           style={styles.modal}
           visible={this.state.namePlaylistModalView}
@@ -200,8 +221,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'stretch',
     justifyContent: 'flex-start',
-    margin: 10,
-    marginTop: 10
+    //margin: 10,
+    //marginTop: 10
   },
   searchUserTextInput: {
     flex: 1,
@@ -210,8 +231,12 @@ const styles = StyleSheet.create({
     //borderWidth: 1
   },
   userDisplayName: {
-    fontSize: 20,
-    color: 'blue'
+    fontSize: 30,
+    color: DARK_GREEN
+  },
+  spotifyUserIdText: {
+    //fontSize: 
+    //color: 'grey'
   },
   startChatButton: {
     marginTop: 10
@@ -236,20 +261,46 @@ const styles = StyleSheet.create({
     flex: .75,
     //height: 300,
     flexDirection: 'column',
-    backgroundColor: 'yellow',
+    //backgroundColor: 'yellow',
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'center'
   },
   container: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'blue'
+    //backgroundColor: 'grey'
   },
   userImage: {
-    width: 150, 
-    height: 150
+    borderRadius: 15,
+    marginTop: 12,
+    marginBottom: 4,
+    width: 170, 
+    height: 170
+  },
+  startChatSection: {
+    flex: 0.2,
+    flexDirection: 'row'
+    //backgroundColor: 'green'
+  },
+  startChatButton: {
+    backgroundColor: LIGHT_GREEN,
+    borderRadius: 10,
+    height: 60,
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5
+  },
+  viewUserButton: {
+    backgroundColor: GREY_GREEN,
+    borderRadius: 10,
+    height: 60,
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5
   }
 });
 
