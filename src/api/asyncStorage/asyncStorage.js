@@ -56,6 +56,7 @@ export const getSsTokenData = async () => {
   const keys = ['ssAccessToken', 'ssExpirationTime', 'ssRefreshToken'];
   try {
     const stores = await AsyncStorage.multiGet(keys);
+    console.log(2);
     console.log('STORES: ', stores)
     const userData = stores.reduce((data, store, i) => {
       data[store[0]] = store[1];

@@ -3,6 +3,7 @@ import {
   FlatList,
   Text
 } from 'react-native';
+import { messagesGetForGroupSuccess } from '../actions/messageActions';
 
 import GroupListItem from './GroupListItem';
 import Separator from './Separator';
@@ -13,6 +14,7 @@ export default ({
   usersByGroupID,
   messagesByGroupID,
   groupFollowStatusByID,
+  messagesGetForGroupSuccessByGroupID,
   onEndReached, 
   onItemPressed, 
   onFollowPlaylistPressed,
@@ -22,6 +24,9 @@ export default ({
   const renderItemFunc = ({item}) => {
     const group = item; // item is just the group
     const userIsFollowing = groupFollowStatusByID[group.id];
+    const getMessagesForGroupSuccess = 
+      messagesGetForGroupSuccessByGroupID && messagesGetForGroupSuccessByGroupID[group.id];
+
     return (
       <GroupListItem
         group={group} 
@@ -30,7 +35,8 @@ export default ({
         usersByID={usersByID}
         onPress={onItemPressed} 
         userIsFollowing={userIsFollowing}
-        onFollowPlaylistPressed={onFollowPlaylistPressed}/>
+        onFollowPlaylistPressed={onFollowPlaylistPressed}
+        getMessagesForGroupSuccess={getMessagesForGroupSuccess}/>
     );
   };
 

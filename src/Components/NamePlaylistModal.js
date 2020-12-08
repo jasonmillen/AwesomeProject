@@ -5,8 +5,11 @@ import {
   TextInput,
   Button,
   StyleSheet,
-  Modal
+  Modal,
+  TouchableHighlight
 } from 'react-native';
+
+import { LIGHT_GREEN, GREY_GREEN, DARK_GREEN } from '../constants/colors';
 
 export default class NamePlaylistModal extends Component {
 
@@ -29,20 +32,32 @@ export default class NamePlaylistModal extends Component {
         transparent={true}
       >
         <View style={{backgroundColor: '#000000aa', flex: 1}}>
-          <View style={{backgroundColor: '#ffffff', margin: 25, padding: 20}}>
-            <TextInput 
-              style={styles.playlistNameInput}
-              onChangeText={text => this.setState({ playlistName: text })}
-              placeholder='Playlist name'
-            />
-            <Button 
-              title='Close' 
-              style={{ margin: 5}} 
-              onPress={this.props.onCancel} />
-            <Button 
-              title='Ok' 
-              style={{ margin: 5 }} 
-              onPress={() => this.props.onOK(this.state.playlistName)}/>
+          <View style={styles.modalContent}>
+            <Text style={styles.startChatText}>Start Chat</Text>
+            <View style={styles.playlistNameInputView}>
+              <TextInput 
+                style={styles.playlistNameInput}
+                onChangeText={text => this.setState({ playlistName: text })}
+                placeholder='Playlist name'
+              />
+            </View>
+          </View>
+          <View style={styles.buttonView}>
+            <TouchableHighlight 
+              style={styles.cancelButton}
+              onPress={this.props.onCancel}
+              underlayColor='grey'
+              //activeOpacity={.99}
+            >
+              <Text>Cancel</Text>
+            </TouchableHighlight>
+            <TouchableHighlight 
+              style={styles.okButton}
+              onPress={() => this.props.onOK(this.state.playlistName)}
+              underlayColor={DARK_GREEN}
+            >
+              <Text style={styles.okButtonText}>Ok</Text>
+            </TouchableHighlight>
           </View>
         </View>
       </Modal>
@@ -52,12 +67,17 @@ export default class NamePlaylistModal extends Component {
 };
 
 const styles = StyleSheet.create({
-  modal: {
-    flex: 1,
-    width: 200,
-    height: 200,
-    justifyContent: 'center',
-    alignItems: 'center'
+  modalContent: {
+    backgroundColor: '#ffffff', 
+    marginTop: 25, 
+    marginLeft: 25,
+    marginRight: 25,
+    padding: 20,
+    flex: 0.15,
+    //width: 200,
+    //height: 500,
+    justifyContent: 'space-between',
+    //alignItems: 'center'
   },
   text: {
     fontSize: 20,
@@ -65,7 +85,42 @@ const styles = StyleSheet.create({
   },
   playlistNameInput: {
     height: 40,
-    borderColor: 'gray',
-    borderWidth: 1
+    marginLeft: 5
+    //backgroundColor: GREY_GREEN
+    //borderColor: 'gray',
+    //borderWidth: 1
   },
+  playlistNameInputView: {
+    backgroundColor: GREY_GREEN
+  },
+  startChatText: {
+    fontSize: 25,
+    textAlign: 'center',
+    color: DARK_GREEN
+  },
+  buttonView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 25,
+    marginRight: 25
+    //backgroundColor: 'grey'
+  },
+  cancelButton: {
+    flex: 1,
+    height: 40,
+    backgroundColor: GREY_GREEN,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  okButton: {
+    flex: 1,
+    height: 40,
+    backgroundColor: LIGHT_GREEN,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  okButtonText: {
+    color: 'white'
+  }
 });

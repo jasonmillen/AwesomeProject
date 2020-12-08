@@ -2,7 +2,8 @@ import React from 'react';
 
 import {
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  StyleSheet
 } from 'react-native';
 
 export default (props) => {
@@ -12,8 +13,15 @@ export default (props) => {
       style={props.style}
       onPress={() => props.onPress()}
     >
-      <Text>Log Out</Text>
+      <Text style={styles.text}>Log Out</Text>
       
     </TouchableOpacity>
   )
 };
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 20,
+    color: 'white'
+  }
+});

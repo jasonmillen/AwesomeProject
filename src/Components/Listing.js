@@ -24,5 +24,6 @@ export default ({ items, onEndReached, onItemPress, onItemLongPress, onScroll })
 const styles = StyleSheet.create({
   container: {
     //backgroundColor: LIGHT_GREEN,
+    //marginBottom: 50
   }
 });

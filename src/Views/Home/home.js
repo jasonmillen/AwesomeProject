@@ -152,6 +152,7 @@ class Home extends React.Component {
           usersByGroupID={this.props.usersByGroupID}
           messagesByGroupID={this.props.messagesByGroupID}
           groupFollowStatusByID={this.props.groupFollowStatusByID}
+          messagesGetForGroupSuccessByGroupID={this.props.messagesGetForGroupSuccessByGroupID}
           onEndReached={() => this.handleGroupListEndReached()}
           onItemPressed={(group) => this.handleGroupListItemPressed(group)}
           onFollowPlaylistPressed={(group) => this.handleFollowPlaylistPressed(group)}

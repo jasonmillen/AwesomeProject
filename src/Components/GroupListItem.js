@@ -9,6 +9,7 @@ import {
 
 import { isValidDate, getDateDisplayString } from '../utility/util';
 import { LIGHT_GREEN } from '../constants/colors';
+import { messagesGetForGroupSuccess } from '../actions/messageActions';
 
 export default ({
   group: {
@@ -24,7 +25,8 @@ export default ({
   messages,
   onPress,
   userIsFollowing,
-  onFollowPlaylistPressed
+  onFollowPlaylistPressed,
+  getMessagesForGroupSuccess
 }) => {
 
   let imageSource = null;
@@ -32,7 +34,7 @@ export default ({
     imageSource = { uri: imageUrl };
   }
 
-  userIsFollowing = Math.random() > 0.5 ? false : userIsFollowing;
+  //userIsFollowing = Math.random() > 0.5 ? false : userIsFollowing;
 
   const lastUpdateTimeAsDate = lastUpdateTime ? new Date(lastUpdateTime): null;
   if (lastUpdateTimeAsDate && !isValidDate(lastUpdateTimeAsDate)) {
@@ -41,7 +43,10 @@ export default ({
   }
 
   let groupDisplayMessage = null;
-  if (messages && messages.length > 0) {
+  if (!getMessagesForGroupSuccess) {
+    groupDisplayMessage = '';
+  }
+  else if (messages && messages.length > 0) {
     const message = messages[0];
     if (message.trackID) {
       const artist = (message.trackInfo.artists && message.trackInfo.artists[0]) ? message.trackInfo.artists[0] : null

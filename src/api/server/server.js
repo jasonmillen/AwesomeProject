@@ -30,6 +30,7 @@ export const getSpotifyTokenData = async (authCode) => {
 export const refreshTokens = async (refreshToken) => {
 
   const userID = await getUserID();
+  console.log(3);
   const ssTokenData = await getSsTokenData();
 
   const response = await fetch(`${BASE_URL}/api/refreshSpotifyToken`, {
@@ -51,6 +52,7 @@ export const refreshTokens = async (refreshToken) => {
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
 
   console.log('BEFORE');
+  console.log(4);
   const ssTokenData = await getSsTokenData();
 
 
@@ -75,6 +77,7 @@ export const getUserBySpotifyUserID = async (spotifyUserID) => {
 // TODO: DEPRECATE
 export const addNewUser = async (spotifyUserID) => {
 
+  console.log(5);
   const ssTokenData = await getSsTokenData();
 
   let response = await fetch(`${BASE_URL}/api/user/create`, {
@@ -95,6 +98,7 @@ export const addNewUser = async (spotifyUserID) => {
 
 export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
 
+  console.log(6);
   const ssTokenData = await getSsTokenData();
 
   let response = await fetch(`${BASE_URL}/api/group/create`, {
@@ -118,6 +122,7 @@ export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
 
 export const getGroupsForUser = async (userID) => {
 
+  console.log(7);
   const ssTokenData = await getSsTokenData();
 
   let response = await fetch(`${BASE_URL}/api/user/${userID}/groups`, {
@@ -136,6 +141,7 @@ export const getGroupsForUser = async (userID) => {
 
 export const groupAddSong = async (groupID, trackID, senderID) => {
 
+  console.log(8);
   const ssTokenData = await getSsTokenData();
 
   let response = await fetch(`${BASE_URL}/api/group/track`, {

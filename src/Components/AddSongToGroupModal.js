@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
   },
   groupNameText: {
     fontSize: 25,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: DARK_GREEN
   },
   trackInfoView: {
     flexDirection: 'row',

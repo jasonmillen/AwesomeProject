@@ -23,4 +23,8 @@ export const searchUser = async (spotifyUserID) => {
     console.log('User found: ', json.id);
     return json;
   }
+  else {
+    console.log('ERROR getting user.  Received following data from server: ' + json);
+    return null;
+  }
 };

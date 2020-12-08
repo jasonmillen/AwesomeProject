@@ -79,6 +79,7 @@ export const getLoggedInUser = () => {
       //await asAPI.clear();
       const spotifyUserID = await asAPI.getSpotifyUserID();
       const tokenData = await asAPI.getTokenData();
+      console.log(1);
       const ssTokenData = await asAPI.getSsTokenData();
 
       if (!spotifyUserID || !tokenData || !ssTokenData) {
@@ -86,7 +87,6 @@ export const getLoggedInUser = () => {
         throw new Error('No logged in user');
       }
 
-      // const ssTokenData = await asAPI.getSsTokenData();
       let user = await serverAPI.getUserBySpotifyUserID(spotifyUserID);
       if (user) {
         await asAPI.setUserID(user.id);
@@ -279,7 +279,7 @@ export const fetchGetRecommendedTracks = () => {
         });
       }
 
-      console.log('REC TRACKS: ', recommendedTracks);
+      // console.log('REC TRACKS: ', recommendedTracks);
 
       dispatch (getRecommendedTracksSuccess(recommendedTracks));
     }

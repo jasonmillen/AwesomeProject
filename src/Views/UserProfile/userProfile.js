@@ -3,9 +3,11 @@ import {
   View,
   Text,
   Button,
-  StyleSheet
+  StyleSheet,
+  Image
 } from 'react-native';
 import { connect } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
 import LogoutButton from '../../Components/LogoutButton';
 import {
@@ -13,17 +15,14 @@ import {
 } from '../../actions/userActions';
 import { 
   selectSpotifyUserID,
-  selectLogoutSuccess
+  selectLogoutSuccess,
+  selectUser
 } from '../../reducers/userReducer';
 import { navigateAndResetStack } from '../../utility/navigation'; 
 
-class UserProfile extends React.Component {
+import { DARK_GREEN, GREY_GREEN, LIGHT_GREEN } from '../../constants/colors';
 
-  // static navigationOptions = ({ navigation }) => {
-  //   return {
-  //     title: 'Profile'
-  //   }
-  // };
+class UserProfile extends React.Component {
 
   componentDidUpdate () {
     if (this.props.logoutSuccess) {
@@ -41,10 +40,26 @@ class UserProfile extends React.Component {
 
 
   render() {
+
+    const user = this.props.user;
+
+    if (!this.props.user) {
+      return <View></View>
+    }
+    const userImageUrl = user.imageUrl;
+
     return (
       <View style={styles.profilePage}>
-        <Text>Profile Page</Text>
-        <Text>Logged in as {this.props.spotifyUserID}</Text>
+        {user && user.displayName && <Text style={styles.userDisplayNameText}>{this.props.user.displayName}</Text>}
+        <View style={styles.userImageSpotifyUserIdView}>
+          {userImageUrl ? 
+            <Image
+              style={styles.userImage}
+              source={{uri: userImageUrl}}/> :
+            <Ionicons name='ios-contact' size={150} color='grey' />
+          }
+          <Text>Logged in as {this.props.spotifyUserID}</Text>
+        </View>
         <LogoutButton 
           style={styles.logoutButton}
           onPress={() => this.handleLogoutButtonPress()}
@@ -57,7 +72,8 @@ class UserProfile extends React.Component {
 const mapStateToProps = (state) => {
   return {
     spotifyUserID: selectSpotifyUserID(state),
-    logoutSuccess: selectLogoutSuccess(state)
+    logoutSuccess: selectLogoutSuccess(state),
+    user: selectUser(state)
   };
 };
 
@@ -72,11 +88,32 @@ const mapDispatchToProps = (dispatch) => {
 const styles = StyleSheet.create({
   profilePage: {
     flex: 1,
-    justifyContent: 'center',
+    margin: 35,
+    justifyContent: 'space-around',
     alignItems: 'center'
   },
   logoutButton: {
-    backgroundColor: 'red'
+    backgroundColor: LIGHT_GREEN,
+    borderRadius: 10,
+    height: 60,
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5
+  },
+  userDisplayNameText: {
+    fontSize: 30,
+    color: DARK_GREEN
+  },
+  userImage: {
+    borderRadius: 15,
+    marginTop: 12,
+    marginBottom: 4,
+    width: 170, 
+    height: 170
+  },
+  userImageSpotifyUserIdView: {
+    alignItems: 'center'
   }
 });
 

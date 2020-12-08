@@ -14,6 +14,10 @@ import {
   GROUP_FOLLOW_PLAYLIST_SUCCESS
 } from '../actions/groupActions';
 
+import {
+  LOGOUT_SUCCESS
+} from '../actions/userActions';
+
 import { 
   SOCKET_RECEIVE_GROUP, 
   SOCKET_RECEIVE_SEARCH_SONG_START, 
@@ -31,6 +35,9 @@ const initialState = {
 
 export default groupReducer = (state = initialState, action) => {
   switch (action.type) {
+    case LOGOUT_SUCCESS: {
+      return initialState;
+    }
     case GROUP_CREATE_REQUEST: {
       console.log(GROUP_CREATE_REQUEST);
       return state;
@@ -218,6 +225,5 @@ export const selectGroupFollowStatusByID = (state) => {
 };
 
 export const selectUsersSearchingForSongsForGroupID = (state, groupID) => {
-  console.log('SELECITNG!!!!!!');
   return state.group.usersSearchingForSongsByGroupID[groupID];
 };

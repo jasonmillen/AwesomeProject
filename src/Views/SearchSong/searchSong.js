@@ -220,7 +220,7 @@ class SearchSong extends React.Component {
           </TouchableOpacity>
           <Search onChange={text => this.handleSearchChange(text)}/>
         </View>
-        <View>
+        <View style={styles.listingView}>
           {showActivityIndicator && <ActivityIndicator />}
           {showNoResults && <Text>No Results</Text>}
           {!showActivityIndicator && !showNoResults &&
@@ -269,9 +269,9 @@ const mapDispatchToProps = (dispatch) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
+    //backgroundColor: '#fff',
+    // alignItems: 'stretch',
+    // justifyContent: 'flex-start',
   },
   modal: {
     flex: 1,
@@ -296,6 +296,9 @@ const styles = StyleSheet.create({
     width: 25,
     margin: 10,
     alignItems: 'center'
+  },
+  listingView: {
+    flex: 1
   }
 });
 

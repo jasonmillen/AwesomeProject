@@ -125,5 +125,5 @@ export const selectMessagesGetForGroupSuccess = (state, groupID) => {
 };
 
 export const selectMessagesGetForGroupSuccessByGroupID = (state) => {
-  return state.message.messagesGetForGroupSuccessByGroup;
+  return state.message.messagesGetForSuccessGroupByGroup;
 };

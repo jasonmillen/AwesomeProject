@@ -34,6 +34,7 @@ const initialState = {
   //   ssExpirationTime: null,
   //   ssRefreshToken: null
   // },
+  user: null,
   userID: null,
   spotifyUserID: null,
   getLoggedInUserSuccess: false,

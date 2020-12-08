@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../constants/colors';
-import { color } from 'react-native-reanimated';
 
 export default({
   item: {
@@ -39,8 +38,8 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    //backgroundColor: GREY_GREEN,
-    margin: 5,
+    // backgroundColor: GREY_GREEN,
+    margin: 5
   },
   songInfo: {
     flex: 1,
