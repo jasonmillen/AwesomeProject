@@ -3,6 +3,7 @@ import { SPOTIFY_BASE_URL } from '../../../config';
 import { getTokenData } from './token';
 
 export const createPlaylist = async (spotifyUserID, playlistName, accessToken) => {
+  console.log('IN ACTUAL CREATE PLAYLIST');
   const uri = `${SPOTIFY_BASE_URL}/users/${spotifyUserID}/playlists`;
   const res = await fetch(uri, {
     method: 'POST',

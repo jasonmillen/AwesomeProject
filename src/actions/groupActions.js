@@ -40,11 +40,10 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
   return async (dispatch) => {
     dispatch(groupCreateRequest());
 
-    if (await verifyTokenData(tokenData)) {
-      dispatch (setUserTokensSuccess(tokenData));
-    }
-
     try {
+      if (await verifyTokenData(tokenData)) {
+        dispatch (setUserTokensSuccess(tokenData));
+      }
       const playlistData = await playlistAPI.createPlaylist(creatorSpotifyID, playlistName, tokenData.accessToken);
       const playlistID = playlistData.id;
       const group = await serverAPI.createGroup(creatorID, memberSpotifyIDs, playlistID);
@@ -53,7 +52,7 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
       dispatch(groupCreateSuccess());
 
       // refresh group data
-      dispatch(fetchUserGetGroups(creatorID, creatorSpotifyID));
+      dispatch(exports.fetchUserGetGroups(creatorID, creatorSpotifyID));
       
     }
     catch (error) {
