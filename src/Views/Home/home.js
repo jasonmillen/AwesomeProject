@@ -56,24 +56,6 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
 
-    props.navigation.setOptions({
-      title: 'Chats',//this.props.user.displayName || this.props.spotifyUserID,
-      headerRight: () => (
-        <View style={styles.titleBarRightButtonView}>
-          <SearchUserHeaderButton
-            style={styles.searchUserHeaderButton}
-            onPress={() => this.handleStartChatButtonPress(props.navigation)}
-          />
-        </View>
-      ),
-      headerLeft: () => (
-        <ViewProfileButton
-          style={styles.viewProfileButton}
-          onPress={() => this.handleViewProfileButtonPress(props.navigation)}
-        />
-      )
-    });
-
     this.state = {
       groups: [],
     };
@@ -81,6 +63,25 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
+
+    this.props.navigation.setOptions({
+      title: 'Chats',//this.props.user.displayName || this.props.spotifyUserID,
+      headerRight: () => (
+        <View style={styles.titleBarRightButtonView}>
+          <SearchUserHeaderButton
+            style={styles.searchUserHeaderButton}
+            onPress={() => this.handleStartChatButtonPress(this.props.navigation)}
+          />
+        </View>
+      ),
+      headerLeft: () => (
+        <ViewProfileButton
+          style={styles.viewProfileButton}
+          onPress={() => this.handleViewProfileButtonPress(this.props.navigation)}
+        />
+      )
+    });
+
     this.props.getGroupsForUser(this.props.userID, this.props.spotifyUserID);
 
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);

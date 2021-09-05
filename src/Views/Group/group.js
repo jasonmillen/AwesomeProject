@@ -33,13 +33,36 @@ class Group extends React.Component {
     this.handleViewPlaylistOnSpotifyButtonPress = this.handleViewPlaylistOnSpotifyButtonPress.bind(this);
     this.handleSearchSongButtonPress = this.handleSearchSongButtonPress.bind(this);
 
-    props.navigation.setOptions({
-      title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
+    // props.navigation.setOptions({
+    //   title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
+    //   headerRight: () => (
+    //     <View style={styles.titleBarRightButtonView}>
+    //       <SearchSongButton
+    //         style={styles.searchSongButton}
+    //         onPress={() => this.handleSearchSongButtonPress(props.navigation)}
+    //       />
+    //       <ViewPlaylistOnSpotifyButton
+    //         style={styles.viewPlaylistOnSpotifyButton}
+    //         onPress={() => this.handleViewPlaylistOnSpotifyButtonPress()}
+    //       />
+    //     </View>
+    //   )
+    // });
+
+    // this.state = {
+    //   searchingForSong: false
+    // };
+  }
+
+  componentDidMount() {
+
+    this.props.navigation.setOptions({
+      title: this.props.route.params?.playlistName || `Group ${this.props.params?.groupID}`,
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchSongButton
             style={styles.searchSongButton}
-            onPress={() => this.handleSearchSongButtonPress(props.navigation)}
+            onPress={() => this.handleSearchSongButtonPress(this.props.navigation)}
           />
           <ViewPlaylistOnSpotifyButton
             style={styles.viewPlaylistOnSpotifyButton}
@@ -49,12 +72,6 @@ class Group extends React.Component {
       )
     });
 
-    // this.state = {
-    //   searchingForSong: false
-    // };
-  }
-
-  componentDidMount() {
     if (!this.props.selectedGroup) {
       console.error("No selected group when mounting group screen");
       throw new Error("No selected group when mounting group screen");
