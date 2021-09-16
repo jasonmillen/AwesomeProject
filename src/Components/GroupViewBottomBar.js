@@ -1,18 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   TouchableOpacity,
   StyleSheet,
   View,
   Image,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Keyboard
 } from 'react-native';
 
 import { HeaderHeightContext } from "@react-navigation/stack";
 
 import SendMessageTextInput from './SendMessageTextInput';
+import SendMessageButton from './SendMessageButton';
 
 export default ({}) => {
+
+  const [ userInputText, setUserInputText ] = useState('');
+
+  const handleUserInputTextChanges = text => {
+    setUserInputText(text);
+  };
+
+  const handleUserSendMessageButton = () => {
+    console.log(`sending message: ${userInputText}`);
+    setUserInputText('');
+    Keyboard.dismiss();
+  };
 
   return (
     <HeaderHeightContext.Consumer style={styles.container}>
@@ -22,7 +36,13 @@ export default ({}) => {
           {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
           keyboardVerticalOffset={headerHeight}>
           <View style={styles.bar}>
-            <SendMessageTextInput onChange={(text) => console.log(`input text changed: ${text}`)} />
+            <SendMessageTextInput onChange={handleUserInputTextChanges} text={userInputText} />
+            {userInputText.length > 0 && 
+              <SendMessageButton 
+                onPress={handleUserSendMessageButton}
+                style={styles.sendButton}
+              />
+            }
           </View>
         </KeyboardAvoidingView>
       )}
@@ -32,12 +52,24 @@ export default ({}) => {
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: "flex-end"
+    alignSelf: "flex-end",
   },
   keyboardAvoidingView: {
     width: '100%',
+    //flexDirection: 'row',
     //backgroundColor: 'yellow'
   },
   bar: {
+    width: '100%',
+    //flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+    paddingBottom: 3
+    //backgroundColor: 'yellow'
+  },
+  sendButton: {
+    padding: 5
   }
 });

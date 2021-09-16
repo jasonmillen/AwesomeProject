@@ -200,6 +200,56 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
   }
 }
 
+
+export const GROUP_SEND_TEXT_MESSAGE_REQUEST = 'GROUP_SEND_TEXT_MESSAGE_REQUEST';
+export const GROUP_SEND_TEXT_MESSAGE_ERROR = 'GROUP_SEND_TEXT_MESSAGE_ERROR';
+export const GROUP_SEND_TEXT_MESSAGE_SUCCESS = 'GROUP_SEND_TEXT_MESSAGE_SUCCESS';
+
+export const groupSendTextMessageRequest = () => {
+  return {
+    type: GROUP_SEND_TEXT_MESSAGE_REQUEST,
+    payload: {}
+  };
+};
+
+export const groupSendTextMessageError = () => {
+  return {
+    type: GROUP_SEND_TEXT_MESSAGE_ERROR,
+    payload: {}
+  };
+};
+
+export const groupSendTextMessageSuccess = (message) => {
+  return {
+    type: GROUP_SEND_TEXT_MESSAGE_SUCCESS,
+    payload: {
+      message
+    }
+  };
+};
+
+export const fetchGroupSendTextMessage = (groupID, playlistID, trackID, senderID) => {
+  return async (dispatch) => {
+    dispatch(groupAddSongRequest());
+
+    try {
+      await playlistAPI.addSongToPlaylist(playlistID, trackID);
+      const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
+      console.log('MESSAGE: ', message);
+      sockAPI.groupAddSong(message);
+      message.trackInfo = await trackAPI.getTrack(message.trackID);
+
+      dispatch(groupAddSongSuccess(message));
+      //if (Toast) { Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER); }
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(groupAddSongError());
+    }
+  }
+}
+
+
 export const GROUP_SELECT = 'GROUP_SELECT';
 export const groupSelect = (groupID) => {
   return {
