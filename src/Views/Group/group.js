@@ -130,7 +130,11 @@ class Group extends React.Component {
         );
       }
       else {
-        messageComponent = <Text>No Messages</Text>;
+        messageComponent = (
+          <View style={styles.noMessagesContainer}>
+            <Text style={styles.noMessages}>No Messages</Text>
+          </View>
+        );
       }
     }
 
@@ -149,7 +153,7 @@ class Group extends React.Component {
         {usersSearchingComponent && <View style={styles.usersSearchingComponent}>{usersSearchingComponent}</View>}
         {/* {<View>{usersSearchingComponent}</View>} */}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
-        <GroupViewBottomBar />
+        <GroupViewBottomBar/>
       </View>
     );
   }
@@ -214,6 +218,17 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     marginBottom: 1
+  },
+  noMessages: {
+    flex: 1,
+    marginBottom: 1,
+    textAlign: 'center',
+    //backgroundColor: 'yellow'
+  },
+  noMessagesContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   usersSearchingComponent: {
     flex: 1

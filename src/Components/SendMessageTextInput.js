@@ -15,7 +15,8 @@ export default class Search extends Component {
     super();
 
     this.state = {
-      text: text || ''
+      text: text || '',
+      height: 40,
     };
   }
 
@@ -30,9 +31,21 @@ export default class Search extends Component {
     });
   }
 
+  updateSize(e, height) {
+    console.log("setting height: " + height)
+    console.log(e.nativeEvent)
+    height = Math.max(35, height + 20);
+    this.setState({
+      height
+    });
+  }
+
   render() {
 
-    const { text } = this.state;
+    const { text, height } = this.state;
+
+    const _styles = getStyles();
+    _styles.input.height = height;
 
     return (
       <View style={styles.container}>
@@ -40,16 +53,35 @@ export default class Search extends Component {
           {/* <Ionicons name='md-search' size={25} style={styles.searchIcon} color='grey' /> */}
           <TextInput
             //autoFocus={true}
-            style={styles.input} 
+            style={_styles.input} 
             value={text}
             placeholder='Type something here!'
             placeholderTextColor='grey'
-            onChangeText={newText => this.handleChangeText(newText)} />
+            onChangeText={newText => this.handleChangeText(newText)}
+            multiline={true}
+            onContentSizeChange={(e) => this.updateSize(e, e.nativeEvent.contentSize.height)}/>
         </View>
       </View>
     );
   }
 };
+
+const getStyles = () => {
+  return {
+    input: {
+      //flex: 1,
+      //borderWidth: 1,
+      //width: '100%',
+      paddingTop: 10,
+      paddingBottom: 10,
+      //textAlign: 'center',
+      borderColor: 'black',
+      padding: 10,
+      borderRadius: 20,
+      backgroundColor: GREY_GREEN
+    }
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -61,21 +93,11 @@ const styles = StyleSheet.create({
   },
   search: {
     // //margin: 3,
-    // //flex: 1,
-    // flexDirection: 'row',
-    // justifyContent: 'flex-start',
-    // alignItems: 'center',
-    // borderRadius: 20,
-    // //backgroundColor: GREY_GREEN
-  },
-  input: {
     //flex: 1,
-    //borderWidth: 1,
-    //width: '100%',
-    borderColor: 'black',
-    padding: 10,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: GREY_GREEN
+    //flexDirection: 'row',
+    //justifyContent: 'center',
+    //alignItems: 'center',
+    //borderRadius: 20,
+    //backgroundColor: 'yellow'
   }
 });

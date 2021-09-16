@@ -15,7 +15,7 @@ import SendMessageTextInput from './SendMessageTextInput';
 export default ({}) => {
 
   return (
-    <HeaderHeightContext.Consumer>
+    <HeaderHeightContext.Consumer style={styles.container}>
       {headerHeight => (
         <KeyboardAvoidingView
           style={styles.keyboardAvoidingView}
@@ -32,6 +32,7 @@ export default ({}) => {
 
 const styles = StyleSheet.create({
   container: {
+    alignSelf: "flex-end"
   },
   keyboardAvoidingView: {
     width: '100%',
