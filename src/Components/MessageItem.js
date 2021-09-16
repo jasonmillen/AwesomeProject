@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 
 import MessageTrack from './MessageTrack';
+import MessageText from './MessageText';
 
 export default ({
   message,
@@ -14,6 +15,11 @@ export default ({
   if (message.trackID && message.trackInfo) {
     return (
       <MessageTrack message={message} userID={userID} usersByID={usersByID} />
+    );
+  }
+  else {
+    return (
+      <MessageText message={message} userID={userID} usersByID={usersByID} />
     );
   }
 

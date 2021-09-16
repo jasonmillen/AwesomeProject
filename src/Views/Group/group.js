@@ -12,6 +12,7 @@ import * as Linking from 'expo-linking'
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';
 import MessageList from '../../Components/MessageList';
+import SendMessageTextInput from '../../Components/GroupViewBottomBar';
 
 import { fetchMessagesGetForGroup } from '../../actions/messageActions';
 
@@ -22,6 +23,7 @@ import {
   selectMessagesGetForGroupError,
   selectMessagesGetForGroupSuccess
 } from '../../reducers/messageReducer';
+import GroupViewBottomBar from '../../Components/GroupViewBottomBar';
 
 //import * as socketAPI from '../../actions/socketActions';
 
@@ -144,8 +146,10 @@ class Group extends React.Component {
     return (
       <View style={styles.groupPage}>
         {messageComponent}
-        {<View>{usersSearchingComponent}</View>}
+        {usersSearchingComponent && <View style={styles.usersSearchingComponent}>{usersSearchingComponent}</View>}
+        {/* {<View>{usersSearchingComponent}</View>} */}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
+        <GroupViewBottomBar />
       </View>
     );
   }
@@ -207,8 +211,12 @@ const styles = StyleSheet.create({
   },
   messageList: {
     // marginTop: 10,
+    flex: 1,
     width: '100%',
     marginBottom: 1
+  },
+  usersSearchingComponent: {
+    flex: 1
   }
 });
 
