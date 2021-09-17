@@ -14,7 +14,9 @@ import { HeaderHeightContext } from "@react-navigation/stack";
 import SendMessageTextInput from './SendMessageTextInput';
 import SendMessageButton from './SendMessageButton';
 
-export default ({}) => {
+export default ({
+  onUserSendTextMessage
+}) => {
 
   const [ userInputText, setUserInputText ] = useState('');
 
@@ -23,7 +25,7 @@ export default ({}) => {
   };
 
   const handleUserSendMessageButton = () => {
-    console.log(`sending message: ${userInputText}`);
+    onUserSendTextMessage(userInputText);
     setUserInputText('');
     Keyboard.dismiss();
   };

@@ -228,23 +228,23 @@ export const groupSendTextMessageSuccess = (message) => {
   };
 };
 
-export const fetchGroupSendTextMessage = (groupID, playlistID, trackID, senderID) => {
+export const fetchGroupSendTextMessage = (groupID, text, senderID) => {
   return async (dispatch) => {
-    dispatch(groupAddSongRequest());
+    dispatch(groupSendTextMessageRequest());
 
     try {
-      await playlistAPI.addSongToPlaylist(playlistID, trackID);
-      const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
-      console.log('MESSAGE: ', message);
-      sockAPI.groupAddSong(message);
-      message.trackInfo = await trackAPI.getTrack(message.trackID);
-
-      dispatch(groupAddSongSuccess(message));
-      //if (Toast) { Toast.showWithGravity('Song Added!', Toast.SHORT, Toast.CENTER); }
+      console.log("in new action", groupID, text, senderID)
+      // await playlistAPI.addSongToPlaylist(playlistID, trackID);
+      // const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
+      // console.log('MESSAGE: ', message);
+      // sockAPI.groupAddSong(message);
+      // message.trackInfo = await trackAPI.getTrack(message.trackID);
+      const message = null;
+      dispatch(groupSendTextMessageSuccess(message));
     }
     catch (error) {
       console.error(error);
-      dispatch(groupAddSongError());
+      dispatch(groupSendTextMessageError());
     }
   }
 }

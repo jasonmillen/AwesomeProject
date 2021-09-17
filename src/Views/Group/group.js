@@ -15,6 +15,7 @@ import MessageList from '../../Components/MessageList';
 import SendMessageTextInput from '../../Components/GroupViewBottomBar';
 
 import { fetchMessagesGetForGroup } from '../../actions/messageActions';
+import { fetchGroupSendTextMessage } from '../../actions/groupActions';
 
 import { selectUserID, selectUsersByID } from '../../reducers/userReducer';
 import { selectSelectedGroup, selectUsersSearchingForSongsForGroupID } from '../../reducers/groupReduer';
@@ -34,6 +35,7 @@ class Group extends React.Component {
 
     this.handleViewPlaylistOnSpotifyButtonPress = this.handleViewPlaylistOnSpotifyButtonPress.bind(this);
     this.handleSearchSongButtonPress = this.handleSearchSongButtonPress.bind(this);
+    this.handleUserSendTextMessage = this.handleUserSendTextMessage.bind(this);
 
     // props.navigation.setOptions({
     //   title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
@@ -110,6 +112,13 @@ class Group extends React.Component {
     console.log('Message list end reached!');
   }
 
+  handleUserSendTextMessage(text) {
+    console.log(`sending message: ${text}`);
+
+    const { selectedGroup, userID, groupSendTextMessage } = this.props;
+    groupSendTextMessage(selectedGroup.id, text, userID);
+  }
+
   render() {
     const messages = this.props.messages;
     if (messages) {
@@ -153,7 +162,7 @@ class Group extends React.Component {
         {usersSearchingComponent && <View style={styles.usersSearchingComponent}>{usersSearchingComponent}</View>}
         {/* {<View>{usersSearchingComponent}</View>} */}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
-        <GroupViewBottomBar/>
+        <GroupViewBottomBar onUserSendTextMessage={this.handleUserSendTextMessage}/>
       </View>
     );
   }
@@ -183,6 +192,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     messagesGetForGroup: (groupID) => {
       dispatch(fetchMessagesGetForGroup(groupID));
+    },
+    groupSendTextMessage: (groupID, text, senderID) => {
+      dispatch(fetchGroupSendTextMessage(groupID, text, senderID));
     }
   };
 };
