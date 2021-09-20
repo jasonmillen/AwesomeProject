@@ -54,8 +54,7 @@ export default ({
       groupDisplayMessage = (artist && artist.name && trackName) ? `${artist.name}, ${trackName}` : '';
     }
     else {
-      // TODO: handle non track messages (if support is added)
-      groupDisplayMessage = '';
+      groupDisplayMessage = message.content;
     }
   }
   else {

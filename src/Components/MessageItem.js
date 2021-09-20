@@ -9,7 +9,9 @@ import MessageText from './MessageText';
 export default ({
   message,
   userID,
-  usersByID
+  usersByID,
+  messages,
+  index
 }) => {
 
   if (message.trackID && message.trackInfo) {
@@ -19,11 +21,12 @@ export default ({
   }
   else {
     return (
-      <MessageText message={message} userID={userID} usersByID={usersByID} />
+      <MessageText 
+        message={message} 
+        userID={userID} 
+        usersByID={usersByID}
+        messages={messages}
+        index={index}/>
     );
   }
-
-  return (
-    <Text>Regular text message</Text>
-  );
 };

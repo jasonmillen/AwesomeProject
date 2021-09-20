@@ -163,6 +163,32 @@ export const groupAddSong = async (groupID, trackID, senderID) => {
   return response;
 };
 
+export const groupAddTextMessage = async (groupID, text, senderID) => {
+
+  const ssTokenData = await getSsTokenData();
+
+  let response = await fetch(`${BASE_URL}/api/group/text`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'UserID': senderID
+    },
+    body: JSON.stringify({
+      groupID,
+      text,
+      senderID
+    })
+  });
+  
+
+  response = await response.json();
+  console.log('created message: ', response);
+
+  return response;
+};
+
 export const groupGetMessages = async (groupID) => {
 
   const userID = await getUserID();

@@ -7,6 +7,8 @@ import {
   Image
 } from 'react-native';
 
+import { FontAwesome } from '@expo/vector-icons'; 
+
 import { LIGHT_BLUE } from '../constants/colors';
 
 export default ({
@@ -43,11 +45,14 @@ export default ({
     <View style={_styles.messageStyle}>
       { !sentByMe && 
         <View style={styles.userImageView}>
-          {imageUrl && <Image source={{ uri: imageUrl }} style={styles.userImage} />}
+          {imageUrl ? 
+          <Image source={{ uri: imageUrl }} style={styles.userImage} /> :
+          <FontAwesome name="user-circle" size={28} color="gray" />
+          }
         </View>
       }
       <View>
-        {!sentByMe && displayName && <Text style={{ marginLeft: 10, marginBottom: 5, color: 'gray' }}>{displayName}</Text>}
+        {!sentByMe && displayName && <Text style={{ marginLeft: 10, marginBottom: 2, color: 'gray' }}>{displayName}</Text>}
         <View style={_styles.trackInfo}>
           { trackImage && trackImage.url && <Image source={{ uri: trackImage.url }} style={_styles.trackImage} /> }
           <View>
@@ -61,7 +66,6 @@ export default ({
                 <Text numberOfLines={1} style={_styles.trackArtistTextStyle}>{artist.name}</Text>
               </View>
             }
-            {/* <Text>Sent: {sentTime.toLocaleString()}</Text> */}
           </View>
         </View>
       </View>
@@ -143,6 +147,8 @@ let styles = StyleSheet.create({
   },
   userImageView: {
     alignSelf: 'flex-end',
-    marginRight: 10
+    marginRight: 10,
+    width: 30,
+    height: 30
   }
 });

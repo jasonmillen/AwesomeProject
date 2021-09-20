@@ -234,12 +234,9 @@ export const fetchGroupSendTextMessage = (groupID, text, senderID) => {
 
     try {
       console.log("in new action", groupID, text, senderID)
-      // await playlistAPI.addSongToPlaylist(playlistID, trackID);
-      // const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
-      // console.log('MESSAGE: ', message);
+      const message = await serverAPI.groupAddTextMessage(groupID, text, senderID);
+      console.log('MESSAGE: ', message);
       // sockAPI.groupAddSong(message);
-      // message.trackInfo = await trackAPI.getTrack(message.trackID);
-      const message = null;
       dispatch(groupSendTextMessageSuccess(message));
     }
     catch (error) {
