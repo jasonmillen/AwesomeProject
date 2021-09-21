@@ -5,7 +5,6 @@ import {
 import { getUserID, getSsTokenData } from './ssToken';
 
 export const getSpotifyTokenData = async (authCode) => {
-  console.log(`sending request to ${BASE_URL}/api/getSpotifyToken`);
   const response = await fetch(`${BASE_URL}/api/getSpotifyToken`, {
     method: 'POST',
     headers: {
@@ -16,9 +15,7 @@ export const getSpotifyTokenData = async (authCode) => {
       authCode: authCode.params.code
     }),
   });
-  console.log('GOT RESPONSE');
   const res = await response.json();
-  console.log('GET SPOTIFY TOKEN DATA RES: ', res);
   const tokenData = res.tokenData;
   const ssTokenData = res.ssTokenData;
   return { 
@@ -155,6 +152,32 @@ export const groupAddSong = async (groupID, trackID, senderID) => {
     body: JSON.stringify({
       groupID,
       trackID,
+      senderID
+    })
+  });
+  
+
+  response = await response.json();
+  console.log('created message: ', response);
+
+  return response;
+};
+
+export const groupAddTextMessage = async (groupID, text, senderID) => {
+
+  const ssTokenData = await getSsTokenData();
+
+  let response = await fetch(`${BASE_URL}/api/group/text`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      'UserID': senderID
+    },
+    body: JSON.stringify({
+      groupID,
+      text,
       senderID
     })
   });

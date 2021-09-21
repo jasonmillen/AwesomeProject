@@ -12,8 +12,10 @@ import * as Linking from 'expo-linking'
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';
 import MessageList from '../../Components/MessageList';
+import SendMessageTextInput from '../../Components/GroupViewBottomBar';
 
 import { fetchMessagesGetForGroup } from '../../actions/messageActions';
+import { fetchGroupSendTextMessage } from '../../actions/groupActions';
 
 import { selectUserID, selectUsersByID } from '../../reducers/userReducer';
 import { selectSelectedGroup, selectUsersSearchingForSongsForGroupID } from '../../reducers/groupReduer';
@@ -22,6 +24,7 @@ import {
   selectMessagesGetForGroupError,
   selectMessagesGetForGroupSuccess
 } from '../../reducers/messageReducer';
+import GroupViewBottomBar from '../../Components/GroupViewBottomBar';
 
 //import * as socketAPI from '../../actions/socketActions';
 
@@ -32,14 +35,38 @@ class Group extends React.Component {
 
     this.handleViewPlaylistOnSpotifyButtonPress = this.handleViewPlaylistOnSpotifyButtonPress.bind(this);
     this.handleSearchSongButtonPress = this.handleSearchSongButtonPress.bind(this);
+    this.handleUserSendTextMessage = this.handleUserSendTextMessage.bind(this);
 
-    props.navigation.setOptions({
-      title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
+    // props.navigation.setOptions({
+    //   title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
+    //   headerRight: () => (
+    //     <View style={styles.titleBarRightButtonView}>
+    //       <SearchSongButton
+    //         style={styles.searchSongButton}
+    //         onPress={() => this.handleSearchSongButtonPress(props.navigation)}
+    //       />
+    //       <ViewPlaylistOnSpotifyButton
+    //         style={styles.viewPlaylistOnSpotifyButton}
+    //         onPress={() => this.handleViewPlaylistOnSpotifyButtonPress()}
+    //       />
+    //     </View>
+    //   )
+    // });
+
+    // this.state = {
+    //   searchingForSong: false
+    // };
+  }
+
+  componentDidMount() {
+
+    this.props.navigation.setOptions({
+      title: this.props.route.params?.playlistName || `Group ${this.props.params?.groupID}`,
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchSongButton
             style={styles.searchSongButton}
-            onPress={() => this.handleSearchSongButtonPress(props.navigation)}
+            onPress={() => this.handleSearchSongButtonPress(this.props.navigation)}
           />
           <ViewPlaylistOnSpotifyButton
             style={styles.viewPlaylistOnSpotifyButton}
@@ -49,12 +76,6 @@ class Group extends React.Component {
       )
     });
 
-    // this.state = {
-    //   searchingForSong: false
-    // };
-  }
-
-  componentDidMount() {
     if (!this.props.selectedGroup) {
       console.error("No selected group when mounting group screen");
       throw new Error("No selected group when mounting group screen");
@@ -91,6 +112,13 @@ class Group extends React.Component {
     console.log('Message list end reached!');
   }
 
+  handleUserSendTextMessage(text) {
+    console.log(`sending message: ${text}`);
+
+    const { selectedGroup, userID, groupSendTextMessage } = this.props;
+    groupSendTextMessage(selectedGroup.id, text, userID);
+  }
+
   render() {
     const messages = this.props.messages;
     if (messages) {
@@ -111,7 +139,11 @@ class Group extends React.Component {
         );
       }
       else {
-        messageComponent = <Text>No Messages</Text>;
+        messageComponent = (
+          <View style={styles.noMessagesContainer}>
+            <Text style={styles.noMessages}>No Messages</Text>
+          </View>
+        );
       }
     }
 
@@ -127,8 +159,10 @@ class Group extends React.Component {
     return (
       <View style={styles.groupPage}>
         {messageComponent}
-        {<View>{usersSearchingComponent}</View>}
+        {usersSearchingComponent && <View style={styles.usersSearchingComponent}>{usersSearchingComponent}</View>}
+        {/* {<View>{usersSearchingComponent}</View>} */}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
+        <GroupViewBottomBar onUserSendTextMessage={this.handleUserSendTextMessage}/>
       </View>
     );
   }
@@ -158,6 +192,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     messagesGetForGroup: (groupID) => {
       dispatch(fetchMessagesGetForGroup(groupID));
+    },
+    groupSendTextMessage: (groupID, text, senderID) => {
+      dispatch(fetchGroupSendTextMessage(groupID, text, senderID));
     }
   };
 };
@@ -190,8 +227,23 @@ const styles = StyleSheet.create({
   },
   messageList: {
     // marginTop: 10,
+    flex: 1,
     width: '100%',
     marginBottom: 1
+  },
+  noMessages: {
+    flex: 1,
+    marginBottom: 1,
+    textAlign: 'center',
+    //backgroundColor: 'yellow'
+  },
+  noMessagesContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  usersSearchingComponent: {
+    flex: 1
   }
 });
 

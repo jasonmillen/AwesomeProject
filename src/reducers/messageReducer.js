@@ -5,7 +5,8 @@ import {
 } from '../actions/messageActions';
 
 import {
-  GROUP_ADD_SONG_SUCCESS
+  GROUP_ADD_SONG_SUCCESS,
+  GROUP_SEND_TEXT_MESSAGE_SUCCESS,
 } from '../actions/groupActions';
 
 import {
@@ -73,7 +74,20 @@ export default messageReducer = (state = initialState, action) => {
           ...state.messagesByGroupID,
           [message.groupID]: messages
         }
-      } 
+      };
+    }
+    case GROUP_SEND_TEXT_MESSAGE_SUCCESS: {
+      const message = action.payload.message;
+      console.log("BEFORE: " + state.messagesByGroupID[message.groupID].length);
+      const messages = [message].concat(state.messagesByGroupID[message.groupID]);
+      console.log("AFTER: " + messages.length);
+      return {
+        ...state,
+        messagesByGroupID: {
+          ...state.messagesByGroupID,
+          [message.groupID]: messages
+        }
+      };
     }
     case LOGOUT_SUCCESS: {
       return initialState;

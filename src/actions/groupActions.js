@@ -40,11 +40,10 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
   return async (dispatch) => {
     dispatch(groupCreateRequest());
 
-    if (await verifyTokenData(tokenData)) {
-      dispatch (setUserTokensSuccess(tokenData));
-    }
-
     try {
+      if (await verifyTokenData(tokenData)) {
+        dispatch (setUserTokensSuccess(tokenData));
+      }
       const playlistData = await playlistAPI.createPlaylist(creatorSpotifyID, playlistName, tokenData.accessToken);
       const playlistID = playlistData.id;
       const group = await serverAPI.createGroup(creatorID, memberSpotifyIDs, playlistID);
@@ -53,7 +52,7 @@ export const fetchCreateGroup = (creatorID, creatorSpotifyID, memberSpotifyIDs, 
       dispatch(groupCreateSuccess());
 
       // refresh group data
-      dispatch(fetchUserGetGroups(creatorID, creatorSpotifyID));
+      dispatch(exports.fetchUserGetGroups(creatorID, creatorSpotifyID));
       
     }
     catch (error) {
@@ -200,6 +199,53 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
     }
   }
 }
+
+
+export const GROUP_SEND_TEXT_MESSAGE_REQUEST = 'GROUP_SEND_TEXT_MESSAGE_REQUEST';
+export const GROUP_SEND_TEXT_MESSAGE_ERROR = 'GROUP_SEND_TEXT_MESSAGE_ERROR';
+export const GROUP_SEND_TEXT_MESSAGE_SUCCESS = 'GROUP_SEND_TEXT_MESSAGE_SUCCESS';
+
+export const groupSendTextMessageRequest = () => {
+  return {
+    type: GROUP_SEND_TEXT_MESSAGE_REQUEST,
+    payload: {}
+  };
+};
+
+export const groupSendTextMessageError = () => {
+  return {
+    type: GROUP_SEND_TEXT_MESSAGE_ERROR,
+    payload: {}
+  };
+};
+
+export const groupSendTextMessageSuccess = (message) => {
+  return {
+    type: GROUP_SEND_TEXT_MESSAGE_SUCCESS,
+    payload: {
+      message
+    }
+  };
+};
+
+export const fetchGroupSendTextMessage = (groupID, text, senderID) => {
+  return async (dispatch) => {
+    dispatch(groupSendTextMessageRequest());
+
+    try {
+      console.log("in new action", groupID, text, senderID)
+      const message = await serverAPI.groupAddTextMessage(groupID, text, senderID);
+      console.log('MESSAGE: ', message);
+      // sockAPI.groupAddSong(message);
+      dispatch(groupSendTextMessageSuccess(message));
+    }
+    catch (error) {
+      console.error(error);
+      dispatch(groupSendTextMessageError());
+    }
+  }
+}
+
 
 export const GROUP_SELECT = 'GROUP_SELECT';
 export const groupSelect = (groupID) => {
