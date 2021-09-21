@@ -16,7 +16,13 @@ export default ({ messages, userID, usersByID, onEndReached, style }) => {
       //onContentSizeChange={() => this.flatList.scrollToEnd({ animated: true })}
       //onLayout={() => this.flatList.scrollToEnd({ animated: false })}
       data={messages}
-      renderItem={({ item }) => <MessageItem message={item} userID={userID} usersByID={usersByID} />}
+      renderItem={({ item, index }) => 
+        <MessageItem 
+          message={item} 
+          userID={userID} 
+          usersByID={usersByID} 
+          messages={messages}
+          index={index} />}
       keyExtractor={message => message.id.toString()}
       onEndReached={onEndReached}
       //ListEmptyComponent={() => <Text>No messages.</Text>}

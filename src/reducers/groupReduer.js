@@ -104,7 +104,7 @@ export default groupReducer = (state = initialState, action) => {
       console.log(GROUP_FOLLOW_PLAYLIST_ERROR);
     }
     case GROUP_FOLLOW_PLAYLIST_SUCCESS: {
-      console.log(GROUP_ADD_SONG_SUCCESS);
+      console.log(GROUP_FOLLOW_PLAYLIST_SUCCESS);
       const groupID = action.payload.groupID;
       return {
         ...state,
