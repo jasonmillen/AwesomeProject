@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TextInput,
-  StyleSheet
+  StyleSheet,
+  Platform
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -21,7 +22,9 @@ export default class SendMessageTextInput extends Component {
   }
 
   updateSize(e, height) {
-    height = Math.max(35, height + 20);
+    const os = Platform.OS === 'ios' ? 'IOS' : 'AND';
+    console.log(`updated size ${os}: ${height}`);
+    height = Math.max(35, height);
     this.setState({
       height
     });
@@ -33,6 +36,9 @@ export default class SendMessageTextInput extends Component {
 
     const _styles = getStyles();
     _styles.input.height = height;
+
+    const os = Platform.OS === 'ios' ? 'IOS' : 'AND';
+    console.log(`height ${os}: ${height}`);
 
     return (
       <View style={styles.container}>
