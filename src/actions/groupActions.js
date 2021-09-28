@@ -236,7 +236,7 @@ export const fetchGroupSendTextMessage = (groupID, text, senderID) => {
       console.log("in new action", groupID, text, senderID)
       const message = await serverAPI.groupAddTextMessage(groupID, text, senderID);
       console.log('MESSAGE: ', message);
-      // sockAPI.groupAddSong(message);
+      sockAPI.groupSendTextMessage(message);
       dispatch(groupSendTextMessageSuccess(message));
     }
     catch (error) {

@@ -7,6 +7,7 @@ import * as playlistAPI from '../api/spotify/playlist';
 const MESSAGE_TYPE = {
   REGISTER_USER: 'REGISTER_USER',
   SEND_SONG: 'SEND_SONG',
+  SEND_TEXT_MESSAGE: 'SEND_TEXT_MESSAGE',
   CREATE_GROUP: 'CREATE_GROUP',
   SEARCH_SONG_START: 'SEARCH_SONG_START',
   SEARCH_SONG_STOP: 'SEARCH_SONG_STOP'
@@ -27,6 +28,16 @@ export const SOCKET_RECEIVE_SONG = 'SOCKET_RECEIVE_SONG';
 export const socketReceiveSong = (message) => {
   return {
     type: SOCKET_RECEIVE_SONG,
+    payload: {
+      message
+    }
+  };
+};
+
+export const SOCKET_RECEIVE_TEXT_MESSAGE = 'SOCKET_RECEIVE_TEXT_MESSAGE';
+export const socketReceiveTextMessage = (message) => {
+  return {
+    type: SOCKET_RECEIVE_TEXT_MESSAGE,
     payload: {
       message
     }
@@ -103,6 +114,11 @@ export const initSocket = (userID) => {
           dispatch(socketReceiveSong(message));
           return;
         }
+        case MESSAGE_TYPE.SEND_TEXT_MESSAGE: {
+          const message = payload.message;
+          dispatch(socketReceiveTextMessage(message));
+          return;
+        }
         case MESSAGE_TYPE.CREATE_GROUP: {
           const group = payload.group;
           // TODO: process user info as well
@@ -142,6 +158,18 @@ export const groupAddSong = (message) => {
     ...message
   };
 
+
+  ws.send(JSON.stringify(payload));
+};
+
+export const groupSendTextMessage = (message) => {
+  
+  const payload = {
+    type: MESSAGE_TYPE.SEND_TEXT_MESSAGE,
+    ...message
+  };
+
+  console.log("sending over socket");
   ws.send(JSON.stringify(payload));
 };
 
