@@ -14,7 +14,8 @@ import {
 } from '../actions/userActions';
 
 import {
-  SOCKET_RECEIVE_SONG
+  SOCKET_RECEIVE_SONG,
+  SOCKET_RECEIVE_TEXT_MESSAGE,
 } from '../actions/socketActions';
 
 const initialState = {
@@ -94,6 +95,19 @@ export default messageReducer = (state = initialState, action) => {
     }
     case SOCKET_RECEIVE_SONG: {
       console.log(SOCKET_RECEIVE_SONG);
+      const message = action.payload.message;
+      const groupID = message.groupID;
+      return {
+        ...state,
+        messagesByGroupID: {
+          ...state.messagesByGroupID,
+          [groupID]: [message].concat(state.messagesByGroupID[groupID])
+        }
+      }
+    }
+    
+    case SOCKET_RECEIVE_TEXT_MESSAGE: {
+      console.log(SOCKET_RECEIVE_TEXT_MESSAGE);
       const message = action.payload.message;
       const groupID = message.groupID;
       return {
