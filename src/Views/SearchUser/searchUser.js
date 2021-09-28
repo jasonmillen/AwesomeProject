@@ -13,7 +13,7 @@ import {
   Platform,
   TouchableWithoutFeedback
 } from 'react-native';
-import { HeaderHeightContext } from "@react-navigation/stack";
+import { HeaderHeightContext } from "@react-navigation/elements";
 //import Toast from 'react-native-simple-toast';
 import { Ionicons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking'

@@ -9,7 +9,7 @@ import {
   Keyboard
 } from 'react-native';
 
-import { HeaderHeightContext } from "@react-navigation/stack";
+import { HeaderHeightContext } from "@react-navigation/elements";
 
 import SendMessageTextInput from './SendMessageTextInput';
 import SendMessageButton from './SendMessageButton';

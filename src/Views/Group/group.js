@@ -5,7 +5,6 @@ import {
   Button,
   StyleSheet
 } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
 import * as Linking from 'expo-linking'
 
