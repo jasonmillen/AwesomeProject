@@ -1,4 +1,9 @@
 TODO:
+support showing user typing for text messages in addition to searching for songs
+find better way to start/end the user typing notification (should there be a timeout where it cancels after a while?)
+fix any bugs related to the websockets
+text too small
+show group in different color if unread messages
 fix duplicate songs in the song search list
 handle messages slow to load in the group list view
 

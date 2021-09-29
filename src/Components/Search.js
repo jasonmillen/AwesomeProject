@@ -5,9 +5,6 @@ import {
   TextInput,
   StyleSheet
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-
-import { GREY_GREEN } from '../constants/colors';
 
 export default class Search extends Component {
 

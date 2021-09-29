@@ -66,6 +66,7 @@ class Home extends React.Component {
 
     this.props.navigation.setOptions({
       title: 'Chats',//this.props.user.displayName || this.props.spotifyUserID,
+      headerTitleAlign: 'center',
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchUserHeaderButton
@@ -214,21 +215,22 @@ const styles = StyleSheet.create({
   homePage: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   titleBarRightButtonView: {
     flex: 1,
     alignItems: 'center',
-    flexDirection: 'row'
+    //alignContent: 'flex-end',
+    flexDirection: 'row',
   },
   viewProfileButton: {
     marginLeft: 15,
     marginRight: 15
   },
   searchUserHeaderButton: {
-    flex: 1,
+    //flex: 1,
     marginRight: 20,
-    marginLeft: 10
+    marginLeft: 10,
   },
   searchSongButton: {
     flex: 1,

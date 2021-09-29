@@ -45,12 +45,10 @@ export default class App extends React.Component {
                 component={Group}/>
               <Stack.Screen
                 name="UserProfile"
-                component={UserProfile} 
-                options={{ title: 'Profile' }}/>
+                component={UserProfile}/>
               <Stack.Screen
                 name="SearchUser"
-                component={SearchUser}
-                options={{ title: 'Search For User' }}/> 
+                component={SearchUser}/> 
               <Stack.Screen
                 name="SearchSong"
                 component={SearchSong}

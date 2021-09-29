@@ -28,7 +28,7 @@ export const getDateDisplayString = (date) => {
 
     // TODO: would ideally use date.toLocaleTimeString('en-US', options), but proper formatting doesn't seem to work
     // instead have to manually format, which won't support timestamp formats in other regions/countries
-    const AM_PM = 'AM';
+    let AM_PM = 'AM';
     let hour = date.getHours();
     if (hour === 0) {
       hour = 12;

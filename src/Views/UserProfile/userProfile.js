@@ -24,6 +24,13 @@ import { DARK_GREEN, GREY_GREEN, LIGHT_GREEN } from '../../constants/colors';
 
 class UserProfile extends React.Component {
 
+  componentDidMount () {
+    this.props.navigation.setOptions({
+      title: 'Profile',
+      headerTitleAlign: 'center',
+    });
+  }
+
   componentDidUpdate () {
     if (this.props.logoutSuccess) {
       this.navigateToLoginScreen();
@@ -56,7 +63,7 @@ class UserProfile extends React.Component {
             <Image
               style={styles.userImage}
               source={{uri: userImageUrl}}/> :
-            <Ionicons name='ios-contact' size={150} color='grey' />
+            <Ionicons name='person' size={150} color='grey' />
           }
           <Text>Logged in as {this.props.spotifyUserID}</Text>
         </View>

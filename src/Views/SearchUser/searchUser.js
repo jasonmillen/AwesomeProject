@@ -49,6 +49,13 @@ class SearchUser extends React.Component {
     };
   }
 
+  componentDidMount () {
+    this.props.navigation.setOptions({
+      title: 'Search For User',
+      headerTitleAlign: 'center',
+    });
+  }
+
   handleSearchUserClick () {
     console.log('clicked search');
     console.log(this.props.tokenData);

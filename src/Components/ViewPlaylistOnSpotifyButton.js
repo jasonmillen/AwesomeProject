@@ -12,7 +12,7 @@ export default (props) => {
       style={props.style}
       onPress={() => props.onPress()}
     >
-      <Ionicons name='ios-arrow-forward' size={30} />
+      <Ionicons name='ios-arrow-forward' size={30} style={{opacity: 1}} />
       
     </TouchableOpacity>
   )

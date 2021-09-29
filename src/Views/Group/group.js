@@ -8,6 +8,7 @@ import {
 import { connect } from 'react-redux';
 import * as Linking from 'expo-linking'
 
+import AnimatedEllipsis from '../../Components/AnimatedEllipsis';
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';
 import MessageList from '../../Components/MessageList';
@@ -35,32 +36,13 @@ class Group extends React.Component {
     this.handleViewPlaylistOnSpotifyButtonPress = this.handleViewPlaylistOnSpotifyButtonPress.bind(this);
     this.handleSearchSongButtonPress = this.handleSearchSongButtonPress.bind(this);
     this.handleUserSendTextMessage = this.handleUserSendTextMessage.bind(this);
-
-    // props.navigation.setOptions({
-    //   title: props.route.params?.playlistName || `Group ${props.params?.groupID}`,
-    //   headerRight: () => (
-    //     <View style={styles.titleBarRightButtonView}>
-    //       <SearchSongButton
-    //         style={styles.searchSongButton}
-    //         onPress={() => this.handleSearchSongButtonPress(props.navigation)}
-    //       />
-    //       <ViewPlaylistOnSpotifyButton
-    //         style={styles.viewPlaylistOnSpotifyButton}
-    //         onPress={() => this.handleViewPlaylistOnSpotifyButtonPress()}
-    //       />
-    //     </View>
-    //   )
-    // });
-
-    // this.state = {
-    //   searchingForSong: false
-    // };
   }
 
   componentDidMount() {
 
     this.props.navigation.setOptions({
       title: this.props.route.params?.playlistName || `Group ${this.props.params?.groupID}`,
+      headerTitleAlign: 'center',
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchSongButton
@@ -148,12 +130,20 @@ class Group extends React.Component {
 
     let usersSearchingComponent = null;
     if (this.props.usersSearchingForSongs && this.props.usersSearchingForSongs.length > 0) {
-      usersSearchingComponent = this.props.usersSearchingForSongs.map(userID => {
+      usersSearchingComponent = this.props.usersSearchingForSongs.map((userID, idx) => {
         const user = this.props.usersByID[userID];
         const displayText = user.displayName ? user.displayName : user.spotifyUserID;
-        return <Text key={userID}>{displayText} is searching for songs</Text>;
+        return (
+          <View key={idx} style={{margin: 5}}>
+            <AnimatedEllipsis 
+              numberOfDots={3}
+              minOpacity={0}
+              animationDelay={150}
+              style={{ color: 'white'}} />
+          </View>);
       });
     }
+
 
     return (
       <View style={styles.groupPage}>
@@ -202,32 +192,28 @@ const styles = StyleSheet.create({
   groupPage: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   titleBarRightButtonView: {
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   viewPlaylistOnSpotifyButton: {
-    flex: 1,
+    //flex: 1,
     marginLeft: 10,
-    marginRight: 20
-  },
-  searchUserHeaderButton: {
-    flex: 1,
-    marginRight: 10,
-    marginLeft: 10
+    marginRight: 20,
   },
   searchSongButton: {
-    flex: 1,
+    //flex: 1,
     marginRight: 10,
-    marginLeft: 10
+    marginLeft: 10,
   },
   messageList: {
     // marginTop: 10,
     flex: 1,
     width: '100%',
+    //backgroundColor: 'yellow',
     marginBottom: 1
   },
   noMessages: {
@@ -241,8 +227,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center'
   },
+  dotStyle: {
+    //backgroundColor: 'blue',
+    //marginBottom: 20,
+  },
   usersSearchingComponent: {
-    flex: 1
+    //flex: 0.04,
+    //height: 45,
+    //width: '100%',
+    //alignItems: 'center',
+    //justifyContent: 'center',
+    //height: 40,
+    alignSelf: 'flex-start',
+    marginLeft: 50,
+    marginBottom: 1,
+    backgroundColor: 'grey',
+    borderRadius: 15
   }
 });
 
