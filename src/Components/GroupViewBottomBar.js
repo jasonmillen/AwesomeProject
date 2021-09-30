@@ -15,6 +15,7 @@ import SendMessageTextInput from './SendMessageTextInput';
 import SendMessageButton from './SendMessageButton';
 
 export default ({
+  onUserInputTextChanges,
   onUserSendTextMessage
 }) => {
 
@@ -22,6 +23,7 @@ export default ({
 
   const handleUserInputTextChanges = text => {
     setUserInputText(text);
+    onUserInputTextChanges(text);
   };
 
   const handleUserSendMessageButton = () => {

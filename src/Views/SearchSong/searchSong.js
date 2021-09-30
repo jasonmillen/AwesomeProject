@@ -40,20 +40,12 @@ import { debounce } from '../../utility/util';
 import { DARK_GREEN, GREY_GREEN } from '../../constants/colors';
 
 const PAGE = 20;
+const SEND_SEARCHING_FOR_SONG_THROTTLE_TIME = 1.5 * 1000; // 1.5 seconds
 
 class SearchSong extends React.Component {
 
   constructor(props) {
     super(props);
-
-    // props.navigation.setOptions({
-    //   title: null,
-    //   headerTitle: (props) => (
-    //     <Search 
-    //       onChange={text => this.handleSearchChange(text)}
-    //     />
-    //   )
-    // });
 
     const group = props.route.params?.group ?? null;
 
@@ -69,7 +61,8 @@ class SearchSong extends React.Component {
       selectedSongID: null,
       startedSearching: false,
       startedFetching: false,
-      startedScrolling: false
+      startedScrolling: false,
+      canSendSearchingForSong: true
     };
 
     this.debouncedLoadNextPage = debounce(async () => {
@@ -124,9 +117,7 @@ class SearchSong extends React.Component {
 
   handleSearchChange(text) {
 
-    if (!this.state.startedSearching && this.props.userID && this.state.isForGroupID) {
-      socketAPI.searchSongStart(this.props.userID, this.state.isForGroupID);
-    }
+    this.handleSendSearchingForSong();
 
     this.setState({
       isEmpty: false,
@@ -166,6 +157,7 @@ class SearchSong extends React.Component {
 
   handleListItemPress (track) {
     this.openModalToConfirmSharingSong(track);
+    this.handleSendSearchingForSong();
   }
 
   handleListItemLongPress (songID) {
@@ -188,6 +180,10 @@ class SearchSong extends React.Component {
       return;
     }
 
+    if (this.props.userID && this.state.isForGroupID) {
+      socketAPI.searchSongStop(this.props.userID, this.state.isForGroupID);
+    }
+
     this.props.groupAddSong(groupID, playlistID, songID, userID);
   }
 
@@ -200,6 +196,15 @@ class SearchSong extends React.Component {
 
   handleOnListScroll() {
     this.setState({ startedScrolling: true });
+    this.handleSendSearchingForSong();
+  }
+
+  handleSendSearchingForSong() {
+    if (this.state.canSendSearchingForSong && this.props.userID && this.state.isForGroupID) {
+      socketAPI.searchSongStart(this.props.userID, this.state.isForGroupID);
+      this.setState({ canSendSearchingForSong: false });
+      setTimeout(() => this.setState({ canSendSearchingForSong: true }), SEND_SEARCHING_FOR_SONG_THROTTLE_TIME);
+    }
   }
 
   render() {

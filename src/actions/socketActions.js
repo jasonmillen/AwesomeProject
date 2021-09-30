@@ -10,7 +10,9 @@ const MESSAGE_TYPE = {
   SEND_TEXT_MESSAGE: 'SEND_TEXT_MESSAGE',
   CREATE_GROUP: 'CREATE_GROUP',
   SEARCH_SONG_START: 'SEARCH_SONG_START',
-  SEARCH_SONG_STOP: 'SEARCH_SONG_STOP'
+  SEARCH_SONG_STOP: 'SEARCH_SONG_STOP',
+  TYPING_MESSAGE_START: 'TYPING_MESSAGE_START',
+  TYPING_MESSAGE_STOP: 'TYPING_MESSAGE_STOP',
 };
 
 let ws = null;
@@ -74,8 +76,33 @@ export const socketReceiveSearchSongStop = (userID, groupID) => {
       groupID
     }
   }
-}
+};
 
+export const SOCKET_RECEIVE_TYPING_MESSAGE_START = 'SOCKET_RECEIVE_TYPING_MESSAGE_START';
+export const socketReceiveTypingMessageStart = (userID, groupID) => {
+  return {
+    type: SOCKET_RECEIVE_TYPING_MESSAGE_START,
+    payload: {
+      userID,
+      groupID
+    }
+  };
+};
+
+export const SOCKET_RECEIVE_TYPING_MESSAGE_STOP = 'SOCKET_RECEIVE_TYPING_MESSAGE_STOP';
+export const socketReceiveTypingMessageStop = (userID, groupID) => {
+  return {
+    type: SOCKET_RECEIVE_TYPING_MESSAGE_STOP,
+    payload: {
+      userID,
+      groupID
+    }
+  };
+};
+
+
+const searchSongTimeoutIds = new Map();
+const typingMessageTimeoutIds = new Map();
 
 export const initSocket = (userID) => {
   return async (dispatch) => {
@@ -131,6 +158,16 @@ export const initSocket = (userID) => {
         case MESSAGE_TYPE.SEARCH_SONG_START: {
           const userID = payload.userID;
           const groupID = payload.groupID;
+
+          const key = userID + "_" + groupID;
+          if (searchSongTimeoutIds.has(key)) {
+            clearTimeout(searchSongTimeoutIds.get(key));
+            searchSongTimeoutIds.delete(key);
+          }
+          
+          const timeoutId = setTimeout(() => dispatch(socketReceiveSearchSongStop(userID, groupID)), 7 * 1000);
+          searchSongTimeoutIds.set(key, timeoutId);
+
           dispatch(socketReceiveSearchSongStart(userID, groupID));
           return;
         }
@@ -138,6 +175,28 @@ export const initSocket = (userID) => {
           const userID = payload.userID;
           const groupID = payload.groupID;
           dispatch(socketReceiveSearchSongStop(userID, groupID));
+          return;
+        }
+        case MESSAGE_TYPE.TYPING_MESSAGE_START: {
+          const userID = payload.userID;
+          const groupID = payload.groupID;
+
+          const key = userID + "_" + groupID;
+          if (typingMessageTimeoutIds.has(key)) {
+            clearTimeout(typingMessageTimeoutIds.get(key));
+            typingMessageTimeoutIds.delete(key);
+          }
+          
+          const timeoutId = setTimeout(() => dispatch(socketReceiveTypingMessageStop(userID, groupID)), 7 * 1000);
+          typingMessageTimeoutIds.set(key, timeoutId);
+
+          dispatch(socketReceiveTypingMessageStart(userID, groupID));
+          return;
+        }
+        case MESSAGE_TYPE.TYPING_MESSAGE_STOP: {
+          const userID = payload.userID;
+          const groupID = payload.groupID;
+          dispatch(socketReceiveTypingMessageStop(userID, groupID));
           return;
         }
         default: {
@@ -186,7 +245,6 @@ export const createGroup = (group) => {
 export const searchSongStart = (userID, groupID) => {
 
   console.log('SENDING SEARCHING FOR SONG START');
-  //return;
 
   const payload = {
     type: MESSAGE_TYPE.SEARCH_SONG_START,
@@ -200,10 +258,35 @@ export const searchSongStart = (userID, groupID) => {
 export const searchSongStop = (userID, groupID) => {
 
   console.log('SENDING SEARCHING FOR SONG STOP');
-  //return;
 
   const payload = {
     type: MESSAGE_TYPE.SEARCH_SONG_STOP,
+    userID,
+    groupID
+  };
+
+  ws.send(JSON.stringify(payload));
+};
+
+export const typingMessageStart = (userID, groupID) => {
+
+  console.log('SENDING TYPING MESSAGE START');
+
+  const payload = {
+    type: MESSAGE_TYPE.TYPING_MESSAGE_START,
+    userID,
+    groupID
+  };
+
+  ws.send(JSON.stringify(payload));
+};
+
+export const typingMessageStop = (userID, groupID) => {
+
+  console.log('SENDING TYPING MESSAGE STOP');
+
+  const payload = {
+    type: MESSAGE_TYPE.TYPING_MESSAGE_STOP,
     userID,
     groupID
   };

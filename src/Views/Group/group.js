@@ -26,7 +26,7 @@ import {
 } from '../../reducers/messageReducer';
 import GroupViewBottomBar from '../../Components/GroupViewBottomBar';
 
-//import * as socketAPI from '../../actions/socketActions';
+import * as socketAPI from '../../actions/socketActions';
 
 class Group extends React.Component {
 
@@ -93,6 +93,10 @@ class Group extends React.Component {
     console.log('Message list end reached!');
   }
 
+  handleUserInputTextChanges(text) {
+
+  }
+
   handleUserSendTextMessage(text) {
     console.log(`sending message: ${text}`);
 
@@ -151,7 +155,9 @@ class Group extends React.Component {
         {usersSearchingComponent && <View style={styles.usersSearchingComponent}>{usersSearchingComponent}</View>}
         {/* {<View>{usersSearchingComponent}</View>} */}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
-        <GroupViewBottomBar onUserSendTextMessage={this.handleUserSendTextMessage}/>
+        <GroupViewBottomBar 
+          onUserInputTextChanges={this.handleUserInputTextChanges}
+          onUserSendTextMessage={this.handleUserSendTextMessage}/>
       </View>
     );
   }

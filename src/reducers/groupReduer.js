@@ -169,11 +169,6 @@ export default groupReducer = (state = initialState, action) => {
         }
       };
     }
-    case SOCKET_RECEIVE_SEARCH_SONG_STOP: {
-      return {
-        ...state
-      };
-    }
     default:
       return state;
   }
