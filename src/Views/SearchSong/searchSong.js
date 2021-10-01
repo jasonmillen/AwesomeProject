@@ -62,7 +62,8 @@ class SearchSong extends React.Component {
       startedSearching: false,
       startedFetching: false,
       startedScrolling: false,
-      canSendSearchingForSong: true
+      canSendSearchingForSong: true,
+      resetCanSendSearchingForSongTimeoutId: null,
     };
 
     this.debouncedLoadNextPage = debounce(async () => {
@@ -79,6 +80,9 @@ class SearchSong extends React.Component {
   }
 
   async componentWillUnmount() {
+    if(this.state.resetCanSendSearchingForSongTimeoutId) {
+      clearTimeout(this.state.resetCanSendSearchingForSongTimeoutId);
+    }
     this._unsubscribe();
   }
 
@@ -203,7 +207,9 @@ class SearchSong extends React.Component {
     if (this.state.canSendSearchingForSong && this.props.userID && this.state.isForGroupID) {
       socketAPI.searchSongStart(this.props.userID, this.state.isForGroupID);
       this.setState({ canSendSearchingForSong: false });
-      setTimeout(() => this.setState({ canSendSearchingForSong: true }), SEND_SEARCHING_FOR_SONG_THROTTLE_TIME);
+      let timeoutId =
+        setTimeout(() => this.setState({ canSendSearchingForSong: true }), SEND_SEARCHING_FOR_SONG_THROTTLE_TIME);
+      this.setState({ resetCanSendSearchingForSongTimeoutId: timeoutId });
     }
   }
 

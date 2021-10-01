@@ -18,7 +18,11 @@ import { fetchMessagesGetForGroup } from '../../actions/messageActions';
 import { fetchGroupSendTextMessage } from '../../actions/groupActions';
 
 import { selectUserID, selectUsersByID } from '../../reducers/userReducer';
-import { selectSelectedGroup, selectUsersSearchingForSongsForGroupID } from '../../reducers/groupReduer';
+import { 
+  selectSelectedGroup, 
+  selectUsersSearchingForSongsForGroupID,
+  selectUsersTypingMessagesForGroupID,
+} from '../../reducers/groupReduer';
 import { 
   selectMessagesForGroup,
   selectMessagesGetForGroupError,
@@ -28,10 +32,17 @@ import GroupViewBottomBar from '../../Components/GroupViewBottomBar';
 
 import * as socketAPI from '../../actions/socketActions';
 
+const SEND_USER_TYPING_THROTTLE_TIME = 1.5 * 1000; // 1.5 seconds
+
 class Group extends React.Component {
 
   constructor(props) {
     super(props);
+
+    this.state = { 
+      canSendUserTypingMessage: true,
+      resetCanSendUserTypingMessageTimeoutId: null,
+    };
 
     this.handleViewPlaylistOnSpotifyButtonPress = this.handleViewPlaylistOnSpotifyButtonPress.bind(this);
     this.handleSearchSongButtonPress = this.handleSearchSongButtonPress.bind(this);
@@ -67,6 +78,17 @@ class Group extends React.Component {
     }
   }
 
+  async componentWillUnmount() {
+    if (this.userAndGroupExist()) {
+      this.setState({ canSendUserTypingMessage: true });
+      socketAPI.typingMessageStop(this.props.userID, this.props.selectedGroup.id);
+    }
+
+    if(this.state.resetCanSendUserTypingMessageTimeoutId) {
+      clearTimeout(this.state.resetCanSendUserTypingMessageTimeoutId);
+    }
+  }
+
   handleSearchSongButtonPress(navigation) {
     //this.setState({ searchingForSong: true });
     //socketAPI.searchSongStart(this.props.userID, this.props.selectedGroup.id);
@@ -93,11 +115,38 @@ class Group extends React.Component {
     console.log('Message list end reached!');
   }
 
-  handleUserInputTextChanges(text) {
+  userAndGroupExist() {
+    return this.props.userID && 
+      this.props.selectedGroup &&
+      this.props.selectedGroup.id;
+  }
 
+  handleUserInputTextChanges(text) {
+    if (!this.userAndGroupExist()) {
+      return;
+    }
+
+    if (text) {
+      if (this.state.canSendUserTypingMessage) {
+        socketAPI.typingMessageStart(this.props.userID, this.props.selectedGroup.id);
+        this.setState({ canSendUserTypingMessage: false });
+        let timeoutId =
+          setTimeout(() => this.setState({ canSendUserTypingMessage: true }), SEND_USER_TYPING_THROTTLE_TIME);
+        this.setState({ resetCanSendUserTypingMessageTimeoutId: timeoutId });
+      }
+    }
+    else {
+      this.setState({ canSendUserTypingMessage: true });
+      socketAPI.typingMessageStop(this.props.userID, this.props.selectedGroup.id);
+    }
   }
 
   handleUserSendTextMessage(text) {
+    if (this.userAndGroupExist()) {
+      this.setState({ canSendUserTypingMessage: true });
+      socketAPI.typingMessageStop(this.props.userID, this.props.selectedGroup.id);
+    }
+
     console.log(`sending message: ${text}`);
 
     const { selectedGroup, userID, groupSendTextMessage } = this.props;
@@ -133,21 +182,33 @@ class Group extends React.Component {
     }
 
     let usersSearchingComponent = null;
-    if (this.props.usersSearchingForSongs && this.props.usersSearchingForSongs.length > 0) {
-      usersSearchingComponent = this.props.usersSearchingForSongs.map((userID, idx) => {
-        const user = this.props.usersByID[userID];
-        const displayText = user.displayName ? user.displayName : user.spotifyUserID;
-        return (
-          <View key={idx} style={{margin: 5}}>
-            <AnimatedEllipsis 
-              numberOfDots={3}
-              minOpacity={0}
-              animationDelay={150}
-              style={{ color: 'white'}} />
-          </View>);
-      });
+    if ((this.props.usersSearchingForSongs && this.props.usersSearchingForSongs.length > 0) ||
+      (this.props.usersTypingMessages && this.props.usersTypingMessages.length > 0)) {
+
+      usersSearchingComponent = (
+        <View style={{margin: 5}}>
+          <AnimatedEllipsis 
+            numberOfDots={3}
+            minOpacity={0}
+            animationDelay={150}
+            style={{ color: 'white'}} />
+        </View>);
     }
 
+    // if (this.props.usersSearchingForSongs && this.props.usersSearchingForSongs.length > 0) {
+    //   usersSearchingComponent = this.props.usersSearchingForSongs.map((userID, idx) => {
+    //     const user = this.props.usersByID[userID];
+    //     const displayText = user.displayName ? user.displayName : user.spotifyUserID;
+    //     return (
+    //       <View key={idx} style={{margin: 5}}>
+    //         <AnimatedEllipsis 
+    //           numberOfDots={3}
+    //           minOpacity={0}
+    //           animationDelay={150}
+    //           style={{ color: 'white'}} />
+    //       </View>);
+    //   });
+    // }
 
     return (
       <View style={styles.groupPage}>
@@ -156,7 +217,7 @@ class Group extends React.Component {
         {/* {<View>{usersSearchingComponent}</View>} */}
         {this.props.messagesGetForGroupError && <Text>Error getting messages. Please try again later.</Text>}
         <GroupViewBottomBar 
-          onUserInputTextChanges={this.handleUserInputTextChanges}
+          onUserInputTextChanges={(text) => this.handleUserInputTextChanges(text)}
           onUserSendTextMessage={this.handleUserSendTextMessage}/>
       </View>
     );
@@ -172,6 +233,8 @@ const mapStateToProps = (state) => {
   const userID = selectUserID(state);
   const usersByID = selectUsersByID(state);
   const usersSearchingForSongs = selectUsersSearchingForSongsForGroupID(state, selectedGroup.id);
+  const usersTypingMessages = selectUsersTypingMessagesForGroupID(state, selectedGroup.id);
+
   return {
     selectedGroup,
     messages,
@@ -179,7 +242,8 @@ const mapStateToProps = (state) => {
     messagesGetForGroupSuccess,
     userID,
     usersByID,
-    usersSearchingForSongs
+    usersSearchingForSongs,
+    usersTypingMessages,
   };
 };
 

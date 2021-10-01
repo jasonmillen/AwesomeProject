@@ -21,7 +21,9 @@ import {
 import { 
   SOCKET_RECEIVE_GROUP, 
   SOCKET_RECEIVE_SEARCH_SONG_START, 
-  SOCKET_RECEIVE_SEARCH_SONG_STOP 
+  SOCKET_RECEIVE_SEARCH_SONG_STOP,
+  SOCKET_RECEIVE_TYPING_MESSAGE_START,
+  SOCKET_RECEIVE_TYPING_MESSAGE_STOP,
 } from '../actions/socketActions';
 
 const initialState = {
@@ -30,6 +32,7 @@ const initialState = {
   groupsByID: {},
   groupFollowStatusByID: {},
   usersSearchingForSongsByGroupID: {},
+  usersTypingMessagesByGroupID: {},
   selectedGroupID: null
 };
 
@@ -169,6 +172,46 @@ export default groupReducer = (state = initialState, action) => {
         }
       };
     }
+    case SOCKET_RECEIVE_TYPING_MESSAGE_START: {
+      console.log(SOCKET_RECEIVE_TYPING_MESSAGE_START);
+      const userID = action.payload.userID;
+      const groupID = action.payload.groupID;
+      let usersTypingMessages = state.usersTypingMessagesByGroupID[groupID];
+      if (!usersTypingMessages) {
+        usersTypingMessages = [userID];
+      }
+      else if (usersTypingMessages.indexOf(userID) < 0) {
+        usersTypingMessages = usersTypingMessages.concat([userID]);
+      }
+
+      return {
+        ...state,
+        usersTypingMessagesByGroupID: {
+          ...state.usersTypingMessagesByGroupID,
+          [groupID]: usersTypingMessages
+        }
+      };
+    }
+    case SOCKET_RECEIVE_TYPING_MESSAGE_STOP: {
+      console.log(SOCKET_RECEIVE_TYPING_MESSAGE_STOP);
+      const userID = action.payload.userID;
+      const groupID = action.payload.groupID;
+      let usersTypingMessages = state.usersTypingMessagesByGroupID[groupID];
+      if (!usersTypingMessages) {
+        usersTypingMessages = [];
+      }
+      else if (usersTypingMessages.indexOf(userID) >= 0) {
+        usersTypingMessages = usersTypingMessages.filter(id => { return id !== userID})
+      }
+
+      return {
+        ...state,
+        usersTypingMessagesByGroupID: {
+          ...state.usersTypingMessagesByGroupID,
+          [groupID]: usersTypingMessages
+        }
+      };
+    }
     default:
       return state;
   }
@@ -221,4 +264,8 @@ export const selectGroupFollowStatusByID = (state) => {
 
 export const selectUsersSearchingForSongsForGroupID = (state, groupID) => {
   return state.group.usersSearchingForSongsByGroupID[groupID];
+};
+
+export const selectUsersTypingMessagesForGroupID = (state, groupID) => {
+  return state.group.usersTypingMessagesByGroupID[groupID];
 };

@@ -167,7 +167,6 @@ export const initSocket = (userID) => {
           
           const timeoutId = setTimeout(() => dispatch(socketReceiveSearchSongStop(userID, groupID)), 7 * 1000);
           searchSongTimeoutIds.set(key, timeoutId);
-
           dispatch(socketReceiveSearchSongStart(userID, groupID));
           return;
         }
