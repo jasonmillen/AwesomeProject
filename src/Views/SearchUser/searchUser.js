@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { HeaderHeightContext } from "@react-navigation/elements";
 //import Toast from 'react-native-simple-toast';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import * as Linking from 'expo-linking'
 
 import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../../constants/colors';
@@ -37,6 +37,8 @@ import {
 import {
   selectUserSearchState
 } from '../../reducers/searchReducer';
+
+import { selectFriends } from '../../reducers/friendReducer';
 
 class SearchUser extends React.Component {
 
@@ -143,7 +145,7 @@ class SearchUser extends React.Component {
                     <Image
                       style={styles.userImage}
                       source={{uri: userImageUrl}}/> :
-                    <Ionicons name='ios-contact' size={150} color='grey' />
+                    <FontAwesome name='user-circle' size={150} color='grey' />
                   }
                   <Text style={styles.spotifyUserIdText}>Spotify User ID: {searchState.userSearchStringID}</Text>
                 </View>
@@ -163,6 +165,19 @@ class SearchUser extends React.Component {
           </View>
         </View>
 
+      );
+    }
+    else if (this.props.friends && this.props.friends.length > 0) {
+      const friend = this.props.friends[9];
+      const uri = (friend.images && friend.images.length > 0) ? friend.images[0].url : null;
+      console.log(friend);
+      searchFeedback = (
+        <View>
+          <Text>{friend.display_name}</Text>
+          {uri && <Image style={styles.userImage
+          
+          } source={{uri: friend.images[0].url}} />}
+        </View>
       );
     }
     else {
@@ -207,7 +222,8 @@ const mapStateToProps = (state) => {
     tokenData: selectTokenData(state),
     searchState: selectUserSearchState(state),
     userID: selectUserID(state),
-    spotifyUserID: selectSpotifyUserID(state)
+    spotifyUserID: selectSpotifyUserID(state),
+    friends: selectFriends(state),
   };
 }
 

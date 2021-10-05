@@ -138,7 +138,6 @@ export const getGroupsForUser = async (userID) => {
 
 export const groupAddSong = async (groupID, trackID, senderID) => {
 
-  console.log(8);
   const ssTokenData = await getSsTokenData();
 
   let response = await fetch(`${BASE_URL}/api/group/track`, {

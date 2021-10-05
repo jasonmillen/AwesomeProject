@@ -27,7 +27,7 @@ import {
   selectGroupsOrderedByLastUpdateTime,
   selectSelectedGroupID,
   selectGroupFollowStatusByID
- } from '../../reducers/groupReduer';
+ } from '../../reducers/groupReducer';
 
 import { 
   selectMessagesByGroupID,
@@ -47,6 +47,8 @@ import {
 } from '../../actions/groupActions';
 
 import { fetchMessagesGetForGroup } from '../../actions/messageActions';
+
+import { fetchFriendsGet } from '../../actions/friendActions';
 
 import { initSocket } from '../../actions/socketActions';
 //import token from '../../api/spotify/token';
@@ -88,6 +90,7 @@ class Home extends React.Component {
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
     this.props.getRecommendedTracks();
+    this.props.getUserFriends(this.props.spotifyUserID);
   }
 
   componentDidUpdate() {
@@ -207,7 +210,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     getRecommendedTracks: () => {
       dispatch (fetchGetRecommendedTracks());
-    }
+    },
+    getUserFriends: (userID) => {
+      dispatch (fetchFriendsGet(userID));
+    },
   };
 };
 

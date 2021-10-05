@@ -22,7 +22,7 @@ import {
   selectSelectedGroup, 
   selectUsersSearchingForSongsForGroupID,
   selectUsersTypingMessagesForGroupID,
-} from '../../reducers/groupReduer';
+} from '../../reducers/groupReducer';
 import { 
   selectMessagesForGroup,
   selectMessagesGetForGroupError,

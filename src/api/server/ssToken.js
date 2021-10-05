@@ -36,7 +36,7 @@ export const getSsTokenData = async () => {
 
 // returns true if token data was updated
 const verifySsTokenData = async (ssTokenData) => {
-  console.log('verifying ssTokenData: ', ssTokenData);
+  //console.log('verifying ssTokenData: ', ssTokenData);
   if (ssTokenData && ssTokenData.ssExpirationTime < new Date().getTime()) {
     console.log('refreshing ssTokenData');
     const newSsTokenData = await refreshSsTokens(ssTokenData.ssRefreshToken);
