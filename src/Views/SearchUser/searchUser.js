@@ -30,6 +30,7 @@ import { fetchCreateGroup } from '../../actions/groupActions';
 
 import {
   selectUserID,
+  selectUsersByID,
   selectSpotifyUserID,
   selectTokenData
 } from '../../reducers/userReducer';
@@ -218,11 +219,54 @@ class SearchUser extends React.Component {
 };
 
 const mapStateToProps = (state) => {
+
+  const spotifyUserID = selectSpotifyUserID(state);
+  let friends = selectFriends(state);
+  const usersByID = selectUsersByID(state);
+
+  // console.log('FRIENDS: ', friends);
+  // console.log('USERS BY ID: ', usersByID);
+
+  const friendScores = new Map();
+  friends.forEach((value, key) => {
+    let min = Number.MAX_SAFE_INTEGER;
+    value.playlists.forEach(playlist => {
+      if (playlist.followers < min) {
+        min = playlist.followers;
+      }
+    });
+    min = Math.max(min, 1); // prevent min value of 0
+
+    // playlists with less followers have higher score
+    friendScores.set(key, { user: value.user, score: (1 / min) });
+  });
+  for (const [key, value] of Object.entries(usersByID)) {
+    if (!value.spotifyUserID) {
+      continue;
+    }
+    if (friendScores.has(value.spotifyUserID)) {
+      friendScores.get(value.spotifyUserID).score += 1;
+    }
+    else {
+      friendScores.set(value.spotifyUserID, { user: value, score: 1 });
+    }
+  }
+  const friendScoresArray = [];
+  friendScores.forEach((value, key) => {
+    if (key !== spotifyUserID) {
+      friendScoresArray.push({ spotifyUserId: key, user: value.user, score: value.score });
+    }
+  });
+  friendScoresArray.sort((a, b) => b.score - a.score);
+
+  console.log("FRIEND SCORES: ", friendScoresArray);
+  
+
   return {
     tokenData: selectTokenData(state),
     searchState: selectUserSearchState(state),
     userID: selectUserID(state),
-    spotifyUserID: selectSpotifyUserID(state),
+    spotifyUserID,
     friends: selectFriends(state),
   };
 }

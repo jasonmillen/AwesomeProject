@@ -5,7 +5,7 @@ import {
 } from '../actions/friendActions';
 
 const initialState = {
-  friends: null
+  friends: new Map()
 };
 
 export default friendReducer = (state = initialState, action) => {
