@@ -20,6 +20,7 @@ import * as Linking from 'expo-linking'
 
 import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../../constants/colors';
 
+import FriendsList from '../../Components/FriendsList';
 import StartChatButton from '../../Components/StartChatButton';
 import NamePlaylistModal from '../../Components/NamePlaylistModal';
 
@@ -169,17 +170,22 @@ class SearchUser extends React.Component {
       );
     }
     else if (this.props.friends && this.props.friends.length > 0) {
-      const friend = this.props.friends[9];
-      const uri = (friend.images && friend.images.length > 0) ? friend.images[0].url : null;
-      console.log(friend);
       searchFeedback = (
-        <View>
-          <Text>{friend.display_name}</Text>
-          {uri && <Image style={styles.userImage
-          
-          } source={{uri: friend.images[0].url}} />}
-        </View>
-      );
+        <FriendsList
+          friends={this.props.friends}
+          onEndReached={() => {console.log("friends list end reached")}}
+          onItemPressed={() => {console.log("friends list item pressed")}}
+          style={styles.friendsList}
+        />);
+      // const friend = this.props.friends[0];
+      // const uri = friend.user.imageUrl;
+      // console.log(friend);
+      // searchFeedback = (
+      //   <View>
+      //     <Text>{friend.user.displayName}</Text>
+      //     {uri && <Image style={styles.userImage} source={{uri}} />}
+      //   </View>
+      // );
     }
     else {
       searchFeedback = (<Text></Text>);
@@ -267,7 +273,7 @@ const mapStateToProps = (state) => {
     searchState: selectUserSearchState(state),
     userID: selectUserID(state),
     spotifyUserID,
-    friends: selectFriends(state),
+    friends: friendScoresArray,
   };
 }
 
@@ -368,6 +374,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     margin: 5
+  },
+  friendsList: {
+    width: '100%',
   }
 });
 
