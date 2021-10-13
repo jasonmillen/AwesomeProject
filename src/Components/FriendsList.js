@@ -20,7 +20,7 @@ export default ({
     return (
       <FriendListItem
         friend={friend} 
-        onPress={onItemPressed} />
+        onPress={spotifyUserId => onItemPressed(spotifyUserId)} />
     );
   };
 

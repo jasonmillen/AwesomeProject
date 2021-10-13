@@ -50,30 +50,30 @@ export const fetchFriendsGet = (userID) => {
         return await playlistAPI.getPlaylist(playlist.id);
       }));
 
-      // filter playlists so that a user's own playlists are not included
       const friendInfo = playlists.reduce((map, playlist) => {
 
-        // if (playlist.name === 'YNP') {
-        //   console.log(playlist);
-        // }
-
-        const playlistObj = {
-          id: playlist.id,
-          name: playlist.name,
-          followers: playlist.followers.total,
-        };
-        const spotifyId = playlist.owner.id;
-        if (map.has(spotifyId)) {
-          map.get(spotifyId).playlists.push(playlistObj);
+        try {
+          const playlistObj = {
+            id: playlist.id,
+            name: playlist.name,
+            followers: playlist.followers && playlist.followers.total ? playlist.followers.total : 0,
+          };
+          const spotifyId = playlist.owner.id;
+          if (map.has(spotifyId)) {
+            map.get(spotifyId).playlists.push(playlistObj);
+          }
+          else {
+            map.set(spotifyId, { playlists: [playlistObj] });
+          }
         }
-        else {
-          map.set(spotifyId, { playlists: [playlistObj] });
+        catch (error) {
+          console.error("Error with playlist: ", playlist)
+          console.error("Error calculating friend info for playlist: ", error);
+          throw new error("blah");
         }
 
         return map;
-      }, new Map() /* { set: new Set(), friendInfo: [] }*/);
-
-      //console.log("FRIEND PLAYLISTS: ", friendInfo);
+      }, new Map());
 
       await Promise.all(Array.from(friendInfo.keys()).map(async spotifyId => {
         const user = await userAPI.searchUser(spotifyId);

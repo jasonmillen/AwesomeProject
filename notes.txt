@@ -1,13 +1,16 @@
 TODO:
+figure out how to let non playlist owners add songs to playlists :/
 show group in different color if unread messages
 fix duplicate songs in the song search list
 handle messages slow to load in the group list view
 add timestamp to socket messages to detect if they are old
-add support for searching for 'friends' (friends can be anyone who is the author of a playlist you follow, or anyone who follows your playlists?)
 handle if sending song/text doesnt work (should app show that message failed to send/prop to retry)
 fix any bugs related to the websockets (how to keep websocket session alive)
 text too small
 figure out night-mode on app (so that top bar doesnt get hidden when phone is in night mode)
+
+DONE:
+add support for searching for 'friends' (friends can be anyone who is the author of a playlist you follow, or anyone who follows your playlists?)
 
 
 helpful commands:

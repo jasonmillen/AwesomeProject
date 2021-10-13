@@ -9,6 +9,9 @@ import {
 
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
+import { DARK_GREEN } from '../constants/colors';
+
+
 export default ({
   friend: {
     score,
@@ -22,13 +25,14 @@ export default ({
 }) => {
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
+    <TouchableOpacity onPress={() => onPress(spotifyUserId)} style={styles.container}>
       {imageUrl ? 
         <Image source={{uri: imageUrl}} style={styles.userImage} /> :
         <FontAwesome name='user-circle' size={100} color='grey' style={styles.userImage} />}
       <View style={styles.textView}>
-        <Text>{displayName}</Text>
-        <Text>{spotifyUserId}</Text>
+        <Text numberOfLines={1} style={styles.userDisplayNameText}>{displayName}</Text>
+        {/* <Text numberOfLines={1}>Spotify User ID:</Text> */}
+        <Text numberOfLines={1}>{spotifyUserId}</Text>
       </View>
       
     </TouchableOpacity>
@@ -55,5 +59,11 @@ const styles = StyleSheet.create({
     borderRadius: 5
   },
   textView: {
-  }
+  },
+  userDisplayNameText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: DARK_GREEN
+    //backgroundColor: 'blue'
+  },
 });

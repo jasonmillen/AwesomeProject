@@ -60,6 +60,8 @@ export const checkIfUserFollowsPlaylist = async (playlistID, spotifyUserID) => {
 
 export const addSongToPlaylist = async (playlistID, trackID) => {
 
+  console.log(`adding track ${trackID} to playlist ${playlistID}`);
+
   const tokenData = await getTokenData();
 
   const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}/tracks`;
@@ -75,6 +77,7 @@ export const addSongToPlaylist = async (playlistID, trackID) => {
   });
 
   const json = await res.json();
+  console.log("RESULT: ", json);
   return json;
 };
 

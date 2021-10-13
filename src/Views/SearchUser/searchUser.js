@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { HeaderHeightContext } from "@react-navigation/elements";
 //import Toast from 'react-native-simple-toast';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking'
 
 import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../../constants/colors';
@@ -25,7 +25,8 @@ import StartChatButton from '../../Components/StartChatButton';
 import NamePlaylistModal from '../../Components/NamePlaylistModal';
 
 import {
-  fetchSearchUser
+  fetchSearchUser,
+  searchClearResults,
 } from '../../actions/searchActions';
 import { fetchCreateGroup } from '../../actions/groupActions';
 
@@ -60,15 +61,29 @@ class SearchUser extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this.props.searchClearResults();
+  }
+
   handleSearchUserClick () {
     console.log('clicked search');
     console.log(this.props.tokenData);
     this.searchForUser(this.state.searchText);
   }
 
-  hanleSearchSubmit (searchText) {
+  handleSearchSubmit (searchText) {
     console.log('submitted search ' + searchText);
     this.searchForUser(searchText);
+  }
+
+  handleClearText() {
+    this.setState({ searchText: '' });
+    this.handleSearchSubmit('');
+  }
+
+  handleClickOnFriendInList(spotifyUserID) {
+    this.setState({ searchText: spotifyUserID });
+    this.handleSearchSubmit(spotifyUserID);
   }
 
   searchForUser (spotifyUserID) {
@@ -122,7 +137,7 @@ class SearchUser extends React.Component {
     if (searchState.searchForUserError) {
       searchFeedback = (<Text>Error searching for user {searchState.userSearchStringID}</Text>);
     }
-    else if (searchState.userSearchStringID && !searchState.isSearchingForUser && !searchState.userFound) {
+    else if (searchState.userSearchStringID /*&& !searchState.isSearchingForUser*/ && !searchState.userFound) {
       searchFeedback = (<Text>Could not find user: {searchState.userSearchStringID}</Text>);
     }
     else if (searchState.userSearchStringID && searchState.userFound) {
@@ -174,7 +189,7 @@ class SearchUser extends React.Component {
         <FriendsList
           friends={this.props.friends}
           onEndReached={() => {console.log("friends list end reached")}}
-          onItemPressed={() => {console.log("friends list item pressed")}}
+          onItemPressed={spotifyUserID => this.handleClickOnFriendInList(spotifyUserID)}
           style={styles.friendsList}
         />);
       // const friend = this.props.friends[0];
@@ -201,11 +216,17 @@ class SearchUser extends React.Component {
           </TouchableOpacity>
           <TextInput 
             style={styles.searchUserTextInput} 
+            value={this.state.searchText}
             onChangeText={text => this.setState({ searchText: text })}
             placeholder='Enter a spotify user ID'
             returnKeyType='search'
-            onSubmitEditing={searchEvent => this.hanleSearchSubmit(searchEvent.nativeEvent.text)}
+            onSubmitEditing={searchEvent => this.handleSearchSubmit(searchEvent.nativeEvent.text)}
           />
+          {!!this.state.searchText && <TouchableOpacity
+            style={styles.clearTextButton}
+            onPress={() => this.handleClearText()}>
+            <MaterialIcons color='grey' name='clear' size={30} />
+          </TouchableOpacity>}
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
           <View style={styles.container}>
@@ -265,7 +286,7 @@ const mapStateToProps = (state) => {
   });
   friendScoresArray.sort((a, b) => b.score - a.score);
 
-  console.log("FRIEND SCORES: ", friendScoresArray);
+  //console.log("FRIEND SCORES: ", friendScoresArray);
   
 
   return {
@@ -284,7 +305,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     createGroup: (creatorID, creatorSpotifyID, memberSpotifyIDs, playlistName, tokenData) => {
       dispatch(fetchCreateGroup(creatorID, creatorSpotifyID, memberSpotifyIDs, playlistName, tokenData));
-    }
+    },
+    searchClearResults: () => {
+      dispatch(searchClearResults());
+    },
   };
 };
 
@@ -300,6 +324,7 @@ const styles = StyleSheet.create({
   searchUserTextInput: {
     flex: 1,
     height: 40,
+    //backgroundColor: 'yellow',
     //borderColor: 'gray',
     //borderWidth: 1
   },
@@ -328,6 +353,9 @@ const styles = StyleSheet.create({
     backgroundColor: GREY_GREEN
   },
   searchIconButton: {
+    margin: 8
+  },
+  clearTextButton: {
     margin: 8
   },
   foundUserView: {
