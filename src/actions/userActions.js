@@ -166,9 +166,15 @@ export const login = () => {
     let user = await serverAPI.getUserBySpotifyUserID(spotifyUserData.id);
 
     // user should always be created now in the serverAPI.getSpotifyTokenData call - shouldn't need this check in the future
+    // if (!user || !user.id) {
+    //   user = await serverAPI.addNewUser(spotifyUserData.id);
+    // }
+
     if (!user || !user.id) {
-      user = await serverAPI.addNewUser(spotifyUserData.id);
+      console.error("Error getting user during login process");
+      throw new error("Error getting user during login process");
     }
+
     await asAPI.setUserID(user.id);
     user.displayName = spotifyUserData.display_name;
     user.imageUrl = spotifyUserData.images.length ? spotifyUserData.images[0].url : null

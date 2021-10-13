@@ -22,7 +22,13 @@ export const createPlaylist = async (spotifyUserID, playlistName, accessToken) =
   return json;
 };
 
+let count = 0;
 export const getPlaylist = async (playlistID) => {
+
+  count++;
+  if (count >= 50) {
+    console.error("=====================COUNT: ", count);
+  }
 
   const tokenData = await getTokenData();
 
@@ -58,28 +64,28 @@ export const checkIfUserFollowsPlaylist = async (playlistID, spotifyUserID) => {
   return json[0];
 };
 
-export const addSongToPlaylist = async (playlistID, trackID) => {
+// export const addSongToPlaylist = async (playlistID, trackID) => {
 
-  console.log(`adding track ${trackID} to playlist ${playlistID}`);
+//   console.log(`adding track ${trackID} to playlist ${playlistID}`);
 
-  const tokenData = await getTokenData();
+//   const tokenData = await getTokenData();
 
-  const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}/tracks`;
-  const res = await fetch(uri, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${tokenData.accessToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      uris: [`spotify:track:${trackID}`]
-    })
-  });
+//   const uri = `${SPOTIFY_BASE_URL}/playlists/${playlistID}/tracks`;
+//   const res = await fetch(uri, {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Bearer ${tokenData.accessToken}`,
+//       'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({
+//       uris: [`spotify:track:${trackID}`]
+//     })
+//   });
 
-  const json = await res.json();
-  console.log("RESULT: ", json);
-  return json;
-};
+//   const json = await res.json();
+//   console.log("RESULT: ", json);
+//   return json;
+// };
 
 export const followPlaylist = async (playlistID) => {
   const tokenData = await getTokenData();
