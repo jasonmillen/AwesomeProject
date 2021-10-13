@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { isValidDate, getDateDisplayString } from '../utility/util';
-import { LIGHT_GREEN } from '../constants/colors';
+import { LIGHT_GREEN, DARK_GREEN } from '../constants/colors';
 import { messagesGetForGroupSuccess } from '../actions/messageActions';
 
 export default ({
@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
   },
   playlistNameText: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    color: DARK_GREEN,
   },
   playlistText: {
 

@@ -1,7 +1,8 @@
 import {
   SEARCH_USER_REQUEST,
   SEARCH_USER_SUCCESS,
-  SEARCH_USER_ERROR
+  SEARCH_USER_ERROR,
+  SEARCH_CLEAR_RESULTS,
 } from '../actions/searchActions';
 
 const initialState = {
@@ -19,8 +20,8 @@ export default searchReducer = (state = initialState, action) => {
       return {
         ...state,
         userSearchStringID: action.payload.spotifyUserID,
-        userData: null,
-        userFound: false,
+        //userData: null,
+        //userFound: false,
         isSearchingForUser: true,
         searchForUserError: false
       };
@@ -43,7 +44,9 @@ export default searchReducer = (state = initialState, action) => {
         isSearchingForUser: false,
         searchForUserError: true
 
-      }
+      };
+    case SEARCH_CLEAR_RESULTS:
+      return initialState;
     default:
       return state;
   }
