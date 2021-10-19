@@ -46,9 +46,13 @@ export const fetchFriendsGet = (userID) => {
       );
 
       // get full info on playlist (not all info is originally returned by getUserPlaylists() call)
-      playlists = await Promise.all(playlists.map(async playlist => {
+      // playlists = await Promise.all(playlists.map(async playlist => {
+      //   return await playlistAPI.getPlaylist(playlist.id);
+      // }));
+
+      playlists = playlists.map(async playlist => {
         return await playlistAPI.getPlaylist(playlist.id);
-      }));
+      });
 
       const friendInfo = playlists.reduce((map, playlist) => {
 
@@ -69,7 +73,6 @@ export const fetchFriendsGet = (userID) => {
         catch (error) {
           console.error("Error with playlist: ", playlist)
           console.error("Error calculating friend info for playlist: ", error);
-          throw new error("blah");
         }
 
         return map;
