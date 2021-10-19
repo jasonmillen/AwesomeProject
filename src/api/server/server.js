@@ -39,6 +39,7 @@ export const refreshTokens = async (refreshToken) => {
       'UserID': userID
     },
     body: JSON.stringify({
+      userID,
       refreshToken
     }),
   });
@@ -72,26 +73,26 @@ export const getUserBySpotifyUserID = async (spotifyUserID) => {
 };
 
 // TODO: DEPRECATE
-export const addNewUser = async (spotifyUserID) => {
+// export const addNewUser = async (spotifyUserID) => {
 
-  console.log(5);
-  const ssTokenData = await getSsTokenData();
+//   console.log(5);
+//   const ssTokenData = await getSsTokenData();
 
-  let response = await fetch(`${BASE_URL}/api/user/create`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      spotifyUserID
-    })
-  });
-  response = await response.json();
-  console.log(response);
-  return response;
-};
+//   let response = await fetch(`${BASE_URL}/api/user/create`, {
+//     method: 'POST',
+//     headers: {
+//       Authorization: `Bearer ${ssTokenData.ssAccessToken}`,
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify({
+//       spotifyUserID
+//     })
+//   });
+//   response = await response.json();
+//   console.log(response);
+//   return response;
+// };
 
 export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
 

@@ -184,7 +184,7 @@ export const fetchGroupAddSong = (groupID, playlistID, trackID, senderID) => {
     dispatch(groupAddSongRequest());
 
     try {
-      await playlistAPI.addSongToPlaylist(playlistID, trackID);
+      //await playlistAPI.addSongToPlaylist(playlistID, trackID);
       const message = await serverAPI.groupAddSong(groupID, trackID, senderID);
       console.log('MESSAGE: ', message);
       sockAPI.groupAddSong(message);

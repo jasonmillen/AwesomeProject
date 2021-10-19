@@ -101,3 +101,7 @@ export const  debounce = (func, wait, immediate) => {
     if (callNow) await func.apply(context, args);
   }
 }
+
+export const sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
