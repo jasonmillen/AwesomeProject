@@ -25,10 +25,10 @@ export const createPlaylist = async (spotifyUserID, playlistName, accessToken) =
 let count = 0;
 export const getPlaylist = async (playlistID) => {
 
-  count++;
-  if (count >= 50) {
-    console.error("=====================COUNT: ", count);
-  }
+  // count++;
+  // if (count >= 50) {
+  //   console.error("=====================COUNT: ", count);
+  // }
 
   const tokenData = await getTokenData();
 
