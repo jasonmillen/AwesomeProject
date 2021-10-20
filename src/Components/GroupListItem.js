@@ -79,7 +79,7 @@ export default ({
         }
       </View>
       <View style={styles.playlistInfo}>
-        <Text style={styles.playlistNameText}>{playlistName}</Text>
+        <Text style={_styles.playlistNameText}>{playlistName}</Text>
       <Text numberOfLines={1} style={_styles.playlistText}>{groupDisplayMessage}</Text>
       </View>
       <View style={styles.screenRightSide}>
@@ -112,6 +112,11 @@ const getStyes = (theme) => {
     groupLastUpdateTimeText: {
       color: theme.colors.text,
     },
+    playlistNameText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: theme.colors.highlightText,// DARK_GREEN,
+    },
   };
 };
 
@@ -126,11 +131,11 @@ const styles = StyleSheet.create({
     flex: 0.75,
     flexDirection: 'column'
   },
-  playlistNameText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: DARK_GREEN,
-  },
+  // playlistNameText: {
+  //   fontSize: 16,
+  //   fontWeight: 'bold',
+  //   color: DARK_GREEN,
+  // },
   followPlaylistSection: {
     flexDirection: 'row',
     justifyContent: 'center'

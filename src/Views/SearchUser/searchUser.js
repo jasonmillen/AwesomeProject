@@ -223,6 +223,7 @@ class SearchUserClass extends React.Component {
             value={this.state.searchText}
             onChangeText={text => this.setState({ searchText: text })}
             placeholder='Enter a spotify user ID'
+            placeholderTextColor={theme.colors.textInputPlaceholder}
             returnKeyType='search'
             onSubmitEditing={searchEvent => this.handleSearchSubmit(searchEvent.nativeEvent.text)}
           />

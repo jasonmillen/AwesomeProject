@@ -18,7 +18,7 @@ import UserProfile from './src/Views/UserProfile/userProfile';
 import SearchUser from './src/Views/SearchUser/searchUser';
 import SearchSong from './src/Views/SearchSong/searchSong';
 
-import { GREY_GREEN } from './src/constants/colors';
+import { LIGHT_GREEN, DARK_GREEN, GREY_GREEN } from './src/constants/colors';
 
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 
@@ -30,7 +30,8 @@ const CustomDefaultTheme = {
     ...DefaultTheme.colors,
     icon: 'black',
     textInputBackground: GREY_GREEN,
-    textInputPlaceholder: 'grey'
+    textInputPlaceholder: 'grey',
+    highlightText: DARK_GREEN,
   },
 };
 
@@ -39,16 +40,17 @@ const CustomDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    icon: 'white',
+    icon: LIGHT_GREEN,
     textInputBackground: 'darkslategrey',
-    textInputPlaceholder: 'grey'
+    textInputPlaceholder: 'grey',
+    highlightText: LIGHT_GREEN,
   },
 };
 
 export default function App() {
 
   let colorScheme = useColorScheme();
-  //colorScheme = 'light';
+  //colorScheme = 'dark';
 
   return (
     <Provider store={store}>

@@ -8,6 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import * as Linking from 'expo-linking';
+import { useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -42,7 +43,7 @@ import { DARK_GREEN, GREY_GREEN } from '../../constants/colors';
 const PAGE = 20;
 const SEND_SEARCHING_FOR_SONG_THROTTLE_TIME = 1.5 * 1000; // 1.5 seconds
 
-class SearchSong extends React.Component {
+class SearchSongClass extends React.Component {
 
   constructor(props) {
     super(props);
@@ -215,6 +216,9 @@ class SearchSong extends React.Component {
 
   render() {
 
+    const { theme } = this.props;
+    const _styles = getStyles(theme);
+
     const { songs, query, isFetching, startedSearching, startedFetching, startedScrolling } = this.state;
 
     const showActivityIndicator = isFetching && songs.length === 0;
@@ -223,11 +227,11 @@ class SearchSong extends React.Component {
 
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.titleBar}>
+        <View style={_styles.titleBar}>
           <TouchableOpacity
             style={styles.titleBarBackButton}
             onPress={() => this.props.navigation.goBack()}>
-            <Ionicons name='ios-arrow-back' size={30} />
+            <Ionicons color='grey' name='ios-arrow-back' size={30} />
           </TouchableOpacity>
           <Search onChange={text => this.handleSearchChange(text)}/>
         </View>
@@ -277,6 +281,16 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const getStyles = (theme) => {
+  return {
+    titleBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.colors.textInputBackground,
+    },
+  }
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -298,11 +312,11 @@ const styles = StyleSheet.create({
     color: DARK_GREEN,
     margin: 10
   },
-  titleBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: GREY_GREEN
-  },
+  // titleBar: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: GREY_GREEN
+  // },
   titleBarBackButton: {
     width: 25,
     margin: 10,
@@ -312,5 +326,13 @@ const styles = StyleSheet.create({
     flex: 1
   }
 });
+
+//export default connect(mapStateToProps, mapDispatchToProps)(SearchSong);
+
+function SearchSong(props) {
+  const theme = useTheme();
+
+  return <SearchSongClass {...props} theme={theme} />;
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchSong);
