@@ -14,6 +14,7 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import { HeaderHeightContext } from "@react-navigation/elements";
+import { useTheme } from '@react-navigation/native';
 //import Toast from 'react-native-simple-toast';
 import { Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking'
@@ -43,7 +44,7 @@ import {
 
 import { selectFriends } from '../../reducers/friendReducer';
 
-class SearchUser extends React.Component {
+class SearchUserClass extends React.Component {
 
   constructor (props) {
     super (props);
@@ -132,6 +133,9 @@ class SearchUser extends React.Component {
   }
 
   render () {
+    const { theme } = this.props;
+    const _styles = getStyles(theme);
+
     let searchFeedback;
     let searchState = this.props.searchState;
     if (searchState.searchForUserError) {
@@ -164,7 +168,7 @@ class SearchUser extends React.Component {
                       source={{uri: userImageUrl}}/> :
                     <FontAwesome name='user-circle' size={150} color='grey' />
                   }
-                  <Text style={styles.spotifyUserIdText}>Spotify User ID: {searchState.userSearchStringID}</Text>
+                  <Text style={_styles.spotifyUserIdText}>Spotify User ID: {searchState.userSearchStringID}</Text>
                 </View>
               </KeyboardAvoidingView>
             )}
@@ -207,15 +211,15 @@ class SearchUser extends React.Component {
     }
 
     return (
-      <View style={styles.searchUserPage}>
-        <View style={styles.searchBar}>
+      <View style={_styles.searchUserPage}>
+        <View style={_styles.searchBar}>
           <TouchableOpacity
             style={styles.searchIconButton}
             onPress={() => this.handleSearchUserClick()}>
             <Ionicons color='grey' name='md-search' size={30} />
           </TouchableOpacity>
           <TextInput 
-            style={styles.searchUserTextInput} 
+            style={_styles.searchUserTextInput} 
             value={this.state.searchText}
             onChangeText={text => this.setState({ searchText: text })}
             placeholder='Enter a spotify user ID'
@@ -312,30 +316,60 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const getStyles = (theme) => {
+  return {
+    searchUserPage: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'stretch',
+      justifyContent: 'flex-start',
+      backgroundColor: theme.colors.backgroundColor,
+      //margin: 10,
+      //marginTop: 10
+    },
+    searchUserTextInput: {
+      flex: 1,
+      height: 40,
+      color: theme.colors.text,
+      //borderColor: 'gray',
+      //borderWidth: 1
+    },
+    searchBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      //backgroundColor: GREY_GREEN
+      backgroundColor: theme.colors.textInputBackground,
+    },
+    spotifyUserIdText: {
+      color: theme.colors.text,
+    },
+  };
+};
+
 const styles = StyleSheet.create({
-  searchUserPage: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'stretch',
-    justifyContent: 'flex-start',
-    //margin: 10,
-    //marginTop: 10
-  },
-  searchUserTextInput: {
-    flex: 1,
-    height: 40,
-    //backgroundColor: 'yellow',
-    //borderColor: 'gray',
-    //borderWidth: 1
-  },
+  // searchUserPage: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  //   alignItems: 'stretch',
+  //   justifyContent: 'flex-start',
+  //   //margin: 10,
+  //   //marginTop: 10
+  // },
+  // searchUserTextInput: {
+  //   flex: 1,
+  //   height: 40,
+  //   //backgroundColor: 'yellow',
+  //   //borderColor: 'gray',
+  //   //borderWidth: 1
+  // },
   userDisplayName: {
     fontSize: 30,
     color: DARK_GREEN
   },
-  spotifyUserIdText: {
-    //fontSize: 
-    //color: 'grey'
-  },
+  // spotifyUserIdText: {
+  //   //fontSize: 
+  //   //color: 'grey'
+  // },
   startChatButton: {
     marginTop: 10
   },
@@ -347,11 +381,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: GREY_GREEN
-  },
+  // searchBar: {
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: GREY_GREEN
+  // },
   searchIconButton: {
     margin: 8
   },
@@ -407,5 +441,13 @@ const styles = StyleSheet.create({
     width: '100%',
   }
 });
+
+//export default connect(mapStateToProps, mapDispatchToProps)(SearchUser);
+
+function SearchUser(props) {
+  const theme = useTheme();
+
+  return <SearchUserClass {...props} theme={theme} />;
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchUser);

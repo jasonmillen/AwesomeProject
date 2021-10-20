@@ -57,7 +57,7 @@ export const fetchFriendsGet = (userID) => {
       for (let i = 0; i < playlists.length; i++) {
         let info = await playlistAPI.getPlaylist(playlists[i].id);
         arr.push(info);
-        //await sleep(10);
+        await sleep(50);
       }
       playlists = arr;
 

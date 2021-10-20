@@ -1,4 +1,5 @@
 TODO:
+fix friends list hitting api rate limit
 show group in different color if unread messages
 fix duplicate songs in the song search list
 handle messages slow to load in the group list view

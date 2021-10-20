@@ -6,6 +6,7 @@ import {
   View,
   Image
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 import { isValidDate, getDateDisplayString } from '../utility/util';
 import { LIGHT_GREEN, DARK_GREEN } from '../constants/colors';
@@ -28,6 +29,9 @@ export default ({
   onFollowPlaylistPressed,
   getMessagesForGroupSuccess
 }) => {
+
+  const theme = useTheme();
+  const _styles = getStyes(theme);
 
   let imageSource = null;
   if (imageUrl) {
@@ -76,7 +80,7 @@ export default ({
       </View>
       <View style={styles.playlistInfo}>
         <Text style={styles.playlistNameText}>{playlistName}</Text>
-      <Text numberOfLines={1} style={styles.playlistText}>{groupDisplayMessage}</Text>
+      <Text numberOfLines={1} style={_styles.playlistText}>{groupDisplayMessage}</Text>
       </View>
       <View style={styles.screenRightSide}>
         {!userIsFollowing &&
@@ -91,13 +95,24 @@ export default ({
         }
         {userIsFollowing && lastUpdateTimeAsDate && 
           <View>
-            <Text>{getDateDisplayString(lastUpdateTimeAsDate)}</Text>
+            <Text style={_styles.groupLastUpdateTimeText}>{getDateDisplayString(lastUpdateTimeAsDate)}</Text>
           </View>
         }
       </View>
     </TouchableOpacity>
 
   );
+};
+
+const getStyes = (theme) => {
+  return {
+    playlistText: {
+      color: theme.colors.text
+    },
+    groupLastUpdateTimeText: {
+      color: theme.colors.text,
+    },
+  };
 };
 
 const styles = StyleSheet.create({
@@ -115,9 +130,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: DARK_GREEN,
-  },
-  playlistText: {
-
   },
   followPlaylistSection: {
     flexDirection: 'row',

@@ -1,8 +1,9 @@
 import React from 'react';
+import { useColorScheme } from 'react-native';
 import { createStore, applyMiddleware } from 'redux'; 
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -17,48 +18,113 @@ import UserProfile from './src/Views/UserProfile/userProfile';
 import SearchUser from './src/Views/SearchUser/searchUser';
 import SearchSong from './src/Views/SearchSong/searchSong';
 
+import { GREY_GREEN } from './src/constants/colors';
+
 const store = createStore(reducer, applyMiddleware(thunkMiddleware));
 
 const Stack = createStackNavigator();
 
-export default class App extends React.Component {
-
-  render() {
-    return (
-      <Provider store={store}>
-        <SafeAreaProvider>
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName="Splash">
-              <Stack.Screen
-                name="Splash"
-                component={Splash}
-                options={{ headerShown: false }}/>
-              <Stack.Screen
-                name="Login"
-                component={Login} 
-                options={{ headerShown: false }}/>
-              <Stack.Screen
-                name="Home"
-                component={Home}/>
-              <Stack.Screen
-                name="Group"
-                component={Group}/>
-              <Stack.Screen
-                name="UserProfile"
-                component={UserProfile}/>
-              <Stack.Screen
-                name="SearchUser"
-                component={SearchUser}/> 
-              <Stack.Screen
-                name="SearchSong"
-                component={SearchSong}
-                options={{ headerShown: false }} />
-                {/* options={{ title: 'Search For Song' }}/>  */}
-            </Stack.Navigator>
-          </NavigationContainer>
-        </SafeAreaProvider>
-      </Provider>
-    )
-  }
+const CustomDefaultTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    icon: 'black',
+    textInputBackground: GREY_GREEN,
+    textInputPlaceholder: 'grey'
+  },
 };
+
+
+const CustomDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    icon: 'white',
+    textInputBackground: 'darkslategrey',
+    textInputPlaceholder: 'grey'
+  },
+};
+
+export default function App() {
+
+  let colorScheme = useColorScheme();
+  //colorScheme = 'light';
+
+  return (
+    <Provider store={store}>
+    <SafeAreaProvider>
+      <NavigationContainer theme={colorScheme === 'dark' ? CustomDarkTheme : CustomDefaultTheme}>
+        <Stack.Navigator initialRouteName="Splash">
+          <Stack.Screen
+            name="Splash"
+            component={Splash}
+            options={{ headerShown: false }}/>
+          <Stack.Screen
+            name="Login"
+            component={Login} 
+            options={{ headerShown: false }}/>
+          <Stack.Screen
+            name="Home"
+            component={Home}/>
+          <Stack.Screen
+            name="Group"
+            component={Group}/>
+          <Stack.Screen
+            name="UserProfile"
+            component={UserProfile}/>
+          <Stack.Screen
+            name="SearchUser"
+            component={SearchUser}/> 
+          <Stack.Screen
+            name="SearchSong"
+            component={SearchSong}
+            options={{ headerShown: false }} />
+            {/* options={{ title: 'Search For Song' }}/>  */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
+  </Provider>
+  );
+};
+
+// export default class App extends React.Component {
+
+//   render() {
+//     return (
+//       <Provider store={store}>
+//         <SafeAreaProvider>
+//           <NavigationContainer theme={DefaultTheme}>
+//             <Stack.Navigator initialRouteName="Splash">
+//               <Stack.Screen
+//                 name="Splash"
+//                 component={Splash}
+//                 options={{ headerShown: false }}/>
+//               <Stack.Screen
+//                 name="Login"
+//                 component={Login} 
+//                 options={{ headerShown: false }}/>
+//               <Stack.Screen
+//                 name="Home"
+//                 component={Home}/>
+//               <Stack.Screen
+//                 name="Group"
+//                 component={Group}/>
+//               <Stack.Screen
+//                 name="UserProfile"
+//                 component={UserProfile}/>
+//               <Stack.Screen
+//                 name="SearchUser"
+//                 component={SearchUser}/> 
+//               <Stack.Screen
+//                 name="SearchSong"
+//                 component={SearchSong}
+//                 options={{ headerShown: false }} />
+//                 {/* options={{ title: 'Search For Song' }}/>  */}
+//             </Stack.Navigator>
+//           </NavigationContainer>
+//         </SafeAreaProvider>
+//       </Provider>
+//     )
+//   }
+// };
 

@@ -6,6 +6,7 @@ import {
   View,
   Image
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
@@ -24,19 +25,39 @@ export default ({
   onPress
 }) => {
 
+  const theme = useTheme();
+  const _styles = getStyles(theme);
+
   return (
-    <TouchableOpacity onPress={() => onPress(spotifyUserId)} style={styles.container}>
+    <TouchableOpacity onPress={() => onPress(spotifyUserId)} style={_styles.container}>
       {imageUrl ? 
         <Image source={{uri: imageUrl}} style={styles.userImage} /> :
         <FontAwesome name='user-circle' size={100} color='grey' style={styles.userImage} />}
       <View style={styles.textView}>
         <Text numberOfLines={1} style={styles.userDisplayNameText}>{displayName}</Text>
         {/* <Text numberOfLines={1}>Spotify User ID:</Text> */}
-        <Text numberOfLines={1}>{spotifyUserId}</Text>
+        <Text numberOfLines={1} style={_styles.spotifyUserIdText}>{spotifyUserId}</Text>
       </View>
       
     </TouchableOpacity>
   );
+};
+
+const getStyles = (theme) => {
+  return {
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      alignContent: 'flex-start',
+      width: '100%',
+      flex: 1,
+      alignSelf: 'stretch',
+      backgroundColor: theme.colors.background,
+    },
+    spotifyUserIdText: {
+      color: theme.colors.text,
+    }
+  };
 };
 
 const styles = StyleSheet.create({

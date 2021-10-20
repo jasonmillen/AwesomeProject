@@ -3,9 +3,11 @@ import {
   View,
   Text,
   Button,
-  StyleSheet
+  StyleSheet,
+  useColorScheme,
 } from 'react-native';
 import { connect } from 'react-redux';
+import { useTheme } from '@react-navigation/native';
 
 import GroupList from '../../Components/GroupList';
 
@@ -53,7 +55,7 @@ import { fetchFriendsGet } from '../../actions/friendActions';
 import { initSocket } from '../../actions/socketActions';
 //import token from '../../api/spotify/token';
 
-class Home extends React.Component {
+class HomeClass extends React.Component {
 
   constructor(props) {
     super(props);
@@ -61,13 +63,17 @@ class Home extends React.Component {
     this.state = {
       groups: [],
     };
-
   }
 
   componentDidMount() {
 
+    const { theme } = this.props;
+    const _styles = getStyles(theme);
+
     this.props.navigation.setOptions({
       title: 'Chats',//this.props.user.displayName || this.props.spotifyUserID,
+      headerStyle: {
+      },
       headerTitleAlign: 'center',
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
@@ -90,7 +96,7 @@ class Home extends React.Component {
     console.log('HOME PAGE MOUNTED. USER ID: ' + this.props.userID);
     this.props.initSocket(this.props.userID);
     this.props.getRecommendedTracks();
-    this.props.getUserFriends(this.props.spotifyUserID);
+    //this.props.getUserFriends(this.props.spotifyUserID);
   }
 
   componentDidUpdate() {
@@ -217,6 +223,20 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const getStyles = (theme) => {
+
+  return {
+    headerStyle: {
+      backGroundColor: theme.dark ? 'black' : 'white'
+    },
+    searchUserHeaderButton: {
+      //flex: 1,
+      marginRight: 20,
+      marginLeft: 10,
+    },
+  };
+};
+
 const styles = StyleSheet.create({
   homePage: {
     flex: 1,
@@ -237,6 +257,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     marginRight: 20,
     marginLeft: 10,
+    color: 'yellow',
   },
   searchSongButton: {
     flex: 1,
@@ -247,5 +268,13 @@ const styles = StyleSheet.create({
     width: '100%'
   }
 });
+
+//export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+function Home(props) {
+  const theme = useTheme();
+
+  return <HomeClass {...props} theme={theme} />;
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

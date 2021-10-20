@@ -6,11 +6,9 @@ import {
   StyleSheet,
   Platform
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 
-import { LIGHT_GREEN, GREY_GREEN } from '../constants/colors';
-
-export default class SendMessageTextInput extends Component {
+class SendMessageTextInput extends Component {
 
   constructor({ text }) {
     super();
@@ -33,8 +31,9 @@ export default class SendMessageTextInput extends Component {
   render() {
 
     const { height } = this.state;
+    const { theme } = this.props;
 
-    const _styles = getStyles();
+    const _styles = getStyles(theme);
     //_styles.input.height = height;
 
     // const os = Platform.OS === 'ios' ? 'IOS' : 'AND';
@@ -46,8 +45,8 @@ export default class SendMessageTextInput extends Component {
           <TextInput
             style={_styles.input} 
             value={this.props.text}
-            placeholder='Type something here!'
-            placeholderTextColor='grey'
+            placeholder=' Type something here!'
+            placeholderTextColor={theme.colors.textInputPlaceholder}
             onChangeText={newText => this.props.onChange(newText)}
             multiline
             //numberOfLines={5}
@@ -61,7 +60,7 @@ export default class SendMessageTextInput extends Component {
   }
 };
 
-const getStyles = () => {
+const getStyles = (theme) => {
   return {
     input: {
       paddingTop: 10,
@@ -70,8 +69,9 @@ const getStyles = () => {
       paddingLeft: 15,
       paddingRight: 10,
       borderRadius: 20,
-      backgroundColor: GREY_GREEN,
+      backgroundColor: theme.colors.textInputBackground,
       maxHeight: 80,
+      color: theme.colors.text,
       //textAlignVertical: 'top'
     }
   }
@@ -90,3 +90,9 @@ const styles = StyleSheet.create({
     //justifyContent: 'center'
   }
 });
+
+export default function(props) {
+  const theme = useTheme();
+
+  return <SendMessageTextInput {...props} theme={theme} />;
+};
