@@ -1,5 +1,6 @@
 import React from 'react';
 import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 
 import {
   TouchableOpacity
@@ -7,13 +8,14 @@ import {
 
 export default (props) => {
 
+  const theme = useTheme();
+
   return (
     <TouchableOpacity
       style={props.style}
       onPress={() => props.onPress()}
     >
-      <Ionicons name='md-search' size={30} />
-      
+      <Ionicons name='md-search' size={30} color={theme.colors.icon} />
     </TouchableOpacity>
   )
 };

@@ -105,7 +105,7 @@ export const fetchUserGetGroups = (userID, spotifyUserID) => {
   console.log("fetchUserGetGroups");
   return async (dispatch) => {
     dispatch (userGetGroupsRequest());
-
+    
     try {
       const groupsData = await serverAPI.getGroupsForUser(userID);
       const groups = groupsData.groups;
@@ -144,7 +144,12 @@ export const fetchUserGetGroups = (userID, spotifyUserID) => {
       dispatch (userGetUsersSuccess(users, usersByGroupID));
     }
     catch (error) {
-      console.log('ERROR', error);
+      console.log('Error getting users groups: ');
+      console.log(error);
+      if (error.Error) {
+        console.log('Additional error info: ');
+        console.log(error.Error);
+      }
       dispatch (userGetGroupsError());
     }
 

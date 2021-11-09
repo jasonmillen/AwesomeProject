@@ -48,6 +48,9 @@ class UserProfile extends React.Component {
 
   render() {
 
+    const theme = this.props.route.params.theme;
+    const _styles = getStyles(theme);
+
     const user = this.props.user;
 
     if (!this.props.user) {
@@ -57,7 +60,7 @@ class UserProfile extends React.Component {
 
     return (
       <View style={styles.profilePage}>
-        {user && user.displayName && <Text style={styles.userDisplayNameText}>{this.props.user.displayName}</Text>}
+        {user && user.displayName && <Text style={_styles.userDisplayNameText}>{this.props.user.displayName}</Text>}
         <View style={styles.userImageSpotifyUserIdView}>
           {userImageUrl ? 
             <Image
@@ -92,6 +95,15 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const getStyles = (theme) => {
+  return {
+    userDisplayNameText: {
+      fontSize: 30,
+      color: theme.colors.highlightText,// DARK_GREEN
+    },
+  };
+};
+
 const styles = StyleSheet.create({
   profilePage: {
     flex: 1,
@@ -108,10 +120,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 5
   },
-  userDisplayNameText: {
-    fontSize: 30,
-    color: DARK_GREEN
-  },
+  // userDisplayNameText: {
+  //   fontSize: 30,
+  //   color: DARK_GREEN
+  // },
   userImage: {
     borderRadius: 15,
     marginTop: 12,

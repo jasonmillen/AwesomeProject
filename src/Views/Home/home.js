@@ -3,7 +3,8 @@ import {
   View,
   Text,
   Button,
-  StyleSheet
+  StyleSheet,
+  useColorScheme,
 } from 'react-native';
 import { connect } from 'react-redux';
 
@@ -11,6 +12,7 @@ import GroupList from '../../Components/GroupList';
 
 import ViewProfileButton from '../../Components/ViewProfileButton';
 import SearchUserHeaderButton from '../../Components/SearchUserHeaderButton';
+import StartChatHeaderButton from '../../Components/StartChatHeaderButton';
 // import SearchSongButton from '../../Components/SearchSongButton';
 import { 
   selectSpotifyUserID,
@@ -61,18 +63,25 @@ class Home extends React.Component {
     this.state = {
       groups: [],
     };
-
   }
 
   componentDidMount() {
+    const theme = this.props.route.params.theme;
+    const _styles = getStyles(theme);
 
     this.props.navigation.setOptions({
       title: 'Chats',//this.props.user.displayName || this.props.spotifyUserID,
+      headerStyle: {
+      },
       headerTitleAlign: 'center',
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
           <SearchUserHeaderButton
             style={styles.searchUserHeaderButton}
+            onPress={() => this.handleSearchUserButtonPress(this.props.navigation)}
+          />
+          <StartChatHeaderButton
+            style={styles.startChatHeaderButton}
             onPress={() => this.handleStartChatButtonPress(this.props.navigation)}
           />
         </View>
@@ -115,6 +124,10 @@ class Home extends React.Component {
   }
 
   handleStartChatButtonPress(navigation) {
+    navigation.navigate('StartChat');
+  }
+
+  handleSearchUserButtonPress(navigation) {
     navigation.navigate('SearchUser');
   }
 
@@ -134,10 +147,13 @@ class Home extends React.Component {
 
   render() {
 
+    const theme = this.props.route.params.theme;
+    const _styles = getStyles(theme);
+
     if (this.props.userGetGroupsError) {
       return (
         <View>
-          <Text>Error getting groups. Please try again later.</Text>
+          <Text style={_styles.errorGettingGroupsText}>Error getting groups. Please try again later.</Text>
         </View>
       );
     }
@@ -217,6 +233,18 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const getStyles = (theme) => {
+
+  return {
+    headerStyle: {
+      backGroundColor: theme.dark ? 'black' : 'white'
+    },
+    errorGettingGroupsText: {
+      color: theme.colors.text,
+    }
+  };
+};
+
 const styles = StyleSheet.create({
   homePage: {
     flex: 1,
@@ -233,10 +261,13 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15
   },
-  searchUserHeaderButton: {
-    //flex: 1,
+  startChatHeaderButton: {
     marginRight: 20,
-    marginLeft: 10,
+    marginLeft: 5,
+  },
+  searchUserHeaderButton: {
+    marginRight: 5,
+    marginLeft: 5,
   },
   searchSongButton: {
     flex: 1,
@@ -249,3 +280,11 @@ const styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+// function Home(props) {
+//   const theme = useTheme();
+
+//   return <HomeClass {...props} theme={theme} />;
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(Home);

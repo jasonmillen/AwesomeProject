@@ -34,6 +34,7 @@
     "android": {
       "package": "com.jasonmillen.AwesomeProject",
       "versionCode": 2
-    }
+    },
+    "userInterfaceStyle": "automatic"
   }
 }

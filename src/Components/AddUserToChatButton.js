@@ -15,7 +15,7 @@ export default (props) => {
       style={props.style}
       onPress={() => props.onPress()}
     >
-      <Ionicons name='md-person' size={30} color={theme.colors.icon}/>
+      <Ionicons name='person-add' size={25} color={theme.colors.icon}/>
       
     </TouchableOpacity>
   )

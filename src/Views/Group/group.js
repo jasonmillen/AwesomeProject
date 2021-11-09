@@ -11,6 +11,7 @@ import * as Linking from 'expo-linking'
 import AnimatedEllipsis from '../../Components/AnimatedEllipsis';
 import ViewPlaylistOnSpotifyButton from '../../Components/ViewPlaylistOnSpotifyButton';
 import SearchSongButton from '../../Components/SearchSongButton';
+import AddUserToChatButton from '../../Components/AddUserToChatButton';
 import MessageList from '../../Components/MessageList';
 import SendMessageTextInput from '../../Components/GroupViewBottomBar';
 
@@ -56,6 +57,10 @@ class Group extends React.Component {
       headerTitleAlign: 'center',
       headerRight: () => (
         <View style={styles.titleBarRightButtonView}>
+          <AddUserToChatButton
+            style={styles.addUserToChatButton}
+            onPress={() => this.handleAddUserToChatButtonPress()}
+          />
           <SearchSongButton
             style={styles.searchSongButton}
             onPress={() => this.handleSearchSongButtonPress(this.props.navigation)}
@@ -103,6 +108,10 @@ class Group extends React.Component {
     catch (error) {
       console.log('Error attempting to open group playlist in spotify: ', error);
     }
+  }
+
+  handleAddUserToChatButtonPress() {
+    console.log("Adding user");
   }
 
   // handleScreenComeIntoFocus() {
@@ -271,13 +280,18 @@ const styles = StyleSheet.create({
   },
   viewPlaylistOnSpotifyButton: {
     //flex: 1,
-    marginLeft: 10,
+    marginLeft: 3,
     marginRight: 20,
   },
   searchSongButton: {
     //flex: 1,
-    marginRight: 10,
-    marginLeft: 10,
+    marginRight: 3,
+    marginLeft: 3,
+  },
+  addUserToChatButton: {
+    //flex: 1,
+    marginRight: 3,
+    marginLeft: 3,
   },
   messageList: {
     // marginTop: 10,

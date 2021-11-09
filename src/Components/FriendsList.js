@@ -20,7 +20,7 @@ export default ({
     return (
       <FriendListItem
         friend={friend} 
-        onPress={spotifyUserId => onItemPressed(spotifyUserId)} />
+        onPress={spotifyUserID => onItemPressed(spotifyUserID)} />
     );
   };
 
@@ -28,7 +28,7 @@ export default ({
     <FlatList
       data={friends}
       renderItem={renderItemFunc}
-      keyExtractor={friend => friend.spotifyUserId}
+      keyExtractor={friend => friend.user.spotifyUserID}
       ItemSeparatorComponent={() => <Separator /> }
       onEndReached={onEndReached}
       ListEmptyComponent={() => <Text>No friends</Text>}

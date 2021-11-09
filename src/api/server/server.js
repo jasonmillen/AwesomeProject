@@ -49,12 +49,8 @@ export const refreshTokens = async (refreshToken) => {
 
 export const getUserBySpotifyUserID = async (spotifyUserID) => {
 
-  console.log('BEFORE');
-  console.log(4);
   const ssTokenData = await getSsTokenData();
 
-
-  console.log('AFTER')
   let response = await fetch(`${BASE_URL}/api/user/${spotifyUserID}/spotify`, {
     method: 'GET',
     headers: {
@@ -120,7 +116,6 @@ export const createGroup = async (creatorID, memberSpotifyIDs, playlistID) => {
 
 export const getGroupsForUser = async (userID) => {
 
-  console.log(7);
   const ssTokenData = await getSsTokenData();
 
   let response = await fetch(`${BASE_URL}/api/user/${userID}/groups`, {

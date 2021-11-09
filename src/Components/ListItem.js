@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet
 } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../constants/colors';
 
@@ -19,20 +20,40 @@ export default({
   },
   onPress,
   onLongPress
-}) => (
-  <TouchableOpacity 
-    style={styles.container}
-    onPress={() => onPress({ id, title, artist, album, imageUri })}
-    onLongPress={() => onLongPress(id)}
-  >
-    <Image source={{ uri: imageUri }} style={styles.image}/>
-    <View style={styles.songInfo}>
-      <Text numberOfLines={1} style={styles.songTitleText}>{title}</Text>
-      <Text numberOfLines={1} style={styles.songArtistText}>{artist}</Text>
-      {/* <Text>Album: {album}</Text> */}
-    </View>
-  </TouchableOpacity>
-);
+}) => {
+
+  const theme = useTheme();
+  const _styles = getStyles(theme);
+
+  return (
+    <TouchableOpacity 
+      style={styles.container}
+      onPress={() => onPress({ id, title, artist, album, imageUri })}
+      onLongPress={() => onLongPress(id)}
+    >
+      <Image source={{ uri: imageUri }} style={styles.image}/>
+      <View style={styles.songInfo}>
+        <Text numberOfLines={1} style={_styles.songTitleText}>{title}</Text>
+        <Text numberOfLines={1} style={_styles.songArtistText}>{artist}</Text>
+        {/* <Text>Album: {album}</Text> */}
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const getStyles = (theme) => {
+  return {
+    songArtistText: {
+      color: theme.colors.text,
+    },
+    songTitleText: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: theme.colors.highlightText,// DARK_GREEN
+      //backgroundColor: 'blue'
+    },
+  };
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -48,15 +69,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
     //backgroundColor: 'grey'
   },
-  songTitleText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: DARK_GREEN
-    //backgroundColor: 'blue'
-  },
-  songArtistText: {
-    //color: 'grey'
-  },
+  // songTitleText: {
+  //   fontSize: 18,
+  //   fontWeight: 'bold',
+  //   color: DARK_GREEN
+  //   //backgroundColor: 'blue'
+  // },
+  // songArtistText: {
+  //   //color: 'grey'
+  // },
   image: {
     width: 75,
     height: 75,
