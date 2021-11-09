@@ -14,8 +14,6 @@ import {
   TouchableWithoutFeedback
 } from 'react-native';
 import { HeaderHeightContext } from "@react-navigation/elements";
-import { useTheme } from '@react-navigation/native';
-//import Toast from 'react-native-simple-toast';
 import { Ionicons, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import * as Linking from 'expo-linking'
 
@@ -42,9 +40,12 @@ import {
   selectUserSearchState
 } from '../../reducers/searchReducer';
 
-import { selectFriends } from '../../reducers/friendReducer';
+import { 
+  selectFriends,
+  selectSuggestedUsers,
+} from '../../reducers/friendReducer';
 
-class SearchUserClass extends React.Component {
+class SearchUser extends React.Component {
 
   constructor (props) {
     super (props);
@@ -133,16 +134,16 @@ class SearchUserClass extends React.Component {
   }
 
   render () {
-    const { theme } = this.props;
+    const theme = this.props.route.params.theme;
     const _styles = getStyles(theme);
 
     let searchFeedback;
     let searchState = this.props.searchState;
     if (searchState.searchForUserError) {
-      searchFeedback = (<Text>Error searching for user {searchState.userSearchStringID}</Text>);
+      searchFeedback = (<Text style={_styles.errorGettingUserText}>Error searching for user {searchState.userSearchStringID}</Text>);
     }
     else if (searchState.userSearchStringID /*&& !searchState.isSearchingForUser*/ && !searchState.userFound) {
-      searchFeedback = (<Text>Could not find user: {searchState.userSearchStringID}</Text>);
+      searchFeedback = (<Text style={_styles.noUserFoundText}>Could not find user: {searchState.userSearchStringID}</Text>);
     }
     else if (searchState.userSearchStringID && searchState.userFound) {
       const userData = searchState.userData;
@@ -252,44 +253,49 @@ class SearchUserClass extends React.Component {
 
 const mapStateToProps = (state) => {
 
-  const spotifyUserID = selectSpotifyUserID(state);
-  let friends = selectFriends(state);
-  const usersByID = selectUsersByID(state);
+  // console.log("STATE TO PROPS");
+  // const suggestedUsers = selectSuggestedUsers(state);
+  // console.log("u: ", suggestedUsers);
+  // console.log("===== done");
 
-  // console.log('FRIENDS: ', friends);
-  // console.log('USERS BY ID: ', usersByID);
+  // const spotifyUserID = selectSpotifyUserID(state);
+  // let friends = selectFriends(state);
+  // const usersByID = selectUsersByID(state);
 
-  const friendScores = new Map();
-  friends.forEach((value, key) => {
-    let min = Number.MAX_SAFE_INTEGER;
-    value.playlists.forEach(playlist => {
-      if (playlist.followers < min) {
-        min = playlist.followers;
-      }
-    });
-    min = Math.max(min, 1); // prevent min value of 0
+  // // console.log('FRIENDS: ', friends);
+  // // console.log('USERS BY ID: ', usersByID);
 
-    // playlists with less followers have higher score
-    friendScores.set(key, { user: value.user, score: (1 / min) });
-  });
-  for (const [key, value] of Object.entries(usersByID)) {
-    if (!value.spotifyUserID) {
-      continue;
-    }
-    if (friendScores.has(value.spotifyUserID)) {
-      friendScores.get(value.spotifyUserID).score += 1;
-    }
-    else {
-      friendScores.set(value.spotifyUserID, { user: value, score: 1 });
-    }
-  }
-  const friendScoresArray = [];
-  friendScores.forEach((value, key) => {
-    if (key !== spotifyUserID) {
-      friendScoresArray.push({ spotifyUserId: key, user: value.user, score: value.score });
-    }
-  });
-  friendScoresArray.sort((a, b) => b.score - a.score);
+  // const friendScores = new Map();
+  // friends.forEach((value, key) => {
+  //   let min = Number.MAX_SAFE_INTEGER;
+  //   value.playlists.forEach(playlist => {
+  //     if (playlist.followers < min) {
+  //       min = playlist.followers;
+  //     }
+  //   });
+  //   min = Math.max(min, 1); // prevent min value of 0
+
+  //   // playlists with less followers have higher score
+  //   friendScores.set(key, { user: value.user, score: (1 / min) });
+  // });
+  // for (const [key, value] of Object.entries(usersByID)) {
+  //   if (!value.spotifyUserID) {
+  //     continue;
+  //   }
+  //   if (friendScores.has(value.spotifyUserID)) {
+  //     friendScores.get(value.spotifyUserID).score += 1;
+  //   }
+  //   else {
+  //     friendScores.set(value.spotifyUserID, { user: value, score: 1 });
+  //   }
+  // }
+  // const friendScoresArray = [];
+  // friendScores.forEach((value, key) => {
+  //   if (key !== spotifyUserID) {
+  //     friendScoresArray.push({ spotifyUserID: key, user: value.user, score: value.score });
+  //   }
+  // });
+  // friendScoresArray.sort((a, b) => b.score - a.score);
 
   //console.log("FRIEND SCORES: ", friendScoresArray);
   
@@ -298,8 +304,8 @@ const mapStateToProps = (state) => {
     tokenData: selectTokenData(state),
     searchState: selectUserSearchState(state),
     userID: selectUserID(state),
-    spotifyUserID,
-    friends: friendScoresArray,
+    spotifyUserID: selectSpotifyUserID(state),
+    friends: selectSuggestedUsers(state),// friendScoresArray,
   };
 }
 
@@ -342,6 +348,12 @@ const getStyles = (theme) => {
       backgroundColor: theme.colors.textInputBackground,
     },
     spotifyUserIdText: {
+      color: theme.colors.text,
+    },
+    errorGettingUserText: {
+      color: theme.colors.text,
+    },
+    noUserFoundText: {
       color: theme.colors.text,
     },
   };
@@ -443,12 +455,12 @@ const styles = StyleSheet.create({
   }
 });
 
-//export default connect(mapStateToProps, mapDispatchToProps)(SearchUser);
-
-function SearchUser(props) {
-  const theme = useTheme();
-
-  return <SearchUserClass {...props} theme={theme} />;
-};
-
 export default connect(mapStateToProps, mapDispatchToProps)(SearchUser);
+
+// function SearchUser(props) {
+//   const theme = useTheme();
+
+//   return <SearchUserClass {...props} theme={theme} />;
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(SearchUser);

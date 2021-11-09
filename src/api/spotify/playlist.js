@@ -42,6 +42,12 @@ export const getPlaylist = async (playlistID) => {
   });
 
   const json = await res.json();
+  if (json.error) {
+    const errMsg = `Error getting playlist ${playlistID}`;
+    console.log(`${errMsg}: `, json.error);
+    throw errMsg;
+  }
+  
   return json;
 };
 
@@ -60,6 +66,11 @@ export const checkIfUserFollowsPlaylist = async (playlistID, spotifyUserID) => {
   });
 
   const json = await res.json();
+  if (json.error) {
+    const errMsg = `Error checking if spotify user ${spotifyUserID} follows playlist ${playlistID}`;
+    console.log(`${errMsg}: `, error);
+    throw errMsg;
+  }
   //console.log('GET FOLLOWERS RESPONSE: ', json);
   return json[0];
 };

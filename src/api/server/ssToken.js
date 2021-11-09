@@ -23,7 +23,6 @@ let _ssTokenData = {
 
 export const getSsTokenData = async () => {
   if (!_ssTokenData.ssAccessToken || !_ssTokenData.ssExpirationTime || !_ssTokenData.ssRefreshToken) {
-    console.log(10);
     _ssTokenData = await asAPI.getSsTokenData();
   }
 

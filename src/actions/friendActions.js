@@ -1,5 +1,6 @@
 import * as userAPI from '../api/spotify/user';
 import * as playlistAPI from '../api/spotify/playlist';
+import { spotifyUserToSsUser } from '../api/transform';
 
 import { sleep } from '../utility/util';
 
@@ -55,8 +56,14 @@ export const fetchFriendsGet = (userID) => {
       // doing this as opposed to the Promise.all() call above to avoid hitting spotify api rate limit
       const arr = [];
       for (let i = 0; i < playlists.length; i++) {
-        let info = await playlistAPI.getPlaylist(playlists[i].id);
-        arr.push(info);
+        try {
+          let info = await playlistAPI.getPlaylist(playlists[i].id);
+          arr.push(info);
+        }
+        catch (error) {
+          console.error("Error getting playlist info, will ignore it: ");
+          console.log(error);
+        }
         await sleep(50);
       }
       playlists = arr;
@@ -87,11 +94,7 @@ export const fetchFriendsGet = (userID) => {
 
       await Promise.all(Array.from(friendInfo.keys()).map(async spotifyId => {
         const user = await userAPI.searchUser(spotifyId);
-        friendInfo.get(spotifyId).user = {
-          displayName: user.display_name,
-          imageUrl: user.images && user.images.length > 0 ? user.images[0].url : null,
-          spotifyUserID: user.id,
-        }
+        friendInfo.get(spotifyId).user = spotifyUserToSsUser(user);
       }));
 
       dispatch(friendsGetSuccess(friendInfo));

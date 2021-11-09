@@ -43,7 +43,7 @@ import { DARK_GREEN, GREY_GREEN } from '../../constants/colors';
 const PAGE = 20;
 const SEND_SEARCHING_FOR_SONG_THROTTLE_TIME = 1.5 * 1000; // 1.5 seconds
 
-class SearchSongClass extends React.Component {
+class SearchSong extends React.Component {
 
   constructor(props) {
     super(props);
@@ -216,7 +216,7 @@ class SearchSongClass extends React.Component {
 
   render() {
 
-    const { theme } = this.props;
+    const theme = this.props.route.params.theme;
     const _styles = getStyles(theme);
 
     const { songs, query, isFetching, startedSearching, startedFetching, startedScrolling } = this.state;
@@ -327,12 +327,12 @@ const styles = StyleSheet.create({
   }
 });
 
-//export default connect(mapStateToProps, mapDispatchToProps)(SearchSong);
-
-function SearchSong(props) {
-  const theme = useTheme();
-
-  return <SearchSongClass {...props} theme={theme} />;
-};
-
 export default connect(mapStateToProps, mapDispatchToProps)(SearchSong);
+
+// function SearchSong(props) {
+//   const theme = useTheme();
+
+//   return <SearchSongClass {...props} theme={theme} />;
+// };
+
+// export default connect(mapStateToProps, mapDispatchToProps)(SearchSong);

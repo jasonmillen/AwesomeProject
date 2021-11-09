@@ -79,7 +79,6 @@ export const getLoggedInUser = () => {
       //await asAPI.clear();
       const spotifyUserID = await asAPI.getSpotifyUserID();
       const tokenData = await asAPI.getTokenData();
-      console.log(1);
       const ssTokenData = await asAPI.getSsTokenData();
 
       if (!spotifyUserID || !tokenData || !ssTokenData) {
