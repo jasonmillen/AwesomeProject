@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 export default (props) => {

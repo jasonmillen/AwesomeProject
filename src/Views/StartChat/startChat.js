@@ -8,9 +8,15 @@ import {
 
 import SearchForUserBar from '../../Components/SearchForUserBar';
 import UserInfo from '../../Components/UserInfo';
+import FriendsList from '../../Components/FriendsList';
 
 import { searchUser } from '../../api/spotify/user';
 import { spotifyUserToSsUser } from '../../api/transform';
+
+import { 
+  selectSuggestedUsers,
+  selectSuggestedUsersMap,
+} from '../../reducers/friendReducer';
 
 class StartChat extends React.Component {
 
@@ -44,6 +50,8 @@ class StartChat extends React.Component {
     const searchText = this.state.searchUserInputText;
     try {
       this.setState({ 
+        searchedUser: null,
+        userFound: false,
         searchingForUser: true, 
         errorSearchingForUser: false,
         searchedSpotifyUserID: searchText,
@@ -51,12 +59,11 @@ class StartChat extends React.Component {
       console.log('searching for user: ' + searchText);
       const user = await searchUser(searchText);
       console.log("FOUND USER: ", user);
-      this.setState({ searchingForUser: false });
       if (!user) {
-        this.setState({ userFound: false, searchedUser: null });
+        this.setState({ searchingForUser: false, userFound: false, searchedUser: null });
       }
       else {
-        this.setState({ userFound: true, searchedUser: spotifyUserToSsUser(user) });
+        this.setState({ searchingForUser: false, userFound: true, searchedUser: spotifyUserToSsUser(user) });
       }
     }
     catch (error) {
@@ -78,6 +85,16 @@ class StartChat extends React.Component {
     });
   }
 
+  handleFriendsListItemPressed(spotifyUserID) {
+    console.log("setting state for: " + spotifyUserID);
+    this.setState({ 
+      searchedSpotifyUserID: spotifyUserID,
+      searchUserInputText: spotifyUserID,
+      userFound: true,
+      searchedUser: this.props.suggestedUsersMap.get(spotifyUserID).user,
+    });
+  }
+
   render () {
 
     const theme = this.props.route.params.theme;
@@ -87,13 +104,13 @@ class StartChat extends React.Component {
     if (this.state.errorSearchingForUser) {
       body = (
         <Text style={_styles.text}>
-          Error searching for user {this.state.searchUserText}
+          Error searching for user {this.state.searchUserInputText}
         </Text>);
     }
     else if (this.state.searchedSpotifyUserID && !this.state.searchedUser) {
       body = (
         <Text style={_styles.text}>
-          Could not find user: {this.state.searchUserText}
+          Could not find user: {this.state.searchUserInputText}
         </Text>);
     }
     else if (this.state.searchedSpotifyUserID && this.state.searchedUser) {
@@ -105,7 +122,13 @@ class StartChat extends React.Component {
         />);
     }
     else if (/*friends list not null and length > 0*/true) {
-      body = (<Text style={_styles.text}>FRIEND LIST</Text>);
+      body = (
+        <FriendsList
+          friends={this.props.suggestedUsers}
+          onEndReached={() => console.log("friends list end reached")}
+          onItemPressed={spotifyUserID => this.handleFriendsListItemPressed(spotifyUserID)}
+          style={styles.friendsList}
+        />);
     }
     else {
       body = (<Text></Text>);
@@ -114,7 +137,7 @@ class StartChat extends React.Component {
     return (
       <View>
         <SearchForUserBar
-          text={this.state.searchUserText}
+          text={this.state.searchUserInputText}
           handleSearchClick={() => this.handleSearchForUser()}
           textChanged={text => this.handleOnSearchTextChanged(text)}
           placeholderText='Enter a Spotify User ID'
@@ -131,6 +154,8 @@ class StartChat extends React.Component {
 const mapStateToProps = (state) => {
 
   return {
+    suggestedUsers: selectSuggestedUsers(state),
+    suggestedUsersMap: selectSuggestedUsersMap(state),
   };
 }
 
@@ -148,7 +173,9 @@ const getStyles = (theme) => {
 };
 
 const styles = StyleSheet.create({
-
+  friendsList: {
+    width: '100%',
+  }
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartChat);

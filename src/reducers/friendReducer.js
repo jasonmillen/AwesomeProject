@@ -115,3 +115,7 @@ export const selectFriends = (state) => {
 export const selectSuggestedUsers = (state) => {
   return state.friend.suggestedUsers;
 }
+
+export const selectSuggestedUsersMap = (state) => {
+  return state.friend.suggestedUsersMap;
+}
