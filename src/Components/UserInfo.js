@@ -18,8 +18,10 @@ export default (props) => {
 
   const { displayName, imageUrl, spotifyUserID } = props;
 
+  const containerStyle = props.style || styles.container;
+
   return (
-    <View style={styles.container}>
+    <View style={containerStyle}>
       <Text style={_styles.displayName}>{displayName}</Text>
       {imageUrl ? 
         <Image

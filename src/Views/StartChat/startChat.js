@@ -4,7 +4,12 @@ import {
   Text,
   View,
   StyleSheet,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  TouchableOpacity,
+  Keyboard,
 } from 'react-native';
+import { HeaderHeightContext } from "@react-navigation/elements";
 
 import SearchForUserBar from '../../Components/SearchForUserBar';
 import UserInfo from '../../Components/UserInfo';
@@ -17,6 +22,8 @@ import {
   selectSuggestedUsers,
   selectSuggestedUsersMap,
 } from '../../reducers/friendReducer';
+
+import { GREY_GREEN, LIGHT_GREEN, DARK_GREEN } from '../../constants/colors';
 
 class StartChat extends React.Component {
 
@@ -95,6 +102,18 @@ class StartChat extends React.Component {
     });
   }
 
+  handleUserAddToGroupButtonPress() {
+    const usersInGroup = this.state.usersInGroup.concat([this.state.searchedUser]);
+    this.setState({
+      usersInGroup,
+      searchedUser: null,
+      userFound: false,
+      searchUserInputText: '',
+      errorSearchingForUser: false,
+      searchedSpotifyUserID: '',
+    });
+  }
+
   render () {
 
     const theme = this.props.route.params.theme;
@@ -114,28 +133,54 @@ class StartChat extends React.Component {
         </Text>);
     }
     else if (this.state.searchedSpotifyUserID && this.state.searchedUser) {
+      const keyboardVerticalOffset = Platform.OS === 'ios' ? 64 : 0
       body = (
-        <UserInfo
-          displayName={this.state.searchedUser.displayName}
-          spotifyUserID={this.state.searchedUser.spotifyUserID}
-          imageUrl={this.state.searchedUser.imageUrl}
-        />);
-    }
-    else if (/*friends list not null and length > 0*/true) {
-      body = (
-        <FriendsList
-          friends={this.props.suggestedUsers}
-          onEndReached={() => console.log("friends list end reached")}
-          onItemPressed={spotifyUserID => this.handleFriendsListItemPressed(spotifyUserID)}
-          style={styles.friendsList}
-        />);
+        <View>
+          <HeaderHeightContext.Consumer>
+            {headerHeight => (
+              <KeyboardAvoidingView
+                {...(Platform.OS === "ios" ? { behavior: "padding" } : {})}
+                keyboardVerticalOffset={headerHeight + keyboardVerticalOffset}
+              >
+                <UserInfo
+                  style={styles.userInfo}
+                  displayName={this.state.searchedUser.displayName}
+                  spotifyUserID={this.state.searchedUser.spotifyUserID}
+                  imageUrl={this.state.searchedUser.imageUrl}
+                />
+              </KeyboardAvoidingView>
+            )}
+          </HeaderHeightContext.Consumer>
+          <View style={styles.buttonSection}>
+            <TouchableOpacity
+              style={styles.addToGroupButton}
+              onPress={() => this.handleUserAddToGroupButtonPress()}>
+              <Text style={{ fontSize: 20 }}>Add To Group</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
     }
     else {
-      body = (<Text></Text>);
+      const { usersInGroup } = this.state;
+      body = (
+        <View style={styles.friendsList}>
+          {usersInGroup.length > 0 && 
+            <Text style={_styles.text}>Users: {usersInGroup.length}</Text>
+          }
+          {this.props.suggestedUsers && this.props.suggestedUsers.length > 0 &&
+            <FriendsList
+              friends={this.props.suggestedUsers}
+              onEndReached={() => console.log("friends list end reached")}
+              onItemPressed={spotifyUserID => this.handleFriendsListItemPressed(spotifyUserID)}
+              style={styles.friendsList}
+            />}
+        </View>
+      );
     }
 
     return (
-      <View>
+      <View style={styles.startChatPage}>
         <SearchForUserBar
           text={this.state.searchUserInputText}
           handleSearchClick={() => this.handleSearchForUser()}
@@ -144,7 +189,11 @@ class StartChat extends React.Component {
           handleSearchSubmit={_text => this.handleSearchForUser()}
           clearText={() => this.handleClearSearchText()}
         />
-        {body}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+          <View style={styles.body}>
+            {body}
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -173,9 +222,37 @@ const getStyles = (theme) => {
 };
 
 const styles = StyleSheet.create({
+  startChatPage: {
+    flex: 1,
+  },
   friendsList: {
     width: '100%',
-  }
+  },
+  body: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userInfo: {
+    flex: .75,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  addToGroupButton: {
+    backgroundColor: LIGHT_GREEN,
+    borderRadius: 10,
+    height: 60,
+    width: 150,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 5
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StartChat);

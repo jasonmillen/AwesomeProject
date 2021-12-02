@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
   },
   startChatSection: {
     flex: 0.2,
-    flexDirection: 'row'
+    flexDirection: 'row',
     //backgroundColor: 'green'
   },
   startChatButton: {
