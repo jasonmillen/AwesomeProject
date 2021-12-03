@@ -38,7 +38,7 @@ class StartChat extends React.Component {
       searchingForUser: false,
       errorSearchingForUser: false,
       usersInGroup: [],
-      usersInGroupSet: new Set(),
+      spotifyUserIdsInGroupSet: new Set(),
     };
   }
 
@@ -93,7 +93,6 @@ class StartChat extends React.Component {
   }
 
   handleFriendsListItemPressed(spotifyUserID) {
-    console.log("setting state for: " + spotifyUserID);
     this.setState({ 
       searchedSpotifyUserID: spotifyUserID,
       searchUserInputText: spotifyUserID,
@@ -103,9 +102,21 @@ class StartChat extends React.Component {
   }
 
   handleUserAddToGroupButtonPress() {
-    const usersInGroup = this.state.usersInGroup.concat([this.state.searchedUser]);
+    const { searchedUser, usersInGroup, spotifyUserIdsInGroupSet } = this.state;
+    const { spotifyUserID } = searchedUser;
+    if (spotifyUserIdsInGroupSet.has(spotifyUserID)) {
+      // TODO: add a toast here?
+      console.log("user already in group");
+    }
+    else {
+      const newUsersInGroup = usersInGroup.concat([searchedUser]);
+      const newSpotifyUserIdsInGroupSet = new Set(spotifyUserIdsInGroupSet.add(spotifyUserID));
+      this.setState({
+        usersInGroup: newUsersInGroup,
+        spotifyUserIdsInGroupSet: newSpotifyUserIdsInGroupSet, 
+      });
+    }
     this.setState({
-      usersInGroup,
       searchedUser: null,
       userFound: false,
       searchUserInputText: '',
@@ -135,7 +146,7 @@ class StartChat extends React.Component {
     else if (this.state.searchedSpotifyUserID && this.state.searchedUser) {
       const keyboardVerticalOffset = Platform.OS === 'ios' ? 64 : 0
       body = (
-        <View>
+        <View style={styles.searchedUserView}>
           <HeaderHeightContext.Consumer>
             {headerHeight => (
               <KeyboardAvoidingView
@@ -163,15 +174,20 @@ class StartChat extends React.Component {
     }
     else {
       const { usersInGroup } = this.state;
+      const usersInGroupList = usersInGroup.map(user =>
+        <View key={user.spotifyUserID}>
+          <Text style={_styles.text}>{user.displayName}</Text>
+        </View>
+      );
       body = (
         <View style={styles.friendsList}>
           {usersInGroup.length > 0 && 
-            <Text style={_styles.text}>Users: {usersInGroup.length}</Text>
+            <View>{usersInGroupList}</View>
           }
           {this.props.suggestedUsers && this.props.suggestedUsers.length > 0 &&
             <FriendsList
               friends={this.props.suggestedUsers}
-              onEndReached={() => console.log("friends list end reached")}
+              //onEndReached={() => console.log("friends list end reached")}
               onItemPressed={spotifyUserID => this.handleFriendsListItemPressed(spotifyUserID)}
               style={styles.friendsList}
             />}
@@ -190,9 +206,7 @@ class StartChat extends React.Component {
           clearText={() => this.handleClearSearchText()}
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <View style={styles.body}>
-            {body}
-          </View>
+          {body}
         </TouchableWithoutFeedback>
       </View>
     );
@@ -202,8 +216,9 @@ class StartChat extends React.Component {
 
 const mapStateToProps = (state) => {
 
+  const suggestedUsers = selectSuggestedUsers(state);
   return {
-    suggestedUsers: selectSuggestedUsers(state),
+    suggestedUsers: suggestedUsers,
     suggestedUsersMap: selectSuggestedUsersMap(state),
   };
 }
@@ -226,21 +241,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   friendsList: {
+    //backgroundColor: 'blue',
     width: '100%',
   },
-  body: {
+  searchedUserView: {
     flex: 1,
-    flexDirection: 'column',
+    //backgroundColor: 'green',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
   userInfo: {
-    flex: .75,
+    //flex: .75,
+    //backgroundColor: 'blue',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonSection: {
+    //flex: .25,
+    //backgroundColor: 'yellow',
     flexDirection: 'row',
     justifyContent: 'center',
   },

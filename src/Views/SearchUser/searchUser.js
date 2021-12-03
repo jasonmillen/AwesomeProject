@@ -298,14 +298,15 @@ const mapStateToProps = (state) => {
   // friendScoresArray.sort((a, b) => b.score - a.score);
 
   //console.log("FRIEND SCORES: ", friendScoresArray);
-  
+
+  const suggestedUsers = selectSuggestedUsers(state);
 
   return {
     tokenData: selectTokenData(state),
     searchState: selectUserSearchState(state),
     userID: selectUserID(state),
     spotifyUserID: selectSpotifyUserID(state),
-    friends: selectSuggestedUsers(state),// friendScoresArray,
+    friends: suggestedUsers,// friendScoresArray,
   };
 }
 
