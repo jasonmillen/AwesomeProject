@@ -14,6 +14,7 @@ import { HeaderHeightContext } from "@react-navigation/elements";
 import SearchForUserBar from '../../Components/SearchForUserBar';
 import UserInfo from '../../Components/UserInfo';
 import FriendsList from '../../Components/FriendsList';
+import UsersInGroup from '../../Components/UsersInGroup';
 
 import { searchUser } from '../../api/spotify/user';
 import { spotifyUserToSsUser } from '../../api/transform';
@@ -33,6 +34,7 @@ class StartChat extends React.Component {
     this.state = {
       searchUserInputText: '',
       searchedSpotifyUserID: '',
+      searchingForUser: false,
       searchedUser: null,
       userFound: false,
       searchingForUser: false,
@@ -125,25 +127,50 @@ class StartChat extends React.Component {
     });
   }
 
+  handleRemoveUserFromStartChatList(userToRemove) {
+    console.log("removing user: " + userToRemove.spotifyUserID);
+    
+    const newValues = this.state.usersInGroup.reduce((result, user) => {
+      if (user.spotifyUserID !== userToRemove.spotifyUserID) {
+        result.arr.push(user);
+        result.set.add(user.spotifyUserID);
+      }
+      return result;
+    }, { arr: [], set: new Set() });
+
+    this.setState({ 
+      usersInGroup: newValues.arr,
+      spotifyUserIdsInGroupSet: newValues.set,
+    });
+  }
+
   render () {
 
     const theme = this.props.route.params.theme;
     const _styles = getStyles(theme);
 
+    const {
+      searchedSpotifyUserID, 
+      searchedUser, 
+      searchingForUser, 
+      searchUserInputText,
+      errorSearchingForUser,
+    } = this.state
+
     let body;
-    if (this.state.errorSearchingForUser) {
+    if (errorSearchingForUser) {
       body = (
         <Text style={_styles.text}>
-          Error searching for user {this.state.searchUserInputText}
+          Error searching for user {searchUserInputText}
         </Text>);
     }
-    else if (this.state.searchedSpotifyUserID && !this.state.searchedUser) {
+    else if (!searchingForUser && searchedSpotifyUserID && !searchedUser) {
       body = (
         <Text style={_styles.text}>
-          Could not find user: {this.state.searchUserInputText}
+          Could not find user: {searchUserInputText}
         </Text>);
     }
-    else if (this.state.searchedSpotifyUserID && this.state.searchedUser) {
+    else if (searchedSpotifyUserID && searchedUser) {
       const keyboardVerticalOffset = Platform.OS === 'ios' ? 64 : 0
       body = (
         <View style={styles.searchedUserView}>
@@ -173,17 +200,12 @@ class StartChat extends React.Component {
       );
     }
     else {
-      const { usersInGroup } = this.state;
-      const usersInGroupList = usersInGroup.map(user =>
-        <View key={user.spotifyUserID}>
-          <Text style={_styles.text}>{user.displayName}</Text>
-        </View>
-      );
+      // const { usersInGroup } = this.state;
       body = (
-        <View style={styles.friendsList}>
-          {usersInGroup.length > 0 && 
-            <View>{usersInGroupList}</View>
-          }
+        <View style={styles.friendsListView}>
+          {/* {usersInGroup.length > 0 && 
+            <UsersInGroup users={usersInGroup} />
+          } */}
           {this.props.suggestedUsers && this.props.suggestedUsers.length > 0 &&
             <FriendsList
               friends={this.props.suggestedUsers}
@@ -195,6 +217,7 @@ class StartChat extends React.Component {
       );
     }
 
+    const { usersInGroup } = this.state;
     return (
       <View style={styles.startChatPage}>
         <SearchForUserBar
@@ -206,7 +229,16 @@ class StartChat extends React.Component {
           clearText={() => this.handleClearSearchText()}
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          {body}
+          <View style={styles.mainBody}>
+            {usersInGroup.length > 0 && 
+              <UsersInGroup 
+                users={usersInGroup}
+                onRemoveUserFromStartChatList={user => 
+                  this.handleRemoveUserFromStartChatList(user)}
+              />
+            }
+            {body}
+          </View>
         </TouchableWithoutFeedback>
       </View>
     );
@@ -240,9 +272,16 @@ const styles = StyleSheet.create({
   startChatPage: {
     flex: 1,
   },
+  mainBody: {
+    flex: 1,
+  },
+  friendsListView: {
+    flex: 1,
+    width: '100%'
+  },
   friendsList: {
     //backgroundColor: 'blue',
-    width: '100%',
+    // width: '100%',
   },
   searchedUserView: {
     flex: 1,

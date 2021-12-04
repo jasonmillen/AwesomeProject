@@ -3,7 +3,8 @@ import {
   View,
   TouchableOpacity,
   StyleSheet,
-  TextInput
+  TextInput,
+  Text,
 } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
@@ -55,6 +56,7 @@ const getStyles = (theme) => {
       //borderColor: 'gray',
       //borderWidth: 1
     },
+    text: theme.colors.text,
   };
 };
 
